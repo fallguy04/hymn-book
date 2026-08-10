@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Download, Share, X } from "lucide-react";
 import { useHymnalStore } from "@/store/useHymnalStore";
 
@@ -10,44 +10,64 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 /**
+ * Whether the app is already running as an installed PWA. Read through
+ * useSyncExternalStore rather than an effect: it is browser state we subscribe
+ * to, and the server snapshot keeps the card hidden until we actually know.
+ */
+function useIsInstalled(): boolean {
+  return useSyncExternalStore(
+    (onChange) => {
+      const media = window.matchMedia("(display-mode: standalone)");
+      media.addEventListener("change", onChange);
+      window.addEventListener("appinstalled", onChange);
+      return () => {
+        media.removeEventListener("change", onChange);
+        window.removeEventListener("appinstalled", onChange);
+      };
+    },
+    () =>
+      window.matchMedia("(display-mode: standalone)").matches ||
+      // iOS Safari reports standalone on navigator, not via the media query.
+      (window.navigator as { standalone?: boolean }).standalone === true,
+    () => true,
+  );
+}
+
+/** iOS has no beforeinstallprompt, so it needs the Share-sheet instructions. */
+function useIsIOS(): boolean {
+  return useSyncExternalStore(
+    () => () => {},
+    () =>
+      /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent),
+    () => false,
+  );
+}
+
+/**
  * Android fires `beforeinstallprompt`, which we capture so the invitation can
  * live in the menu instead of as a browser infobar. iOS has no such event, so
  * it gets the Share-sheet instructions instead.
  */
 export default function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isIOS, setIsIOS] = useState(false);
-  const [installed, setInstalled] = useState(true);
+  const [accepted, setAccepted] = useState(false);
+
+  const installed = useIsInstalled();
+  const isIOS = useIsIOS();
 
   const dismissed = useHymnalStore((s) => s.installDismissed);
   const dismiss = useHymnalStore((s) => s.dismissInstall);
 
   useEffect(() => {
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      // iOS Safari reports standalone on navigator, not via the media query.
-      (window.navigator as { standalone?: boolean }).standalone === true;
-    setInstalled(standalone);
-
-    setIsIOS(
-      /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent),
-    );
-
     const onPrompt = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
     };
-    const onInstalled = () => setInstalled(true);
-
     window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", onInstalled);
-    return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
-      window.removeEventListener("appinstalled", onInstalled);
-    };
+    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
 
-  if (installed || dismissed) return null;
+  if (installed || accepted || dismissed) return null;
   if (!deferred && !isIOS) return null;
 
   return (
@@ -69,7 +89,7 @@ export default function InstallPrompt() {
               onClick={async () => {
                 await deferred!.prompt();
                 const { outcome } = await deferred!.userChoice;
-                if (outcome === "accepted") setInstalled(true);
+                if (outcome === "accepted") setAccepted(true);
                 setDeferred(null);
               }}
               className="mt-2 rounded-lg bg-paper-ink px-3 py-1.5 font-sans text-[0.7rem] font-semibold text-paper transition-transform active:scale-95"

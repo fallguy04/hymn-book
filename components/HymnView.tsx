@@ -2,18 +2,14 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
 
 interface HymnViewProps {
   hymnal: Hymnal;
   hymn: Hymn;
   direction: number;
-  prev: Hymn | null;
-  next: Hymn | null;
   onNext: () => void;
   onPrev: () => void;
-  onOpenSearch: () => void;
   onOpenTunes: () => void;
   onOpenSection: (path: string[]) => void;
 }
@@ -40,11 +36,8 @@ export default function HymnView({
   hymnal,
   hymn,
   direction,
-  prev,
-  next,
   onNext,
   onPrev,
-  onOpenSearch,
   onOpenTunes,
   onOpenSection,
 }: HymnViewProps) {
@@ -106,7 +99,7 @@ export default function HymnView({
             if (offset.x < 0 && power < -SWIPE_THRESHOLD) onNext();
             else if (offset.x > 0 && power > SWIPE_THRESHOLD) onPrev();
           }}
-          className="mx-auto w-full max-w-[34rem] px-7 pb-32 pt-4"
+          className="mx-auto w-full max-w-[34rem] px-7 pb-10 pt-4"
         >
           <header className="mb-10 text-center">
             {path.length > 0 && (
@@ -173,29 +166,8 @@ export default function HymnView({
             ))}
           </div>
 
-          <nav className="mt-14 flex items-center justify-between border-t border-paper-rule pt-4">
-            <button
-              onClick={onPrev}
-              disabled={!prev}
-              className="flex items-center gap-1 font-sans text-xs text-paper-faint transition-colors hover:text-paper-ink disabled:invisible"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              {prev?.number}
-            </button>
-
-            <button onClick={onOpenSearch} className="text-label transition-colors hover:text-paper-ink">
-              Find a hymn
-            </button>
-
-            <button
-              onClick={onNext}
-              disabled={!next}
-              className="flex items-center gap-1 font-sans text-xs text-paper-faint transition-colors hover:text-paper-ink disabled:invisible"
-            >
-              {next?.number}
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </nav>
+          {/* Navigation lives in the fixed bottom bar; this just closes the text. */}
+          <div aria-hidden className="mx-auto mt-12 h-px w-16 bg-paper-rule" />
       </motion.article>
     </div>
   );

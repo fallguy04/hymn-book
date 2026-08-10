@@ -6,6 +6,7 @@ import HymnView from "@/components/HymnView";
 import SmartNumpad from "@/components/SmartNumpad";
 import TextSearch from "@/components/TextSearch";
 import TopBar from "@/components/TopBar";
+import BottomBar from "@/components/BottomBar";
 import NavDrawer from "@/components/NavDrawer";
 import ThemeSync from "@/components/ThemeSync";
 import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
@@ -143,11 +144,8 @@ export default function Home() {
             hymnal={hymnal}
             hymn={hymn}
             direction={direction}
-            prev={neighbours.prev}
-            next={neighbours.next}
             onNext={() => paginate(1)}
             onPrev={() => paginate(-1)}
-            onOpenSearch={() => setSearchMode("number")}
             onOpenTunes={() => {
               setMenuPath(undefined);
               setMenuOpen(true);
@@ -155,6 +153,14 @@ export default function Home() {
             onOpenSection={openSection}
           />
         </main>
+
+        <BottomBar
+          prev={neighbours.prev}
+          next={neighbours.next}
+          onPrev={() => paginate(-1)}
+          onNext={() => paginate(1)}
+          onOpenSearch={() => setSearchMode("number")}
+        />
       </div>
 
       <NavDrawer

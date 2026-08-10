@@ -42,15 +42,10 @@ export default function NavDrawer({
   onClose,
   onSelect,
 }: NavDrawerProps) {
-  const [panel, setPanel] = useState<Panel>("contents");
   const panelRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
-  const store = useHymnalStore();
-
-  useEffect(() => {
-    if (isOpen && initialPanel) setPanel(initialPanel);
-  }, [isOpen, initialPanel]);
+  const setHymnal = useHymnalStore((s) => s.setHymnal);
 
   // Escape closes, and focus is trapped while the drawer owns the screen.
   useEffect(() => {
@@ -133,7 +128,7 @@ export default function NavDrawer({
               <div className="border-b border-paper-rule px-4 py-2">
                 <select
                   value={hymnal.id}
-                  onChange={(e) => store.setHymnal(e.target.value)}
+                  onChange={(e) => setHymnal(e.target.value)}
                   className="w-full rounded-lg bg-paper-sunken px-3 py-2 font-sans text-sm text-paper-ink"
                 >
                   {listHymnals().map((h) => (
@@ -145,48 +140,18 @@ export default function NavDrawer({
               </div>
             )}
 
-            <nav className="flex gap-1 overflow-x-auto border-b border-paper-rule px-2 py-2 no-scrollbar">
-              {PANELS.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => setPanel(id)}
-                  aria-current={panel === id}
-                  className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-[0.7rem] font-semibold transition-colors ${
-                    panel === id
-                      ? "bg-paper-ink text-paper"
-                      : "text-paper-muted hover:bg-paper-sunken"
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
-                </button>
-              ))}
-            </nav>
-
-            <div className="flex-1 overflow-y-auto overscroll-contain px-1 py-2">
-              {panel === "contents" && (
-                <TableOfContents hymnal={hymnal} openPath={openPath} onSelect={go} />
-              )}
-
-              {panel === "authors" && <AuthorIndex hymnal={hymnal} onSelect={go} />}
-
-              {panel === "favorites" && (
-                <HymnList
-                  hymnal={hymnal}
-                  numbers={store.favorites}
-                  empty="Star a hymn to keep it here."
-                  onSelect={go}
-                />
-              )}
-
-              {panel === "service" && (
-                <ServicePanel hymnal={hymnal} onSelect={go} />
-              )}
-
-              {panel === "tunes" && <TunesPanel meter={currentMeter} />}
-
-              {panel === "settings" && <SettingsPanel />}
-            </div>
+            {/*
+              Mounted only while the drawer is open, so the tab it opens on is
+              plain initial state rather than something an effect has to keep
+              in sync with the prop.
+            */}
+            <DrawerPanels
+              hymnal={hymnal}
+              currentMeter={currentMeter}
+              openPath={openPath}
+              initialPanel={initialPanel ?? "contents"}
+              onSelect={go}
+            />
 
             <InstallPrompt />
           </motion.div>
@@ -197,6 +162,66 @@ export default function NavDrawer({
 }
 
 /* -------------------------------------------------------------------------- */
+
+function DrawerPanels({
+  hymnal,
+  currentMeter,
+  openPath,
+  initialPanel,
+  onSelect,
+}: {
+  hymnal: Hymnal;
+  currentMeter: string;
+  openPath?: string[];
+  initialPanel: Panel;
+  onSelect: (n: number) => void;
+}) {
+  const [panel, setPanel] = useState<Panel>(initialPanel);
+  const favorites = useHymnalStore((s) => s.favorites);
+
+  return (
+    <>
+      <nav className="flex gap-1 overflow-x-auto border-b border-paper-rule px-2 py-2 no-scrollbar">
+        {PANELS.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            onClick={() => setPanel(id)}
+            aria-current={panel === id}
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 font-sans text-[0.7rem] font-semibold transition-colors ${
+              panel === id ? "bg-paper-ink text-paper" : "text-paper-muted hover:bg-paper-sunken"
+            }`}
+          >
+            <Icon className="h-3.5 w-3.5" />
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="flex-1 overflow-y-auto overscroll-contain px-1 py-2">
+        {panel === "contents" && (
+          <TableOfContents hymnal={hymnal} openPath={openPath} onSelect={onSelect} />
+        )}
+
+        {panel === "authors" && <AuthorIndex hymnal={hymnal} onSelect={onSelect} />}
+
+        {panel === "favorites" && (
+          <HymnList
+            hymnal={hymnal}
+            numbers={favorites}
+            empty="Star a hymn to keep it here."
+            onSelect={onSelect}
+          />
+        )}
+
+        {panel === "service" && <ServicePanel hymnal={hymnal} onSelect={onSelect} />}
+
+        {panel === "tunes" && <TunesPanel meter={currentMeter} />}
+
+        {panel === "settings" && <SettingsPanel />}
+      </div>
+    </>
+  );
+}
 
 function HymnList({
   hymnal,

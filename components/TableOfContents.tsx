@@ -1,23 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { type Hymnal, type Section, getHymn, hymnTitle } from "@/lib/hymnals";
 
 interface TableOfContentsProps {
   hymnal: Hymnal;
-  /** Section titles to open on mount, from the eyebrow on the hymn view. */
+  /** Section titles to expand on mount, from the eyebrow on the hymn view. */
   openPath?: string[];
   onSelect: (number: number) => void;
 }
 
-/** The book's own topical outline, so it reads the way the printed one does. */
+/**
+ * The book's own topical outline, so it reads the way the printed one does.
+ *
+ * `openPath` is read once, on mount. The drawer unmounts its body when it
+ * closes, so every open starts from the path it was given rather than needing
+ * an effect to sync the two.
+ */
 export default function TableOfContents({ hymnal, openPath, onSelect }: TableOfContentsProps) {
-  const [open, setOpen] = useState<Set<string>>(new Set(openPath ?? []));
-
-  useEffect(() => {
-    if (openPath?.length) setOpen(new Set(openPath));
-  }, [openPath]);
+  const [open, setOpen] = useState<Set<string>>(() => new Set(openPath ?? []));
 
   const toggle = (title: string) =>
     setOpen((prev) => {

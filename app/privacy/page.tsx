@@ -8,7 +8,8 @@ export default function PrivacyPolicy() {
       
       <h2>1. Introduction</h2>
       <p>
-        Fall Labs ("we," "our," or "us") operates the Digital Hymnal mobile application (the "App"). 
+        Fall Labs (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) operates the Digital
+        Hymnal mobile application (the &ldquo;App&rdquo;).{" "}
         This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our App.
       </p>
 
