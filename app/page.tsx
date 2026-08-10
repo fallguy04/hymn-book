@@ -40,12 +40,13 @@ export default function Home() {
   }, [hymn.number, visit]);
 
   /**
-   * Paging follows the service queue when one is active and the current hymn
-   * is in it; otherwise it walks the book in order.
+   * Paging follows the service queue when there is a real running order and the
+   * current hymn belongs to it; otherwise it walks the book. A queue of one is
+   * not an order — following it would leave you with nowhere to swipe.
    */
   const neighbours = useMemo(() => {
-    const inService = service.includes(hymn.number);
-    const order = inService ? service : hymnal.hymns.map((h) => h.number);
+    const followService = service.length > 1 && service.includes(hymn.number);
+    const order = followService ? service : hymnal.hymns.map((h) => h.number);
     const at = order.indexOf(hymn.number);
     return {
       prev: at > 0 ? (getHymn(hymnal, order[at - 1]) ?? null) : null,

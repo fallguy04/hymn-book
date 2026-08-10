@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
 
@@ -84,24 +84,18 @@ export default function HymnView({
     };
   }, []);
 
-  const variants = reduceMotion
-    ? { enter: { opacity: 0 }, center: { opacity: 1 }, exit: { opacity: 0 } }
-    : {
-        enter: (d: number) => ({ opacity: 0, x: d > 0 ? 24 : -24 }),
-        center: { opacity: 1, x: 0 },
-        exit: (d: number) => ({ opacity: 0, x: d > 0 ? -24 : 24 }),
-      };
-
   return (
     <div ref={scroller} className="h-full w-full overflow-y-auto overscroll-contain no-scrollbar">
-      <AnimatePresence mode="wait" custom={direction} initial={false}>
-        <motion.article
+      {/*
+        The new hymn simply replaces the old one and fades in. An exit
+        animation would mean waiting for the outgoing article to finish — and
+        because that article is also the drag target, a swipe could leave the
+        transition half-done and the screen blank.
+      */}
+      <motion.article
           key={hymn.number}
-          custom={direction}
-          variants={variants}
-          initial="enter"
-          animate="center"
-          exit="exit"
+          initial={reduceMotion ? false : { opacity: 0, x: direction > 0 ? 20 : -20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
           drag={reduceMotion ? false : "x"}
           dragDirectionLock
@@ -112,7 +106,7 @@ export default function HymnView({
             if (offset.x < 0 && power < -SWIPE_THRESHOLD) onNext();
             else if (offset.x > 0 && power > SWIPE_THRESHOLD) onPrev();
           }}
-          className="mx-auto w-full max-w-[34rem] px-6 pb-32 pt-4"
+          className="mx-auto w-full max-w-[34rem] px-7 pb-32 pt-4"
         >
           <header className="mb-10 text-center">
             {path.length > 0 && (
@@ -148,7 +142,7 @@ export default function HymnView({
                 {hymn.stanzas.length > 1 && (
                   <span
                     aria-hidden
-                    className="absolute -left-6 top-[0.35em] hidden font-sans text-[0.65rem] tabular-nums text-paper-faint sm:block"
+                    className="absolute -left-5 top-[0.42em] font-sans text-[0.65rem] tabular-nums text-paper-faint"
                   >
                     {s + 1}
                   </span>
@@ -195,8 +189,7 @@ export default function HymnView({
               <ChevronRight className="h-4 w-4" />
             </button>
           </nav>
-        </motion.article>
-      </AnimatePresence>
+      </motion.article>
     </div>
   );
 }
