@@ -1,0 +1,6 @@
+# The PDF is the source of truth for scripts/extract-hymns.mjs, but the app
+# reads only the extracted JSON — no need to ship a megabyte to the edge.
+eHymnbook.pdf
+
+# Superseded by data/hymnals/brethren.json; kept locally for diffing.
+data/hymns.legacy.json
