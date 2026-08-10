@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.hymnbook.twa",
+      "sha256_cert_fingerprints": [
+        "A5:F9:D5:44:04:FD:44:C8:C1:3B:ED:BA:D4:BB:92:57:CF:31:0E:4E:F1:64:B8:C6:0E:FB:A2:95:4B:4A:B1:8A"
+      ]
+    }
+  }
+]
