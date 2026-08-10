@@ -1,13 +1,25 @@
 /**
  * Offline support for the hymnal.
  *
- * The whole corpus is well under a megabyte, so there is no reason to be clever
- * about what to keep: the app shell and the hymn data are precached outright,
- * and everything the app touches afterwards is cached as it goes. A hymnal that
- * only works with a signal is not a hymnal.
+ * Three things this has to get right, each of which it previously got wrong:
+ *
+ * 1. Cache names are versioned by build. The page registers this script as
+ *    `/sw.js?v=<buildId>`, so a deploy changes the script URL, the browser
+ *    installs a fresh worker, and `activate` drops the previous build's
+ *    caches. A fixed name meant stale assets survived every deploy.
+ *
+ * 2. The precache list is discovered, not hand-written. Listing four files by
+ *    hand left most of the app uncached, so anything not touched during an
+ *    online session — a lazily-loaded chunk, a route you hadn't opened — was
+ *    simply absent offline. The page reports the assets it actually loaded
+ *    (see CACHE_ASSETS below) and those get stored.
+ *
+ * 3. A failed asset request fails as an asset. Returning the HTML shell for a
+ *    missing script meant the browser parsed markup as JavaScript, and the
+ *    component in that chunk vanished with no error worth reading.
  */
 
-const VERSION = "v3";
+const VERSION = new URL(self.location).searchParams.get("v") || "dev";
 const SHELL = `hymnal-shell-${VERSION}`;
 const RUNTIME = `hymnal-runtime-${VERSION}`;
 
@@ -38,7 +50,24 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
+  const data = event.data;
+  if (data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+    return;
+  }
+
+  // The page sends every same-origin URL it actually loaded. Storing those
+  // guarantees a reload offline has the whole app, not just the parts that
+  // happened to be requested while a cache-filling fetch was in flight.
+  if (data?.type === "CACHE_ASSETS" && Array.isArray(data.urls)) {
+    event.waitUntil(
+      caches.open(RUNTIME).then(async (cache) => {
+        const already = new Set((await cache.keys()).map((r) => r.url));
+        const missing = data.urls.filter((url) => !already.has(url));
+        await Promise.allSettled(missing.map((url) => cache.add(url)));
+      }),
+    );
+  }
 });
 
 self.addEventListener("fetch", (event) => {
@@ -63,20 +92,28 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else — the JS bundles carrying the hymn data, fonts, icons — is
-  // immutable in practice, so serve from cache and fill in on first sight.
+  // Everything else is stale-while-revalidate: instant from cache, refreshed
+  // in the background so an online visit quietly picks up a new build.
   event.respondWith(
-    caches.match(request).then((hit) => {
-      if (hit) return hit;
-      return fetch(request)
+    caches.open(RUNTIME).then(async (cache) => {
+      const hit = await cache.match(request);
+
+      const network = fetch(request)
         .then((response) => {
-          if (response.ok && response.type === "basic") {
-            const copy = response.clone();
-            caches.open(RUNTIME).then((cache) => cache.put(request, copy));
-          }
+          if (response.ok && response.type === "basic") cache.put(request, response.clone());
           return response;
         })
-        .catch(() => caches.match(APP_SHELL).then((shell) => shell ?? Response.error()));
+        .catch(() => null);
+
+      if (hit) return hit;
+
+      const response = await network;
+      if (response) return response;
+
+      // Offline and genuinely absent. Fail as what was asked for — handing
+      // back HTML here is what made a missing chunk look like a missing
+      // feature instead of a network error.
+      return new Response("", { status: 504, statusText: "Offline and not cached" });
     }),
   );
 });

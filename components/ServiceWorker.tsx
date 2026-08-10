@@ -14,9 +14,41 @@ export default function ServiceWorker() {
   useEffect(() => {
     if (!("serviceWorker" in navigator) || process.env.NODE_ENV !== "production") return;
 
+    /**
+     * Hand the worker every same-origin asset this page actually loaded, so
+     * the cache holds a complete app rather than whatever happened to be
+     * fetched before the user went offline.
+     */
+    const cacheLoadedAssets = () => {
+      const loaded = performance
+        .getEntriesByType("resource")
+        .map((entry) => entry.name)
+        .filter((name) => name.startsWith(location.origin));
+
+      // Some chunks are named in the document but never fetched on this
+      // route — a lazily-loaded component, a prefetch the browser skipped.
+      // They are exactly the ones that go missing offline, so scrape the
+      // markup for them rather than relying on what was requested.
+      const referenced = [...document.documentElement.innerHTML.matchAll(/\/_next\/static\/[^"'\\)\s]+?\.(?:js|css)/g)]
+        .map((match) => new URL(match[0], location.origin).href);
+
+      const urls = [...new Set([location.href, ...loaded, ...referenced])];
+      navigator.serviceWorker.controller?.postMessage({ type: "CACHE_ASSETS", urls });
+    };
+
     const register = async () => {
       try {
-        const registration = await navigator.serviceWorker.register("/sw.js");
+        // The version in the URL is what lets a deploy replace the worker and
+        // retire the previous build's caches.
+        const registration = await navigator.serviceWorker.register(
+          `/sw.js?v=${process.env.NEXT_PUBLIC_BUILD_ID ?? "dev"}`,
+        );
+
+        await navigator.serviceWorker.ready;
+        cacheLoadedAssets();
+        // On a first visit the worker only starts controlling after it claims
+        // the page, which is usually after the assets have already loaded.
+        navigator.serviceWorker.addEventListener("controllerchange", cacheLoadedAssets);
 
         if (registration.waiting) setWaiting(registration.waiting);
 
