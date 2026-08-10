@@ -19,6 +19,7 @@ const PDF = "eHymnbook.pdf";
 const OUT_DIR = "data/hymnals";
 const OUT = `${OUT_DIR}/brethren.json`;
 const AUTHORS = "data/authors.json";
+const CORRECTIONS = "data/corrections.json";
 const LEGACY = "data/hymns.legacy.json";
 
 const HEADING_X = 76; // headings left of this; body right of it
@@ -369,6 +370,27 @@ function placeStragglers(sections, hymns) {
 // ---------------------------------------------------------------------------
 
 const authors = existsSync(AUTHORS) ? JSON.parse(readFileSync(AUTHORS, "utf8")) : {};
+
+/**
+ * Restore lines the printing omitted. Applied bottom-up within a hymn so that
+ * inserting one line doesn't shift the position of the next.
+ */
+const corrections = existsSync(CORRECTIONS) ? JSON.parse(readFileSync(CORRECTIONS, "utf8")) : {};
+let restored = 0;
+for (const hymn of hymns) {
+  const edits = corrections[hymn.number];
+  if (!Array.isArray(edits)) continue;
+  for (const edit of [...edits].sort((a, b) => b.stanza - a.stanza || b.line - a.line)) {
+    const stanza = hymn.stanzas[edit.stanza - 1];
+    if (!stanza) {
+      console.error(`✗ correction for hymn ${hymn.number}: no stanza ${edit.stanza}`);
+      process.exit(1);
+    }
+    stanza.splice(edit.line - 1, 0, edit.text);
+    restored++;
+  }
+}
+if (restored) console.log(`· ${restored} line(s) restored from data/corrections.json`);
 
 hymns.sort((a, b) => a.number - b.number);
 const stragglers = placeStragglers(sections, hymns);

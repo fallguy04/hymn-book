@@ -14,8 +14,6 @@ interface HymnalState {
   favorites: number[];
   recents: number[];
   tunes: SavedTune[];
-  /** Hymn numbers queued for a service, in the order they'll be sung. */
-  service: number[];
   theme: Theme;
   textSize: TextSize;
   installDismissed: boolean;
@@ -25,9 +23,6 @@ interface HymnalState {
   visit: (number: number) => void;
   addTune: (tune: SavedTune) => void;
   removeTune: (name: string, meter: string) => void;
-  toggleService: (number: number) => void;
-  moveService: (from: number, to: number) => void;
-  clearService: () => void;
   setTheme: (theme: Theme) => void;
   setTextSize: (size: TextSize) => void;
   dismissInstall: () => void;
@@ -42,7 +37,6 @@ export const useHymnalStore = create<HymnalState>()(
       favorites: [],
       recents: [],
       tunes: [],
-      service: [],
       theme: "system",
       textSize: "m",
       installDismissed: false,
@@ -72,23 +66,6 @@ export const useHymnalStore = create<HymnalState>()(
 
       removeTune: (name, meter) =>
         set((s) => ({ tunes: s.tunes.filter((t) => !(t.name === name && t.meter === meter)) })),
-
-      toggleService: (number) =>
-        set((s) => ({
-          service: s.service.includes(number)
-            ? s.service.filter((n) => n !== number)
-            : [...s.service, number],
-        })),
-
-      moveService: (from, to) =>
-        set((s) => {
-          const next = [...s.service];
-          if (from < 0 || from >= next.length || to < 0 || to >= next.length) return s;
-          next.splice(to, 0, ...next.splice(from, 1));
-          return { service: next };
-        }),
-
-      clearService: () => set({ service: [] }),
 
       setTheme: (theme) => set({ theme }),
       setTextSize: (textSize) => set({ textSize }),

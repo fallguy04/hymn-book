@@ -1,0 +1,36 @@
+{
+  "_readme": [
+    "Lines that are missing from the printed page and have been restored by hand.",
+    "",
+    "The 32nd edition drops a line in two places — the gap is visible in the PDF's",
+    "own line spacing, where the leading jumps by a full line before the stanza",
+    "break. The extractor reports these rather than inventing text; the replacements",
+    "below were supplied by the maintainer from the original hymns.",
+    "",
+    "Kept separate from the extracted text so re-running scripts/extract-hymns.mjs",
+    "never loses them. `stanza` and `line` are 1-based positions; a leading tab in",
+    "`text` marks the book's indentation, exactly as in the extracted data.",
+    "",
+    "This file is only for restoring text the printing omitted. It is not a place",
+    "to correct the hymnal's wording — where the book differs from a hymn's more",
+    "familiar form, the book wins."
+  ],
+
+  "155": [
+    {
+      "stanza": 2,
+      "line": 4,
+      "text": "\tWithout a murm’ring word.",
+      "note": "Watts, 'How condescending and how kind'; omitted in the 32nd edition."
+    }
+  ],
+
+  "197": [
+    {
+      "stanza": 2,
+      "line": 4,
+      "text": "\tBy all the wonders ye shall do.”",
+      "note": "Watts, 'Go preach my gospel, saith the Lord'; omitted in the 32nd edition."
+    }
+  ]
+}

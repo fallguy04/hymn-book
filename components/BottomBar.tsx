@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import type { Hymn } from "@/lib/hymnals";
 
 interface BottomBarProps {
@@ -36,10 +36,15 @@ export default function BottomBar({ prev, next, onPrev, onNext, onOpenSearch }: 
           {prev?.number}
         </button>
 
+        {/*
+          Given a pill, a border and an icon: as letterspaced capitals this read
+          as a caption rather than something to press.
+        */}
         <button
           onClick={onOpenSearch}
-          className="justify-self-center rounded-full px-4 py-2 font-sans text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
+          className="flex items-center gap-2 justify-self-center rounded-full border border-paper-rule bg-paper-sunken px-5 py-2 font-sans text-sm font-medium text-paper-ink shadow-sm transition-all hover:border-paper-faint active:scale-95"
         >
+          <Search className="h-4 w-4 text-paper-muted" />
           Find a hymn
         </button>
 

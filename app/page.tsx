@@ -8,6 +8,7 @@ import TextSearch from "@/components/TextSearch";
 import TopBar from "@/components/TopBar";
 import BottomBar from "@/components/BottomBar";
 import NavDrawer from "@/components/NavDrawer";
+import TuneSheet from "@/components/TuneSheet";
 import ThemeSync from "@/components/ThemeSync";
 import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
 import { useHymnalStore } from "@/store/useHymnalStore";
@@ -18,9 +19,7 @@ export default function Home() {
   const hymnalId = useHymnalStore((s) => s.hymnalId);
   const favorites = useHymnalStore((s) => s.favorites);
   const recents = useHymnalStore((s) => s.recents);
-  const service = useHymnalStore((s) => s.service);
   const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
-  const toggleService = useHymnalStore((s) => s.toggleService);
   const visit = useHymnalStore((s) => s.visit);
 
   const hymnal = useMemo(() => getHymnal(hymnalId) ?? getDefaultHymnal(), [hymnalId]);
@@ -33,6 +32,7 @@ export default function Home() {
   const [buffer, setBuffer] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPath, setMenuPath] = useState<string[] | undefined>();
+  const [tunesOpen, setTunesOpen] = useState(false);
 
   const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
 
@@ -40,20 +40,13 @@ export default function Home() {
     visit(hymn.number);
   }, [hymn.number, visit]);
 
-  /**
-   * Paging follows the service queue when there is a real running order and the
-   * current hymn belongs to it; otherwise it walks the book. A queue of one is
-   * not an order — following it would leave you with nowhere to swipe.
-   */
   const neighbours = useMemo(() => {
-    const followService = service.length > 1 && service.includes(hymn.number);
-    const order = followService ? service : hymnal.hymns.map((h) => h.number);
-    const at = order.indexOf(hymn.number);
+    const at = hymnal.hymns.findIndex((h) => h.number === hymn.number);
     return {
-      prev: at > 0 ? (getHymn(hymnal, order[at - 1]) ?? null) : null,
-      next: at >= 0 && at < order.length - 1 ? (getHymn(hymnal, order[at + 1]) ?? null) : null,
+      prev: at > 0 ? hymnal.hymns[at - 1] : null,
+      next: at >= 0 && at < hymnal.hymns.length - 1 ? hymnal.hymns[at + 1] : null,
     };
-  }, [hymnal, hymn.number, service]);
+  }, [hymnal, hymn.number]);
 
   const goTo = useCallback(
     (target: number) => {
@@ -130,13 +123,11 @@ export default function Home() {
         <TopBar
           hymn={hymn}
           isFavorite={favorites.includes(hymn.number)}
-          inService={service.includes(hymn.number)}
           onOpenMenu={() => {
             setMenuPath(undefined);
             setMenuOpen(true);
           }}
           onToggleFavorite={() => toggleFavorite(hymn.number)}
-          onToggleService={() => toggleService(hymn.number)}
         />
 
         <main className="relative min-h-0 flex-1">
@@ -146,10 +137,7 @@ export default function Home() {
             direction={direction}
             onNext={() => paginate(1)}
             onPrev={() => paginate(-1)}
-            onOpenTunes={() => {
-              setMenuPath(undefined);
-              setMenuOpen(true);
-            }}
+            onOpenTunes={() => setTunesOpen(true)}
             onOpenSection={openSection}
           />
         </main>
@@ -171,6 +159,12 @@ export default function Home() {
         initialPanel={menuPath ? "contents" : undefined}
         onClose={() => setMenuOpen(false)}
         onSelect={goTo}
+      />
+
+      <TuneSheet
+        meter={hymn.meter}
+        isOpen={tunesOpen && Boolean(hymn.meter)}
+        onClose={() => setTunesOpen(false)}
       />
 
       {/* Search layer */}

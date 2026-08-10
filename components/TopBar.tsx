@@ -1,15 +1,13 @@
 "use client";
 
-import { Menu, Star, ListPlus } from "lucide-react";
+import { Menu, Star } from "lucide-react";
 import type { Hymn } from "@/lib/hymnals";
 
 interface TopBarProps {
   hymn: Hymn;
   isFavorite: boolean;
-  inService: boolean;
   onOpenMenu: () => void;
   onToggleFavorite: () => void;
-  onToggleService: () => void;
 }
 
 /**
@@ -17,14 +15,7 @@ interface TopBarProps {
  * flow, which meant scrolling back up to reach them and a hamburger that only
  * existed at the top of the page.
  */
-export default function TopBar({
-  hymn,
-  isFavorite,
-  inService,
-  onOpenMenu,
-  onToggleFavorite,
-  onToggleService,
-}: TopBarProps) {
+export default function TopBar({ hymn, isFavorite, onOpenMenu, onToggleFavorite }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-paper-rule/60 bg-paper/85 backdrop-blur-md">
       {/*
@@ -46,19 +37,6 @@ export default function TopBar({
         </span>
 
         <div className="flex items-center justify-self-end">
-          <button
-            onClick={onToggleService}
-            aria-label={inService ? "Remove from service" : "Add to service"}
-            aria-pressed={inService}
-            className="rounded-full p-2.5 transition-colors hover:bg-paper-sunken"
-          >
-            <ListPlus
-              className={`h-5 w-5 transition-colors ${
-                inService ? "text-paper-accent" : "text-paper-faint"
-              }`}
-            />
-          </button>
-
           <button
             onClick={onToggleFavorite}
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
