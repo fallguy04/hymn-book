@@ -1,180 +1,221 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search } from "lucide-react";
 import HymnView from "@/components/HymnView";
 import SmartNumpad from "@/components/SmartNumpad";
-import GlassTicket from "@/components/GlassTicket";
-import SparkDrawer from "@/components/SparkDrawer"; 
 import TextSearch from "@/components/TextSearch";
-import hymns from "@/data/hymns.json";
+import TopBar from "@/components/TopBar";
+import NavDrawer from "@/components/NavDrawer";
+import ThemeSync from "@/components/ThemeSync";
+import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
+import { useHymnalStore } from "@/store/useHymnalStore";
+
+type SearchMode = "closed" | "number" | "text";
 
 export default function Home() {
-  // 1. CHANGE THIS LINE: Use a tuple to track [page, direction]
-  const [[page, direction], setPage] = useState([1, 0]);
-  
-  // 2. Helper to get the number cleanly
-  const currentHymnNumber = page;
+  const hymnalId = useHymnalStore((s) => s.hymnalId);
+  const favorites = useHymnalStore((s) => s.favorites);
+  const recents = useHymnalStore((s) => s.recents);
+  const service = useHymnalStore((s) => s.service);
+  const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
+  const toggleService = useHymnalStore((s) => s.toggleService);
+  const visit = useHymnalStore((s) => s.visit);
 
-  const [isSearchOpen, setIsSearchOpen] = useState(true);
-  const [searchMode, setSearchMode] = useState<'NUM' | 'TEXT'>('NUM');
-  const [inputBuffer, setInputBuffer] = useState("");
-  const [isTunesOpen, setIsTunesOpen] = useState(false);
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const hymnal = useMemo(() => getHymnal(hymnalId) ?? getDefaultHymnal(), [hymnalId]);
 
-  // ... (Load favorites useEffect stays the same) ...
+  const [[number, direction], setPage] = useState<[number, number]>([
+    firstHymn(getDefaultHymnal()).number,
+    0,
+  ]);
+  const [searchMode, setSearchMode] = useState<SearchMode>("number");
+  const [buffer, setBuffer] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPath, setMenuPath] = useState<string[] | undefined>();
+
+  const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
+
   useEffect(() => {
-    const saved = localStorage.getItem("hymn_favorites");
-    if (saved) setFavorites(JSON.parse(saved));
-  }, []);
+    visit(hymn.number);
+  }, [hymn.number, visit]);
 
-  const toggleFavorite = (num: number) => {
-    const newFavs = favorites.includes(num) 
-      ? favorites.filter(f => f !== num) 
-      : [...favorites, num];
-    setFavorites(newFavs);
-    localStorage.setItem("hymn_favorites", JSON.stringify(newFavs));
-  };
+  /**
+   * Paging follows the service queue when one is active and the current hymn
+   * is in it; otherwise it walks the book in order.
+   */
+  const neighbours = useMemo(() => {
+    const inService = service.includes(hymn.number);
+    const order = inService ? service : hymnal.hymns.map((h) => h.number);
+    const at = order.indexOf(hymn.number);
+    return {
+      prev: at > 0 ? (getHymn(hymnal, order[at - 1]) ?? null) : null,
+      next: at >= 0 && at < order.length - 1 ? (getHymn(hymnal, order[at + 1]) ?? null) : null,
+    };
+  }, [hymnal, hymn.number, service]);
 
-  const currentHymn = useMemo(() => 
-    hymns.find(h => h.number === currentHymnNumber) || hymns[0], 
-  [currentHymnNumber]);
+  const goTo = useCallback(
+    (target: number) => {
+      setPage(([current]) => [target, target > current ? 1 : -1]);
+      setBuffer("");
+      setSearchMode("closed");
+    },
+    [],
+  );
 
-  const targetHymn = useMemo(() => {
-    if (!inputBuffer) return null;
-    const num = parseInt(inputBuffer);
-    return hymns.find(h => h.number === num) || null;
-  }, [inputBuffer]);
+  const paginate = useCallback(
+    (delta: number) => {
+      const target = delta > 0 ? neighbours.next : neighbours.prev;
+      if (target) setPage([target.number, delta]);
+    },
+    [neighbours],
+  );
 
-  // ... (handleKeyPress and handleDelete stay the same) ...
-  const handleKeyPress = (key: string) => {
-    if (inputBuffer.length < 3) setInputBuffer(prev => prev + key);
-  };
+  const appendDigit = useCallback(
+    (key: string) => setBuffer((prev) => (prev.length < 3 ? prev + key : prev)),
+    [],
+  );
 
-  const handleDelete = () => {
-    setInputBuffer(prev => prev.slice(0, -1));
-  };
+  const submitBuffer = useCallback(() => {
+    const target = Number(buffer);
+    if (buffer && getHymn(hymnal, target)) goTo(target);
+  }, [buffer, hymnal, goTo]);
 
-  // 3. UPDATE handleGo to use the new setPage logic
-  const handleGo = (number?: number) => {
-    let nextNumber = currentHymnNumber;
+  // Desktop deserves a keyboard. Arrows page, "/" searches, digits start an
+  // entry, Escape backs out of whatever is open.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const typing =
+        e.target instanceof HTMLElement &&
+        ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName);
+      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
 
-    if (number) {
-      nextNumber = number;
-    } else if (targetHymn) {
-      nextNumber = targetHymn.number;
-    } else {
-      return; // Do nothing if no valid target
-    }
+      if (e.key === "Escape") {
+        if (menuOpen) setMenuOpen(false);
+        else if (searchMode !== "closed") setSearchMode("closed");
+        return;
+      }
+      if (menuOpen) return;
 
-    // Calculate direction: 1 for forward, -1 for backward
-    const newDirection = nextNumber > currentHymnNumber ? 1 : -1;
-    setPage([nextNumber, newDirection]);
-    
-    setInputBuffer("");
-    setIsSearchOpen(false);
-    setSearchMode('NUM');
-  };
+      if (e.key === "ArrowRight") paginate(1);
+      else if (e.key === "ArrowLeft") paginate(-1);
+      else if (e.key === "/") {
+        e.preventDefault();
+        setSearchMode("text");
+      } else if (/^\d$/.test(e.key)) {
+        setSearchMode("number");
+        appendDigit(e.key);
+      } else if (e.key === "Enter" && searchMode === "number") {
+        submitBuffer();
+      } else if (e.key === "Backspace" && searchMode === "number") {
+        setBuffer((prev) => prev.slice(0, -1));
+      }
+    };
 
-  // 4. NEW Helpers for Swiping
-  const paginate = (newDirection: number) => {
-    const nextNumber = currentHymnNumber + newDirection;
-    // Simple bounds check (assuming hymns 1-500, adjust as needed)
-    if (hymns.find(h => h.number === nextNumber)) {
-      setPage([nextNumber, newDirection]);
-    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen, searchMode, paginate, appendDigit, submitBuffer]);
+
+  const openSection = (path: string[]) => {
+    setMenuPath(path);
+    setMenuOpen(true);
   };
 
   return (
-    <main className="min-h-screen relative">
-      <HymnView 
-        hymn={currentHymn} 
-        isFavorite={favorites.includes(currentHymn.number)}
-        direction={direction} // Pass direction
-        onToggleFavorite={toggleFavorite}
-        onMeterClick={() => setIsTunesOpen(true)}
-        onNext={() => paginate(1)}  // Handle Next
-        onPrev={() => paginate(-1)} // Handle Prev
-      />
+    <>
+      <ThemeSync />
 
-      {/* ... (Rest of the JSX below stays exactly the same) ... */}
-      <SparkDrawer 
-        isOpen={isTunesOpen} 
-        onClose={() => setIsTunesOpen(false)} 
-        meter={currentHymn.meter}
-        onSelectHymn={(num) => handleGo(num)} 
-      />
+      <div className="flex h-[100dvh] flex-col">
+        <TopBar
+          hymn={hymn}
+          isFavorite={favorites.includes(hymn.number)}
+          inService={service.includes(hymn.number)}
+          onOpenMenu={() => {
+            setMenuPath(undefined);
+            setMenuOpen(true);
+          }}
+          onToggleFavorite={() => toggleFavorite(hymn.number)}
+          onToggleService={() => toggleService(hymn.number)}
+        />
 
-      <div className="fixed inset-0 pointer-events-none z-50">
-         {/* ... (Search UI code stays same) ... */}
-         <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsSearchOpen(false)}
-              className="absolute inset-0 bg-paper-ink/10 pointer-events-auto backdrop-blur-sm"
-            />
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {!isSearchOpen && (
-            <motion.button
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              onClick={() => { setIsSearchOpen(true); setSearchMode('NUM'); }}
-              className="pointer-events-auto absolute bottom-8 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-paper text-paper-ink shadow-lg border border-paper-dark/50 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
-            >
-              <Search className="w-6 h-6 opacity-60" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence mode="wait">
-          {isSearchOpen && searchMode === 'NUM' && (
-            <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
-              <div key="numpad" className="pointer-events-auto relative w-full">
-                {targetHymn && (
-                  <GlassTicket hymn={targetHymn} onClick={() => handleGo()} />
-                )}
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute bottom-full mb-32 w-full text-center font-serif text-5xl text-paper-ink/20 pointer-events-none"
-                >
-                  {inputBuffer || ""}
-                </motion.div>
-                <SmartNumpad 
-                  onKeyPress={handleKeyPress}
-                  onDelete={handleDelete}
-                  onClose={() => setIsSearchOpen(false)}
-                  onToggleMode={() => setSearchMode('TEXT')}
-                />
-              </div>
-            </div>
-          )}
-
-          {isSearchOpen && searchMode === 'TEXT' && (
-            <motion.div 
-              key="textsearch"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 pointer-events-auto p-4 flex flex-col"
-            >
-               <TextSearch 
-                 onSelect={(num) => handleGo(num)}
-                 onClose={() => setIsSearchOpen(false)}
-               />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <main className="relative min-h-0 flex-1">
+          <HymnView
+            hymnal={hymnal}
+            hymn={hymn}
+            direction={direction}
+            prev={neighbours.prev}
+            next={neighbours.next}
+            onNext={() => paginate(1)}
+            onPrev={() => paginate(-1)}
+            onOpenSearch={() => setSearchMode("number")}
+            onOpenTunes={() => {
+              setMenuPath(undefined);
+              setMenuOpen(true);
+            }}
+            onOpenSection={openSection}
+          />
+        </main>
       </div>
-    </main>
+
+      <NavDrawer
+        hymnal={hymnal}
+        isOpen={menuOpen}
+        currentMeter={hymn.meter}
+        openPath={menuPath}
+        initialPanel={menuPath ? "contents" : undefined}
+        onClose={() => setMenuOpen(false)}
+        onSelect={goTo}
+      />
+
+      {/* Search layer */}
+      <AnimatePresence>
+        {searchMode !== "closed" && (
+          <motion.div
+            key="scrim"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            onClick={() => setSearchMode("closed")}
+            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {searchMode === "number" && (
+          <div key="numpad" className="fixed inset-x-0 bottom-0 z-50">
+            <SmartNumpad
+              hymnal={hymnal}
+              buffer={buffer}
+              recents={recents.filter((n) => n !== hymn.number)}
+              onKeyPress={appendDigit}
+              onDelete={() => setBuffer((prev) => prev.slice(0, -1))}
+              onGo={submitBuffer}
+              onSelect={goTo}
+              onSwitchToText={() => setSearchMode("text")}
+              onClose={() => setSearchMode("closed")}
+            />
+          </div>
+        )}
+
+        {searchMode === "text" && (
+          <motion.div
+            key="textsearch"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex flex-col p-3 pt-6"
+          >
+            <TextSearch
+              hymnal={hymnal}
+              onSelect={goTo}
+              onSwitchToNumber={() => setSearchMode("number")}
+              onClose={() => setSearchMode("closed")}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

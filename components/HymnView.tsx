@@ -1,144 +1,201 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Star } from "lucide-react";
-
-interface Hymn {
-  number: number;
-  title: string;
-  meter: string;
-  verses: string[];
-}
+import { useEffect, useMemo, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
 
 interface HymnViewProps {
+  hymnal: Hymnal;
   hymn: Hymn;
-  isFavorite: boolean;
-  direction: number; // New prop to tell us which way to slide
-  onToggleFavorite: (num: number) => void;
-  onMeterClick: () => void;
-  onNext: () => void; // New callback for swipe
-  onPrev: () => void; // New callback for swipe
+  direction: number;
+  prev: Hymn | null;
+  next: Hymn | null;
+  onNext: () => void;
+  onPrev: () => void;
+  onOpenSearch: () => void;
+  onOpenTunes: () => void;
+  onOpenSection: (path: string[]) => void;
 }
 
-// Animation settings
-const variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 300 : -300,
-    opacity: 0,
-  }),
-  center: {
-    zIndex: 1,
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    zIndex: 0,
-    x: direction < 0 ? 300 : -300,
-    opacity: 0,
-  }),
-};
+const INDENT_CLASS = ["", "stanza-indent-1", "stanza-indent-2", "stanza-indent-3"];
 
-const swipeConfidenceThreshold = 10000;
-const swipePower = (offset: number, velocity: number) => {
-  return Math.abs(offset) * velocity;
-};
+/** Distance × velocity; past this, a drag counts as a page turn. */
+const SWIPE_THRESHOLD = 8000;
 
-export default function HymnView({ 
-  hymn, 
-  isFavorite, 
+/**
+ * Hymns open with a word or two set in capitals. Split that run off so it can
+ * be set in small caps instead of left shouting in full capitals.
+ */
+function splitOpening(line: string): [string, string] {
+  const match = line.match(/^[^a-z]*[A-Z][A-Z’'-]*(?=\s|$)/);
+  if (!match) return ["", line];
+  const opening = match[0];
+  // Guard against a line that is entirely capitals (a shout in the original).
+  if (opening.length > line.length * 0.6) return ["", line];
+  return [opening, line.slice(opening.length)];
+}
+
+export default function HymnView({
+  hymnal,
+  hymn,
   direction,
-  onToggleFavorite, 
-  onMeterClick,
+  prev,
+  next,
   onNext,
-  onPrev
+  onPrev,
+  onOpenSearch,
+  onOpenTunes,
+  onOpenSection,
 }: HymnViewProps) {
+  const scroller = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const path = useMemo(() => sectionPath(hymnal, hymn.number), [hymnal, hymn.number]);
+
+  // Landing halfway down the next hymn is the single most jarring thing the
+  // old build did. One scroll container, reset on every change of hymn.
+  useEffect(() => {
+    scroller.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [hymn.number]);
+
+  // Keep the screen awake while a hymn is on it — you cannot tap the phone
+  // mid-verse. Feature-detected; Safari support is partial.
+  useEffect(() => {
+    if (!("wakeLock" in navigator)) return;
+    let lock: WakeLockSentinel | null = null;
+    let cancelled = false;
+
+    const acquire = async () => {
+      if (document.visibilityState !== "visible") return;
+      try {
+        lock = await navigator.wakeLock.request("screen");
+        if (cancelled) lock.release().catch(() => {});
+      } catch {
+        // Denied or unsupported — nothing to do.
+      }
+    };
+
+    acquire();
+    document.addEventListener("visibilitychange", acquire);
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", acquire);
+      lock?.release().catch(() => {});
+    };
+  }, []);
+
+  const variants = reduceMotion
+    ? { enter: { opacity: 0 }, center: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        enter: (d: number) => ({ opacity: 0, x: d > 0 ? 24 : -24 }),
+        center: { opacity: 1, x: 0 },
+        exit: (d: number) => ({ opacity: 0, x: d > 0 ? -24 : 24 }),
+      };
+
   return (
-    // We add overflow-x-hidden to prevent scrollbars during animation
-    <div className="w-full min-h-screen bg-paper flex justify-center overflow-y-auto overflow-x-hidden">
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
+    <div ref={scroller} className="h-full w-full overflow-y-auto overscroll-contain no-scrollbar">
+      <AnimatePresence mode="wait" custom={direction} initial={false}>
+        <motion.article
           key={hymn.number}
           custom={direction}
           variants={variants}
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.2 }
-          }}
-          // Swipe Handlers
-          drag="x"
+          transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
+          drag={reduceMotion ? false : "x"}
+          dragDirectionLock
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={1}
-          onDragEnd={(e, { offset, velocity }) => {
-            const swipe = swipePower(offset.x, velocity.x);
-
-            if (swipe < -swipeConfidenceThreshold) {
-              onNext();
-            } else if (swipe > swipeConfidenceThreshold) {
-              onPrev();
-            }
+          dragElastic={0.15}
+          onDragEnd={(_, { offset, velocity }) => {
+            const power = offset.x * velocity.x;
+            if (offset.x < 0 && power < -SWIPE_THRESHOLD) onNext();
+            else if (offset.x > 0 && power > SWIPE_THRESHOLD) onPrev();
           }}
-          className="w-full max-w-md px-6 pt-12 pb-40 text-center cursor-grab active:cursor-grabbing"
+          className="mx-auto w-full max-w-[34rem] px-6 pb-32 pt-4"
         >
-          {/* Hymn Number & Favorite Star */}
-          <div className="flex items-center justify-center gap-4 mb-2">
-            <div className="font-serif text-paper-ink/60 text-lg tracking-widest uppercase">
-              Hymn {hymn.number}
-            </div>
-            <button 
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent drag when clicking star
-                onToggleFavorite(hymn.number);
-              }}
-              className="p-2 transition-transform active:scale-75"
-              aria-label="Toggle Favorite"
-            >
-              <Star 
-                className={`w-6 h-6 transition-colors ${isFavorite ? 'fill-yellow-500 text-yellow-500' : 'text-paper-ink/20'}`} 
-              />
-            </button>
-          </div>
+          <header className="mb-10 text-center">
+            {path.length > 0 && (
+              <button
+                onClick={() => onOpenSection(path)}
+                className="text-label mb-3 inline-block transition-colors hover:text-paper-accent"
+              >
+                {path.join(" · ")}
+              </button>
+            )}
 
-          {/* Title */}
-          <h1 className="font-serif text-3xl text-paper-ink mb-6 leading-tight select-none">
-            {hymn.title}
-          </h1>
+            <h1 className="font-serif text-[calc(var(--type-base)*1.6)] leading-tight text-paper-ink">
+              {hymn.title || <span className="italic text-paper-muted">Hymn {hymn.number}</span>}
+            </h1>
 
-          {/* Meter Badge */}
-          <div className="mb-12 flex justify-center">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMeterClick();
-              }}
-              className="px-4 py-1.5 rounded-full border border-paper-ink/20 font-sans text-xs text-paper-ink/60 uppercase tracking-widest font-bold hover:bg-paper-ink hover:text-paper transition-all active:scale-95"
-            >
-              {hymn.meter}
-            </button>
-          </div>
+            <p className="mt-3 font-sans text-xs text-paper-faint">
+              {hymn.meter && (
+                <button
+                  onClick={onOpenTunes}
+                  className="underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
+                >
+                  {hymn.meter}
+                </button>
+              )}
+              {hymn.meter && hymn.author && <span aria-hidden> · </span>}
+              {hymn.author && <span>{hymn.author}</span>}
+            </p>
+          </header>
 
-          {/* Verses */}
-          <div className="space-y-10 text-left select-none">
-            {hymn.verses.map((verse, index) => (
-              <div key={index} className="relative pl-4 group">
-                <span className="absolute left-0 top-1 text-xs font-bold text-paper-ink/30 font-sans select-none">
-                  {index + 1}
-                </span>
-                <p className="font-serif text-lg leading-relaxed text-paper-ink whitespace-pre-line">
-                  {verse}
-                </p>
-              </div>
+          <div className="space-y-7">
+            {hymn.stanzas.map((stanza, s) => (
+              <section key={s} className="relative">
+                {hymn.stanzas.length > 1 && (
+                  <span
+                    aria-hidden
+                    className="absolute -left-6 top-[0.35em] hidden font-sans text-[0.65rem] tabular-nums text-paper-faint sm:block"
+                  >
+                    {s + 1}
+                  </span>
+                )}
+                <span className="sr-only">Stanza {s + 1}. </span>
+
+                {stanza.map((line, l) => {
+                  const text = lineText(line);
+                  const [opening, rest] = s === 0 && l === 0 ? splitOpening(text) : ["", text];
+                  return (
+                    <p
+                      key={l}
+                      className={`stanza-line ${INDENT_CLASS[lineIndent(line)]}`}
+                    >
+                      {opening && <span className="opening-caps">{opening}</span>}
+                      {rest}
+                    </p>
+                  );
+                })}
+              </section>
             ))}
           </div>
 
-          <div className="mt-16 mb-8 flex justify-center opacity-30">
-            <div className="w-2 h-2 rounded-full bg-paper-ink mx-1" />
-            <div className="w-2 h-2 rounded-full bg-paper-ink mx-1" />
-            <div className="w-2 h-2 rounded-full bg-paper-ink mx-1" />
-          </div>
-        </motion.div>
+          <nav className="mt-14 flex items-center justify-between border-t border-paper-rule pt-4">
+            <button
+              onClick={onPrev}
+              disabled={!prev}
+              className="flex items-center gap-1 font-sans text-xs text-paper-faint transition-colors hover:text-paper-ink disabled:invisible"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {prev?.number}
+            </button>
+
+            <button onClick={onOpenSearch} className="text-label transition-colors hover:text-paper-ink">
+              Find a hymn
+            </button>
+
+            <button
+              onClick={onNext}
+              disabled={!next}
+              className="flex items-center gap-1 font-sans text-xs text-paper-faint transition-colors hover:text-paper-ink disabled:invisible"
+            >
+              {next?.number}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </nav>
+        </motion.article>
       </AnimatePresence>
     </div>
   );

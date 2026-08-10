@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Crimson_Pro, Inter } from "next/font/google";
 import "./globals.css";
+import ServiceWorker from "@/components/ServiceWorker";
 
 const crimsonPro = Crimson_Pro({
   subsets: ["latin"],
@@ -18,34 +19,60 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Hymn Book",
-  description: "Digital Hymn Book",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false, // Prevents accidental zoom while typing on the numpad
+  title: "Hymnal",
+  description:
+    "A Collection of Hymns and Sacred Songs — Old German Baptist Brethren Church, 32nd Edition.",
+  manifest: "/manifest.json",
+  applicationName: "Hymnal",
+  appleWebApp: {
+    capable: true,
+    title: "Hymnal",
+    statusBarStyle: "default",
   },
-  themeColor: "#FDFBF7",
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fdfbf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#16130f" },
+  ],
+};
+
+/**
+ * Applies the stored theme and text size before first paint. Without this the
+ * page renders light and then flips, which is exactly the moment a dark-mode
+ * user is looking at it.
+ */
+const THEME_SCRIPT = `
+(function () {
+  try {
+    var saved = JSON.parse(localStorage.getItem("hymnal") || "{}").state || {};
+    var theme = saved.theme || "system";
+    var dark = theme === "dark" || (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    var scale = { s: 0.9, m: 1, l: 1.15, xl: 1.32 }[saved.textSize || "m"];
+    document.documentElement.style.setProperty("--type-scale", String(scale));
+  } catch (e) {}
+})();
+`;
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${crimsonPro.variable} ${inter.variable}`}>
-      <body className="h-screen w-screen relative overflow-hidden bg-paper">
-        {/* God Ray Lighting Effect */}
-        <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent animate-god-ray w-[200%] h-[200%] -top-1/2 -left-1/2" />
-        </div>
-        
-        {/* SCROLL FIX IS HERE: added "overflow-y-auto" */}
-        <main className="relative z-10 h-full w-full max-w-md mx-auto flex flex-col overflow-y-auto no-scrollbar">
-          {children}
-        </main>
+    <html lang="en" className={`${crimsonPro.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body>
+        {children}
+        <ServiceWorker />
       </body>
     </html>
   );

@@ -1,20 +1,31 @@
 {
-  "name": "Digital Hymnal",
+  "id": "/",
+  "name": "A Collection of Hymns and Sacred Songs",
   "short_name": "Hymnal",
-  "description": "A digital collection of hymns for worship.",
+  "description": "The Old German Baptist Brethren hymnal, 32nd Edition — all 558 hymns, available offline.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#F5F5F0",
-  "theme_color": "#F5F5F0",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#fdfbf7",
+  "theme_color": "#fdfbf7",
+  "categories": ["books", "music", "lifestyle"],
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/maskable-icon.png",
+      "src": "/icons/maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

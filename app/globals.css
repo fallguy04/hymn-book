@@ -1,31 +1,153 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Palette
+   Two themes over one set of semantic names. Dark is a warm near-black rather
+   than pure black: this gets read in dim auditoriums, where #000 behind serif
+   text glares and haloes.
+--------------------------------------------------------------------------- */
+
 @theme {
-  /* Define your custom "Paper" palette here */
-  --color-paper: #FDFBF7;
-  --color-paper-dark: #F5F2EB;
-  --color-paper-ink: #2D2A26;
+  --color-paper: var(--surface);
+  --color-paper-raised: var(--surface-raised);
+  --color-paper-sunken: var(--surface-sunken);
+  --color-paper-ink: var(--ink);
+  --color-paper-muted: var(--ink-muted);
+  --color-paper-faint: var(--ink-faint);
+  --color-paper-rule: var(--rule);
+  --color-paper-accent: var(--accent);
 
-  /* Glass Effects */
-  --color-glass-border: rgba(255, 255, 255, 0.4);
-  --color-glass-surface: rgba(255, 255, 255, 0.1);
-  
-  /* Animations */
-  --animate-god-ray: godRay 8s ease-in-out infinite alternate;
-
-  @keyframes godRay {
-    0% { opacity: 0.3; transform: translateX(-10%) rotate(45deg); }
-    100% { opacity: 0.6; transform: translateX(10%) rotate(45deg); }
-  }
+  --font-serif: var(--font-crimson-pro), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
 }
 
-/* Base Styles */
 :root {
-  --paper-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  color-scheme: light;
+
+  --surface: #fdfbf7;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f2eee5;
+  --ink: #241f1a;
+  --ink-muted: #5d564c;
+  --ink-faint: #8b8375;
+  --rule: #e0d9cb;
+  --accent: #8a6a33;
+
+  /* Type scale. --type-scale is set by the size control; everything that
+     should grow with it is expressed as a multiple of --type-base. */
+  --type-scale: 1;
+  --type-base: calc(1.0625rem * var(--type-scale));
+  --stanza-leading: 1.55;
+
+  --paper-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --surface: #16130f;
+  --surface-raised: #201c17;
+  --surface-sunken: #100e0b;
+  --ink: #ece4d6;
+  --ink-muted: #a89e8d;
+  --ink-faint: #7a7263;
+  --rule: #322c24;
+  --accent: #d9b877;
+}
+
+/* --------------------------------------------------------------------------- */
+
+* {
+  min-width: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  /* Tailwind v4 automatically maps --color-paper to bg-paper */
-  @apply bg-paper text-paper-ink antialiased;
+  background-color: var(--surface);
   background-image: var(--paper-noise);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* The one place a keyboard user is otherwise lost: nothing here had a focus
+   style at all. Scoped to :focus-visible so pointer taps stay clean. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* iOS zooms the page when a font-size < 16px input is focused. Setting the
+   search field to 16px is the fix — not disabling user scaling. */
+input,
+textarea,
+select {
+  font-size: max(16px, 1rem);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hymn text
+--------------------------------------------------------------------------- */
+
+@utility stanza-line {
+  font-family: var(--font-serif);
+  font-size: var(--type-base);
+  line-height: var(--stanza-leading);
+  text-wrap: pretty;
+  /* Wrapped lines hang under their own first word rather than resetting to
+     the margin, so the stanza's shape survives a narrow screen. */
+  padding-left: 1.15em;
+  text-indent: -1.15em;
+}
+
+/* The book insets alternating lines; one step per tab in the source data. */
+@utility stanza-indent-1 {
+  margin-left: 1.25em;
+}
+@utility stanza-indent-2 {
+  margin-left: 2.5em;
+}
+@utility stanza-indent-3 {
+  margin-left: 3.75em;
+}
+
+/* Hymns open with a word or two in capitals ("THROUGH endless years"). Real
+   small caps read as typography; full caps read as shouting. */
+@utility opening-caps {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.02em;
+}
+
+@utility text-label {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
