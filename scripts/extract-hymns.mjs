@@ -38,6 +38,8 @@ const normalize = (s) =>
  */
 function normalizeMeter(raw) {
   let m = normalize(raw).trim().replace(/\s+/g, " ");
+  // The book sets a lowercase L where it means a one: "l0s and 8s", "l2s".
+  m = m.replace(/\bl(?=\ds\b)/g, "1");
   m = m.replace(/\bC\.?\s?M\.?\b/g, "C.M.")
     .replace(/\bL\.?\s?M\.?\b/g, "L.M.")
     .replace(/\bS\.?\s?M\.?\b/g, "S.M.")
@@ -45,7 +47,10 @@ function normalizeMeter(raw) {
     .replace(/\bP\.?\s?M\.?\b/g, "P.M.")
     .replace(/\bC\.?\s?P\.?\s?M\.?\b/g, "C.P.M.")
     .replace(/\bS\.?\s?P\.?\s?M\.?\b/g, "S.P.M.");
-  m = m.replace(/\s*,\s*/g, ", ").replace(/\s+\.$/, ".").replace(/\.{2,}/g, ".");
+  m = m.replace(/\s*,\s*/g, ", ").replace(/\s+\.$/, ".");
+  // Some meters are printed with a trailing comma ("L.M,"); once the
+  // abbreviation is expanded that leaves a stray ", ." to tidy away.
+  m = m.replace(/,\s*\.?$/, ".").replace(/\.{2,}/g, ".");
   if (!/[.\]]$/.test(m)) m += ".";
   return m;
 }

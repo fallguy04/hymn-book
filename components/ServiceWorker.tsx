@@ -14,16 +14,14 @@ export default function ServiceWorker() {
   useEffect(() => {
     if (!("serviceWorker" in navigator) || process.env.NODE_ENV !== "production") return;
 
-    let registration: ServiceWorkerRegistration | undefined;
-
-    const onLoad = async () => {
+    const register = async () => {
       try {
-        registration = await navigator.serviceWorker.register("/sw.js");
+        const registration = await navigator.serviceWorker.register("/sw.js");
 
         if (registration.waiting) setWaiting(registration.waiting);
 
         registration.addEventListener("updatefound", () => {
-          const installing = registration!.installing;
+          const installing = registration.installing;
           installing?.addEventListener("statechange", () => {
             if (installing.state === "installed" && navigator.serviceWorker.controller) {
               setWaiting(installing);
@@ -35,8 +33,15 @@ export default function ServiceWorker() {
       }
     };
 
-    window.addEventListener("load", onLoad);
-    return () => window.removeEventListener("load", onLoad);
+    // Hydration usually happens after `load` has already fired, so waiting on
+    // the event would mean never registering at all. Only defer if the page is
+    // genuinely still loading.
+    if (document.readyState === "complete") {
+      register();
+      return;
+    }
+    window.addEventListener("load", register, { once: true });
+    return () => window.removeEventListener("load", register);
   }, []);
 
   if (!waiting) return null;
