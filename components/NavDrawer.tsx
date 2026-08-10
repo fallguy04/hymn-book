@@ -22,12 +22,12 @@ interface NavDrawerProps {
   onSelect: (number: number) => void;
 }
 
-const PANELS: { id: Panel; label: string; hint: string; icon: typeof BookOpen }[] = [
-  { id: "contents", label: "Contents", hint: "Browse by topic", icon: BookOpen },
-  { id: "authors", label: "Authors", hint: "Who wrote what", icon: Users },
-  { id: "favorites", label: "Favorites", hint: "Your starred hymns", icon: Star },
-  { id: "tunes", label: "Tunes", hint: "Your repertoire by meter", icon: Music },
-  { id: "settings", label: "Settings", hint: "Theme and text size", icon: Settings },
+const PANELS: { id: Panel; label: string; icon: typeof BookOpen }[] = [
+  { id: "contents", label: "Contents", icon: BookOpen },
+  { id: "authors", label: "Authors", icon: Users },
+  { id: "favorites", label: "Favorites", icon: Star },
+  { id: "tunes", label: "Tunes", icon: Music },
+  { id: "settings", label: "Settings", icon: Settings },
 ];
 
 export default function NavDrawer({
@@ -221,7 +221,7 @@ function DrawerBody({
         {!active && (
           <nav className="flex-1 overflow-y-auto overscroll-contain p-2">
             <ul className="space-y-1">
-              {PANELS.map(({ id, label, hint, icon: Icon }) => (
+              {PANELS.map(({ id, label, icon: Icon }) => (
                 <li key={id}>
                   <button
                     onClick={() => setPanel(id)}
@@ -230,11 +230,8 @@ function DrawerBody({
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-sunken text-paper-muted">
                       <Icon className="h-4 w-4" />
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-serif text-[1.05rem] leading-tight text-paper-ink">
-                        {label}
-                      </span>
-                      <span className="block font-sans text-[0.7rem] text-paper-faint">{hint}</span>
+                    <span className="min-w-0 flex-1 font-serif text-[1.05rem] text-paper-ink">
+                      {label}
                     </span>
                     {counts[id] !== null && (
                       <span className="shrink-0 font-sans text-[0.7rem] tabular-nums text-paper-faint">
