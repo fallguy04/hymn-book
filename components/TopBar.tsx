@@ -27,20 +27,25 @@ export default function TopBar({
 }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-paper-rule/60 bg-paper/85 backdrop-blur-md">
-      <div className="mx-auto flex h-12 w-full max-w-[34rem] items-center justify-between px-2">
+      {/*
+        A three-column grid rather than justify-between: there is one control on
+        the left and two on the right, so space-between would push the label off
+        the page's centre line and out of alignment with the title below it.
+      */}
+      <div className="mx-auto grid h-14 w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center px-2">
         <button
           onClick={onOpenMenu}
           aria-label="Open menu"
-          className="rounded-full p-2.5 text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
+          className="justify-self-start rounded-full p-2.5 text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        <span className="font-serif text-sm tabular-nums tracking-[0.2em] text-paper-muted">
-          {hymn.number}
+        <span className="justify-self-center font-serif text-[1.05rem] text-paper-ink">
+          Hymn <span className="tabular-nums">{hymn.number}</span>
         </span>
 
-        <div className="flex items-center">
+        <div className="flex items-center justify-self-end">
           <button
             onClick={onToggleService}
             aria-label={inService ? "Remove from service" : "Add to service"}

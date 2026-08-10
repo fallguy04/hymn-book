@@ -136,7 +136,14 @@ export default function HymnView({
             </p>
           </header>
 
-          <div className="space-y-7">
+          {/*
+            Lines stay left-aligned, but the block as a whole is centred on the
+            page — the way a printed hymnal sets it. Centring the lines
+            themselves would destroy the indentation that carries the metre,
+            and leaving the block flush left reads as off-centre under a
+            centred title.
+          */}
+          <div className="mx-auto w-fit max-w-full space-y-7">
             {hymn.stanzas.map((stanza, s) => (
               <section key={s} className="relative">
                 {hymn.stanzas.length > 1 && (
