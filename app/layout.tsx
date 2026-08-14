@@ -72,6 +72,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${crimsonPro.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        {/* Fall Studios analytics. Cookieless; skips localhost. data-site must
+            match the slug in fall-studios/lib/projects.ts. */}
+        <script defer src="https://fall-studios.vercel.app/t.js" data-site="hymnal" />
       </head>
       <body>
         {children}
