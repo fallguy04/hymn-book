@@ -63,9 +63,16 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  height: 100%;
 }
 
 body {
+  height: 100%;
+  /* Everything scrollable lives in a nested container (the hymn text, the
+     drawer, search results); the document itself never needs to scroll. This
+     also stops the bounce that could otherwise reveal the space behind the
+     fixed app shell (app/page.tsx) at the top or bottom of the screen. */
+  overflow: hidden;
   background-color: var(--surface);
   background-image: var(--paper-noise);
   color: var(--ink);

@@ -119,7 +119,16 @@ export default function Home() {
     <>
       <ThemeSync />
 
-      <div className="flex h-[100dvh] flex-col">
+      {/*
+        `fixed inset-0` rather than `h-[100dvh]`: iOS has a standing WebKit bug
+        where `dvh` can be computed against a stale viewport in standalone PWA
+        mode, particularly right after a reload — the column ends up taller
+        than the screen actually visible, and the last flex child (the bottom
+        bar) is pushed off the bottom with nothing to scroll it into view.
+        Fixed positioning is pinned to the real viewport on every paint, so
+        there's no unit calculation to go stale.
+      */}
+      <div className="fixed inset-0 flex flex-col overflow-hidden">
         <TopBar
           hymn={hymn}
           isFavorite={favorites.includes(hymn.number)}

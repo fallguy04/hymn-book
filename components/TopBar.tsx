@@ -23,7 +23,10 @@ export default function TopBar({ hymn, isFavorite, onOpenMenu, onToggleFavorite 
         the left and two on the right, so space-between would push the label off
         the page's centre line and out of alignment with the title below it.
       */}
-      <div className="mx-auto grid h-14 w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center px-2">
+      <div
+        className="mx-auto grid h-14 w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center px-2"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <button
           onClick={onOpenMenu}
           aria-label="Open menu"
