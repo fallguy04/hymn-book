@@ -99,7 +99,7 @@ export default function HymnView({
             if (offset.x < 0 && power < -SWIPE_THRESHOLD) onNext();
             else if (offset.x > 0 && power > SWIPE_THRESHOLD) onPrev();
           }}
-          className="mx-auto w-full max-w-[34rem] px-7 pb-10 pt-4"
+          className="mx-auto w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
         >
           <header className="mb-10 text-center">
             {path.length > 0 && (

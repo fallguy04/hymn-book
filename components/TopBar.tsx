@@ -24,13 +24,14 @@ export default function TopBar({ hymn, isFavorite, onOpenMenu, onToggleFavorite 
         the page's centre line and out of alignment with the title below it.
       */}
       <div
-        className="mx-auto grid h-14 w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center px-2"
+        className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-2"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
+        {/* Hidden once the sidebar is permanent — there is nothing to open. */}
         <button
           onClick={onOpenMenu}
           aria-label="Open menu"
-          className="justify-self-start rounded-full p-2.5 text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
+          className="justify-self-start rounded-full p-2.5 text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </button>

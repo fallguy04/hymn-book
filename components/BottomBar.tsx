@@ -6,6 +6,8 @@ import type { Hymn } from "@/lib/hymnals";
 interface BottomBarProps {
   prev: Hymn | null;
   next: Hymn | null;
+  /** Desktop advertises the keyboard shortcut; a phone has no ⌘ key. */
+  isDesktop?: boolean;
   onPrev: () => void;
   onNext: () => void;
   onOpenSearch: () => void;
@@ -19,11 +21,18 @@ interface BottomBarProps {
  * Same three-column grid as the top bar so the label stays on the page's
  * centre line no matter how wide the adjacent numbers get.
  */
-export default function BottomBar({ prev, next, onPrev, onNext, onOpenSearch }: BottomBarProps) {
+export default function BottomBar({
+  prev,
+  next,
+  isDesktop,
+  onPrev,
+  onNext,
+  onOpenSearch,
+}: BottomBarProps) {
   return (
     <nav className="shrink-0 border-t border-paper-rule/60 bg-paper/85 backdrop-blur-md">
       <div
-        className="mx-auto grid h-14 w-full max-w-[34rem] grid-cols-[1fr_auto_1fr] items-center px-2"
+        className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-2"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <button
@@ -46,6 +55,11 @@ export default function BottomBar({ prev, next, onPrev, onNext, onOpenSearch }: 
         >
           <Search className="h-4 w-4 text-paper-muted" />
           Find a hymn
+          {isDesktop && (
+            <kbd className="ml-1 rounded border border-paper-rule bg-paper px-1.5 py-0.5 font-sans text-[0.65rem] text-paper-faint">
+              ⌘K
+            </kbd>
+          )}
         </button>
 
         <button

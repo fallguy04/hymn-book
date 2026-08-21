@@ -183,7 +183,9 @@ export interface AuthorEntry {
   hymns: Hymn[];
 }
 
-export function authorIndex(hymnal: Hymnal): AuthorEntry[] {
+export type AuthorSort = "count" | "name";
+
+export function authorIndex(hymnal: Hymnal, sort: AuthorSort = "count"): AuthorEntry[] {
   const grouped = new Map<string, Hymn[]>();
   for (const hymn of hymnal.hymns) {
     if (!hymn.author) continue;
@@ -192,7 +194,14 @@ export function authorIndex(hymnal: Hymnal): AuthorEntry[] {
   }
   return [...grouped.entries()]
     .map(([author, hymns]) => ({ author, hymns }))
-    .sort((a, b) => surname(a.author).localeCompare(surname(b.author)));
+    .sort((a, b) =>
+      // By count, the index opens on the writers the book actually leans on —
+      // Watts and Wesley account for a large share of it. Ties fall back to
+      // surname so the ordering is stable and still reads like an index.
+      sort === "count"
+        ? b.hymns.length - a.hymns.length || surname(a.author).localeCompare(surname(b.author))
+        : surname(a.author).localeCompare(surname(b.author)),
+    );
 }
 
 /** Sort "Isaac Watts" under W, the way a printed author index reads. */

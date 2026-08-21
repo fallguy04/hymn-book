@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { type Hymnal, authorIndex, hymnTitle, unattributedCount } from "@/lib/hymnals";
+import { type AuthorSort, type Hymnal, authorIndex, hymnTitle, unattributedCount } from "@/lib/hymnals";
 
 interface AuthorIndexProps {
   hymnal: Hymnal;
@@ -15,7 +15,8 @@ interface AuthorIndexProps {
  * from external research and only well-attested ones are claimed.
  */
 export default function AuthorIndex({ hymnal, onSelect }: AuthorIndexProps) {
-  const authors = useMemo(() => authorIndex(hymnal), [hymnal]);
+  const [sort, setSort] = useState<AuthorSort>("count");
+  const authors = useMemo(() => authorIndex(hymnal, sort), [hymnal, sort]);
   const unattributed = useMemo(() => unattributedCount(hymnal), [hymnal]);
   const [open, setOpen] = useState<string | null>(null);
 
@@ -29,6 +30,24 @@ export default function AuthorIndex({ hymnal, onSelect }: AuthorIndexProps) {
 
   return (
     <div className="pb-4">
+      <div className="mb-1 flex gap-1 px-3">
+        {([
+          ["count", "Most hymns"],
+          ["name", "A–Z"],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            onClick={() => setSort(id)}
+            aria-pressed={sort === id}
+            className={`rounded-full px-3 py-1 font-sans text-[0.7rem] font-semibold transition-colors ${
+              sort === id ? "bg-paper-ink text-paper" : "text-paper-muted hover:bg-paper-sunken"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       <ul>
         {authors.map(({ author, hymns }) => {
           const isOpen = open === author;

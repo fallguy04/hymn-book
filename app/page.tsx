@@ -8,12 +8,23 @@ import TextSearch from "@/components/TextSearch";
 import TopBar from "@/components/TopBar";
 import BottomBar from "@/components/BottomBar";
 import NavDrawer from "@/components/NavDrawer";
+import Sidebar from "@/components/Sidebar";
 import TuneSheet from "@/components/TuneSheet";
 import ThemeSync from "@/components/ThemeSync";
 import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 import { useHymnalStore } from "@/store/useHymnalStore";
 
 type SearchMode = "closed" | "number" | "text";
+
+/**
+ * "auto" is the state before anyone has chosen anything — the app has just
+ * loaded. It resolves to the keypad on a phone, where opening ready for input
+ * is the whole point, and to nothing on a desktop, where a modal in your face
+ * on arrival is just something to dismiss. Any interaction replaces it with a
+ * real mode.
+ */
+type SearchState = SearchMode | "auto";
 
 export default function Home() {
   const hymnalId = useHymnalStore((s) => s.hymnalId);
@@ -28,13 +39,18 @@ export default function Home() {
     firstHymn(getDefaultHymnal()).number,
     0,
   ]);
-  const [searchMode, setSearchMode] = useState<SearchMode>("number");
+  const [searchState, setSearchState] = useState<SearchState>("auto");
   const [buffer, setBuffer] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPath, setMenuPath] = useState<string[] | undefined>();
   const [tunesOpen, setTunesOpen] = useState(false);
 
+  const isDesktop = useIsDesktop();
   const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
+
+  // Held closed until the viewport is known, so nothing flashes open and shut.
+  const searchMode: SearchMode =
+    searchState === "auto" ? (isDesktop === false ? "number" : "closed") : searchState;
 
   useEffect(() => {
     visit(hymn.number);
@@ -52,7 +68,7 @@ export default function Home() {
     (target: number) => {
       setPage(([current]) => [target, target > current ? 1 : -1]);
       setBuffer("");
-      setSearchMode("closed");
+      setSearchState("closed");
     },
     [],
   );
@@ -82,11 +98,20 @@ export default function Home() {
       const typing =
         e.target instanceof HTMLElement &&
         ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName);
+
+      // ⌘K / Ctrl-K opens search from anywhere, including out of a text field —
+      // the one shortcut that has to work no matter what has focus.
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchState("text");
+        return;
+      }
+
       if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
 
       if (e.key === "Escape") {
         if (menuOpen) setMenuOpen(false);
-        else if (searchMode !== "closed") setSearchMode("closed");
+        else if (searchMode !== "closed") setSearchState("closed");
         return;
       }
       if (menuOpen) return;
@@ -95,9 +120,9 @@ export default function Home() {
       else if (e.key === "ArrowLeft") paginate(-1);
       else if (e.key === "/") {
         e.preventDefault();
-        setSearchMode("text");
+        setSearchState("text");
       } else if (/^\d$/.test(e.key)) {
-        setSearchMode("number");
+        setSearchState("number");
         appendDigit(e.key);
       } else if (e.key === "Enter" && searchMode === "number") {
         submitBuffer();
@@ -110,9 +135,11 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [menuOpen, searchMode, paginate, appendDigit, submitBuffer]);
 
+  // On a phone this opens the drawer at that section; on a desktop the sidebar
+  // is already there, so it just re-targets it (Sidebar is keyed on the path).
   const openSection = (path: string[]) => {
     setMenuPath(path);
-    setMenuOpen(true);
+    if (!isDesktop) setMenuOpen(true);
   };
 
   return (
@@ -128,41 +155,56 @@ export default function Home() {
         Fixed positioning is pinned to the real viewport on every paint, so
         there's no unit calculation to go stale.
       */}
-      <div className="fixed inset-0 flex flex-col overflow-hidden">
-        <TopBar
-          hymn={hymn}
-          isFavorite={favorites.includes(hymn.number)}
-          onOpenMenu={() => {
-            setMenuPath(undefined);
-            setMenuOpen(true);
-          }}
-          onToggleFavorite={() => toggleFavorite(hymn.number)}
+      <div className="fixed inset-0 flex overflow-hidden">
+        {/* Permanent on a wide screen; the same panels live in the drawer on a
+            phone, so there is one implementation behind both. */}
+        <Sidebar
+          hymnal={hymnal}
+          currentMeter={hymn.meter}
+          openPath={menuPath}
+          initialPanel={menuPath ? "contents" : undefined}
+          onSelect={goTo}
         />
 
-        <main className="relative min-h-0 flex-1">
-          <HymnView
-            hymnal={hymnal}
+        <div className="flex min-w-0 flex-1 flex-col">
+          <TopBar
             hymn={hymn}
-            direction={direction}
-            onNext={() => paginate(1)}
-            onPrev={() => paginate(-1)}
-            onOpenTunes={() => setTunesOpen(true)}
-            onOpenSection={openSection}
+            isFavorite={favorites.includes(hymn.number)}
+            onOpenMenu={() => {
+              setMenuPath(undefined);
+              setMenuOpen(true);
+            }}
+            onToggleFavorite={() => toggleFavorite(hymn.number)}
           />
-        </main>
 
-        <BottomBar
-          prev={neighbours.prev}
-          next={neighbours.next}
-          onPrev={() => paginate(-1)}
-          onNext={() => paginate(1)}
-          onOpenSearch={() => setSearchMode("number")}
-        />
+          <main className="relative min-h-0 flex-1">
+            <HymnView
+              hymnal={hymnal}
+              hymn={hymn}
+              direction={direction}
+              onNext={() => paginate(1)}
+              onPrev={() => paginate(-1)}
+              onOpenTunes={() => setTunesOpen(true)}
+              onOpenSection={openSection}
+            />
+          </main>
+
+          <BottomBar
+            prev={neighbours.prev}
+            next={neighbours.next}
+            isDesktop={isDesktop === true}
+            onPrev={() => paginate(-1)}
+            onNext={() => paginate(1)}
+            onOpenSearch={() => setSearchState(isDesktop ? "text" : "number")}
+          />
+        </div>
       </div>
 
       <NavDrawer
         hymnal={hymnal}
-        isOpen={menuOpen}
+        // Never both at once: resizing past the breakpoint with the drawer open
+        // would otherwise leave it covering the sidebar it duplicates.
+        isOpen={menuOpen && !isDesktop}
         currentMeter={hymn.meter}
         openPath={menuPath}
         initialPanel={menuPath ? "contents" : undefined}
@@ -185,7 +227,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            onClick={() => setSearchMode("closed")}
+            onClick={() => setSearchState("closed")}
             className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
           />
         )}
@@ -202,8 +244,8 @@ export default function Home() {
               onDelete={() => setBuffer((prev) => prev.slice(0, -1))}
               onGo={submitBuffer}
               onSelect={goTo}
-              onSwitchToText={() => setSearchMode("text")}
-              onClose={() => setSearchMode("closed")}
+              onSwitchToText={() => setSearchState("text")}
+              onClose={() => setSearchState("closed")}
             />
           </div>
         )}
@@ -215,13 +257,13 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 flex flex-col p-3 pt-6"
+            className="fixed inset-0 z-50 flex flex-col p-3 pt-6 lg:items-center lg:pt-[12vh]"
           >
             <TextSearch
               hymnal={hymnal}
               onSelect={goTo}
-              onSwitchToNumber={() => setSearchMode("number")}
-              onClose={() => setSearchMode("closed")}
+              onSwitchToNumber={() => setSearchState("number")}
+              onClose={() => setSearchState("closed")}
             />
           </motion.div>
         )}

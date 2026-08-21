@@ -47,7 +47,7 @@ export default function TextSearch({
   const results = useMemo(() => searchHymns(hymnal, term), [hymnal, term]);
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-paper-rule bg-paper shadow-2xl">
+    <div className="mx-auto flex h-full w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-paper-rule bg-paper shadow-2xl lg:h-auto lg:max-h-[70vh] lg:max-w-2xl">
       <div className="flex items-center gap-2 border-b border-paper-rule px-3 py-3">
         <SearchIcon className="h-5 w-5 shrink-0 text-paper-faint" />
         <input
@@ -56,7 +56,7 @@ export default function TextSearch({
           value={term}
           onChange={(e) => setTerm(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && results[0] && onSelect(results[0].hymn.number)}
-          placeholder="Title, first line, author…"
+          placeholder="Hymn number, title, first line, author…"
           className="min-w-0 flex-1 bg-transparent font-serif text-paper-ink outline-none placeholder:text-paper-faint"
         />
         <button
