@@ -17,193 +17,756 @@
     "source: 'standard hymnody reference' is settled, widely published authorship",
     "that was not individually re-verified against a primary source."
   ],
-
-  "2": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "8": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "17": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "20": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "21": { "author": "Hugh Stowell", "source": "standard hymnody reference" },
-  "23": { "author": "William Cowper", "source": "standard hymnody reference" },
-  "26": { "author": "Charles Wesley", "source": "hymnary.org" },
-  "36": { "author": "John Fawcett", "source": "standard hymnody reference" },
-  "47": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "55": { "author": "William Cowper", "source": "hymnary.org" },
-  "56": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "57": { "author": "Anne Steele", "source": "standard hymnody reference" },
-  "60": { "author": "John Needham", "source": "standard hymnody reference" },
-  "63": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "64": { "author": "Francis Scott Key", "source": "standard hymnody reference" },
-  "66": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "68": { "author": "John Cennick", "source": "standard hymnody reference" },
-  "69": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "70": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "72": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "73": { "author": "John Newton", "source": "hymnary.org" },
-  "74": { "author": "Samuel Stennett", "source": "standard hymnody reference" },
-  "75": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "77": { "author": "John Newton", "source": "standard hymnody reference" },
-  "78": { "author": "William Williams", "source": "hymnary.org" },
-  "81": { "author": "Oliver Holden", "source": "standard hymnody reference" },
-  "83": { "author": "Timothy Dwight", "source": "standard hymnody reference" },
-  "84": { "author": "Robert Robinson", "source": "hymnary.org" },
-  "85": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "86": { "author": "William W. Walford", "source": "standard hymnody reference" },
-  "89": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "92": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "93": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "96": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "97": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "102": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "112": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "115": { "author": "John Keble", "source": "standard hymnody reference" },
-  "117": { "author": "Joseph Stennett", "source": "standard hymnody reference" },
-  "122": { "author": "George Washington Doane", "source": "standard hymnody reference" },
-  "123": { "author": "John Keble", "source": "standard hymnody reference" },
-  "125": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "127": { "author": "John Mason", "source": "standard hymnody reference" },
-  "128": { "author": "Phoebe Hinsdale Brown", "source": "standard hymnody reference" },
-  "133": { "author": "Thomas Ken", "source": "standard hymnody reference" },
-  "138": { "author": "Philip Doddridge", "source": "hymnary.org" },
-  "139": { "author": "Charles Wesley", "source": "hymnary.org" },
-  "140": { "author": "John Cawood", "source": "standard hymnody reference" },
-  "141": { "author": "Charles Wesley", "source": "hymnary.org" },
-  "142": { "author": "Nahum Tate", "source": "standard hymnody reference" },
-  "144": { "author": "Thomas Kelly", "source": "standard hymnody reference" },
-  "146": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "148": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "149": { "author": "Samuel Wesley Sr.", "source": "standard hymnody reference" },
-  "150": { "author": "John Newton", "source": "standard hymnody reference" },
-  "153": { "author": "Jonathan Evans", "source": "hymnary.org (Evans over Benjamin Francis; long disputed)" },
-  "154": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "155": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "156": { "author": "William B. Tappan", "source": "standard hymnody reference" },
-  "157": { "author": "William Cowper", "source": "hymnary.org" },
-  "165": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "168": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "170": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "175": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "177": { "author": "Harriet Auber", "source": "standard hymnody reference" },
-  "183": { "author": "Anne Steele", "source": "standard hymnody reference" },
-  "184": { "author": "John Burton", "source": "standard hymnody reference" },
-  "185": { "author": "John Fawcett", "source": "standard hymnody reference" },
-  "186": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "187": { "author": "Robert Grant", "source": "standard hymnody reference" },
-  "189": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "190": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "197": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "198": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "202": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "204": { "author": "Thomas Kelly", "source": "standard hymnody reference" },
-  "205": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "206": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "208": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "211": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "212": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "213": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "215": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "216": { "author": "Joseph Grigg", "source": "hymnary.org" },
-  "217": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "219": { "author": "Edward Perronet", "source": "hymnary.org" },
-  "221": { "author": "Anne Steele", "source": "standard hymnody reference" },
-  "222": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "224": { "author": "Anne Steele", "source": "standard hymnody reference" },
-  "226": { "author": "Thomas Scott", "source": "standard hymnody reference" },
-  "239": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "246": { "author": "Jane E. Leeson", "source": "standard hymnody reference" },
-  "247": { "author": "Charles William Everest", "source": "standard hymnody reference" },
-  "249": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "251": { "author": "William Cowper", "source": "hymnary.org" },
-  "254": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "255": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "256": { "author": "Benjamin Beddome", "source": "standard hymnody reference" },
-  "258": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "261": { "author": "William Hiley Bathurst", "source": "standard hymnody reference" },
-  "267": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "271": { "author": "Samuel Francis Smith", "source": "standard hymnody reference" },
-  "279": { "author": "John Newton", "source": "hymnary.org" },
-  "280": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "281": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "282": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "284": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "285": { "author": "Arthur Cleveland Coxe", "source": "standard hymnody reference" },
-  "291": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "293": { "author": "Timothy Dwight", "source": "hymnary.org" },
-  "296": { "author": "John Newton", "source": "standard hymnody reference" },
-  "299": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "315": { "author": "John Cennick", "source": "standard hymnody reference" },
-  "316": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "317": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "319": { "author": "Aaron R. Wolfe", "source": "standard hymnody reference" },
-  "326": { "author": "Anna Laetitia Barbauld", "source": "standard hymnody reference" },
-  "328": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "329": { "author": "Alice Flowerdew", "source": "standard hymnody reference" },
-  "331": { "author": "Alfred Woodhull", "source": "standard hymnody reference" },
-  "344": { "author": "John Cennick", "source": "standard hymnody reference" },
-  "349": { "author": "Thomas Ken", "source": "hymnary.org" },
-  "353": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "360": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "369": { "author": "Anna Laetitia Barbauld", "source": "standard hymnody reference" },
-  "384": { "author": "Margaret Mackay", "source": "standard hymnody reference" },
-  "387": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "393": { "author": "Henry Alford", "source": "standard hymnody reference" },
-  "394": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "401": { "author": "James Montgomery", "source": "standard hymnody reference" },
-  "402": { "author": "Reginald Heber", "source": "standard hymnody reference" },
-  "405": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "406": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "407": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "408": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "410": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "412": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "413": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "414": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "415": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "416": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "418": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "420": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "429": { "author": "Anne Steele", "source": "standard hymnody reference" },
-  "434": { "author": "John Bowring", "source": "standard hymnody reference" },
-  "435": { "author": "Thomas Shepherd", "source": "standard hymnody reference" },
-  "437": { "author": "Thomas Scott", "source": "standard hymnody reference" },
-  "440": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "446": { "author": "Horatius Bonar", "source": "standard hymnody reference" },
-  "449": { "author": "David Nelson", "source": "standard hymnody reference" },
-  "454": { "author": "Thomas Hastings", "source": "standard hymnody reference" },
-  "455": { "author": "Joseph Bromehead", "source": "standard hymnody reference" },
-  "456": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "458": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "459": { "author": "Samuel Stennett", "source": "hymnary.org" },
-  "462": { "author": "Augustus Montague Toplady", "source": "standard hymnody reference" },
-  "466": { "author": "William Bingham Tappan", "source": "standard hymnody reference" },
-  "467": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "469": { "author": "John Cennick", "source": "standard hymnody reference" },
-  "470": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "471": { "author": "John Newton", "source": "standard hymnody reference" },
-  "475": { "author": "Isaac Watts", "source": "hymnary.org" },
-  "477": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "478": { "author": "Philip Doddridge", "source": "standard hymnody reference" },
-  "482": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "486": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "487": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "490": { "author": "John Newton", "source": "standard hymnody reference" },
-  "491": { "author": "Charles Wesley", "source": "hymnary.org" },
-  "493": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "494": { "author": "Andrew Young", "source": "standard hymnody reference" },
-  "495": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "498": { "author": "Sarah Flower Adams", "source": "hymnary.org" },
-  "502": { "author": "Charles Wesley", "source": "standard hymnody reference" },
-  "503": { "author": "Charles Wesley", "source": "hymnary.org" },
-  "504": { "author": "Bernard Barton", "source": "standard hymnody reference" },
-  "506": { "author": "Phoebe Cary", "source": "standard hymnody reference" },
-  "509": { "author": "John Bowring", "source": "standard hymnody reference" },
-  "510": { "author": "Henry Wadsworth Longfellow", "source": "standard hymnody reference" },
-  "516": { "author": "Isaac Watts", "source": "standard hymnody reference" },
-  "519": { "author": "Arthur Cleveland Coxe", "source": "standard hymnody reference" },
-  "536": { "author": "John Newton", "source": "standard hymnody reference" },
-  "537": { "author": "Norman Macleod", "source": "standard hymnody reference" },
-  "545": { "author": "Henry Francis Lyte", "source": "standard hymnody reference" },
-  "549": { "author": "Joseph Swain", "source": "standard hymnody reference" },
-  "550": { "author": "Jane Crewdson", "source": "standard hymnody reference" },
-  "552": { "author": "Frances Laughton Mace", "source": "standard hymnody reference" },
-  "553": { "author": "Isaac Watts", "source": "standard hymnody reference" }
+  "2": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "8": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "17": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "20": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "21": {
+    "author": "Hugh Stowell",
+    "source": "standard hymnody reference"
+  },
+  "23": {
+    "author": "William Cowper",
+    "source": "standard hymnody reference"
+  },
+  "26": {
+    "author": "Charles Wesley",
+    "source": "hymnary.org"
+  },
+  "36": {
+    "author": "John Fawcett",
+    "source": "standard hymnody reference"
+  },
+  "47": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "55": {
+    "author": "William Cowper",
+    "source": "hymnary.org"
+  },
+  "56": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "57": {
+    "author": "Anne Steele",
+    "source": "standard hymnody reference"
+  },
+  "60": {
+    "author": "John Needham",
+    "source": "standard hymnody reference"
+  },
+  "63": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "64": {
+    "author": "Francis Scott Key",
+    "source": "standard hymnody reference"
+  },
+  "66": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "68": {
+    "author": "John Cennick",
+    "source": "standard hymnody reference"
+  },
+  "69": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "70": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "72": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "73": {
+    "author": "John Newton",
+    "source": "hymnary.org"
+  },
+  "74": {
+    "author": "Samuel Stennett",
+    "source": "standard hymnody reference"
+  },
+  "75": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "77": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "78": {
+    "author": "William Williams",
+    "source": "hymnary.org"
+  },
+  "81": {
+    "author": "Oliver Holden",
+    "source": "standard hymnody reference"
+  },
+  "83": {
+    "author": "Timothy Dwight",
+    "source": "standard hymnody reference"
+  },
+  "84": {
+    "author": "Robert Robinson",
+    "source": "hymnary.org"
+  },
+  "85": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "86": {
+    "author": "William W. Walford",
+    "source": "standard hymnody reference"
+  },
+  "89": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "92": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "93": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "96": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "97": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "102": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "112": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "115": {
+    "author": "John Keble",
+    "source": "standard hymnody reference"
+  },
+  "117": {
+    "author": "Joseph Stennett",
+    "source": "standard hymnody reference"
+  },
+  "122": {
+    "author": "George Washington Doane",
+    "source": "standard hymnody reference"
+  },
+  "123": {
+    "author": "John Keble",
+    "source": "standard hymnody reference"
+  },
+  "125": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "127": {
+    "author": "John Mason",
+    "source": "standard hymnody reference"
+  },
+  "128": {
+    "author": "Phoebe Hinsdale Brown",
+    "source": "standard hymnody reference"
+  },
+  "133": {
+    "author": "Thomas Ken",
+    "source": "standard hymnody reference"
+  },
+  "138": {
+    "author": "Philip Doddridge",
+    "source": "hymnary.org"
+  },
+  "139": {
+    "author": "Charles Wesley",
+    "source": "hymnary.org"
+  },
+  "140": {
+    "author": "John Cawood",
+    "source": "standard hymnody reference"
+  },
+  "141": {
+    "author": "Charles Wesley",
+    "source": "hymnary.org"
+  },
+  "142": {
+    "author": "Nahum Tate",
+    "source": "standard hymnody reference"
+  },
+  "144": {
+    "author": "Thomas Kelly",
+    "source": "standard hymnody reference"
+  },
+  "146": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "148": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "149": {
+    "author": "Samuel Wesley Sr.",
+    "source": "standard hymnody reference"
+  },
+  "150": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "153": {
+    "author": "Jonathan Evans",
+    "source": "hymnary.org (Evans over Benjamin Francis; long disputed)"
+  },
+  "154": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "155": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "156": {
+    "author": "William B. Tappan",
+    "source": "standard hymnody reference"
+  },
+  "157": {
+    "author": "William Cowper",
+    "source": "hymnary.org"
+  },
+  "165": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "168": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "170": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "175": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "177": {
+    "author": "Harriet Auber",
+    "source": "standard hymnody reference"
+  },
+  "183": {
+    "author": "Anne Steele",
+    "source": "standard hymnody reference"
+  },
+  "184": {
+    "author": "John Burton",
+    "source": "standard hymnody reference"
+  },
+  "185": {
+    "author": "John Fawcett",
+    "source": "standard hymnody reference"
+  },
+  "186": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "187": {
+    "author": "Robert Grant",
+    "source": "standard hymnody reference"
+  },
+  "189": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "190": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "197": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "198": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "202": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "204": {
+    "author": "Thomas Kelly",
+    "source": "standard hymnody reference"
+  },
+  "205": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "206": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "208": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "211": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "212": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "213": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "215": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "216": {
+    "author": "Joseph Grigg",
+    "source": "hymnary.org"
+  },
+  "217": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "219": {
+    "author": "Edward Perronet",
+    "source": "hymnary.org"
+  },
+  "221": {
+    "author": "Anne Steele",
+    "source": "standard hymnody reference"
+  },
+  "222": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "224": {
+    "author": "Anne Steele",
+    "source": "standard hymnody reference"
+  },
+  "226": {
+    "author": "Thomas Scott",
+    "source": "standard hymnody reference"
+  },
+  "239": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "246": {
+    "author": "Jane E. Leeson",
+    "source": "standard hymnody reference"
+  },
+  "247": {
+    "author": "Charles William Everest",
+    "source": "standard hymnody reference"
+  },
+  "249": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "251": {
+    "author": "William Cowper",
+    "source": "hymnary.org"
+  },
+  "254": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "255": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "256": {
+    "author": "Benjamin Beddome",
+    "source": "standard hymnody reference"
+  },
+  "258": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "261": {
+    "author": "William Hiley Bathurst",
+    "source": "standard hymnody reference"
+  },
+  "267": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "271": {
+    "author": "Samuel Francis Smith",
+    "source": "standard hymnody reference"
+  },
+  "279": {
+    "author": "John Newton",
+    "source": "hymnary.org"
+  },
+  "280": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "281": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "282": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "284": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "285": {
+    "author": "Arthur Cleveland Coxe",
+    "source": "standard hymnody reference"
+  },
+  "291": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "293": {
+    "author": "Timothy Dwight",
+    "source": "hymnary.org"
+  },
+  "296": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "299": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "315": {
+    "author": "John Cennick",
+    "source": "standard hymnody reference"
+  },
+  "316": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "317": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "319": {
+    "author": "Aaron R. Wolfe",
+    "source": "standard hymnody reference"
+  },
+  "326": {
+    "author": "Anna Laetitia Barbauld",
+    "source": "standard hymnody reference"
+  },
+  "328": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "329": {
+    "author": "Alice Flowerdew",
+    "source": "standard hymnody reference"
+  },
+  "331": {
+    "author": "Alfred Woodhull",
+    "source": "standard hymnody reference"
+  },
+  "344": {
+    "author": "John Cennick",
+    "source": "standard hymnody reference"
+  },
+  "349": {
+    "author": "Thomas Ken",
+    "source": "hymnary.org"
+  },
+  "353": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "360": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "369": {
+    "author": "Anna Laetitia Barbauld",
+    "source": "standard hymnody reference"
+  },
+  "384": {
+    "author": "Margaret Mackay",
+    "source": "standard hymnody reference"
+  },
+  "387": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "393": {
+    "author": "Henry Alford",
+    "source": "standard hymnody reference"
+  },
+  "394": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "401": {
+    "author": "James Montgomery",
+    "source": "standard hymnody reference"
+  },
+  "402": {
+    "author": "Reginald Heber",
+    "source": "standard hymnody reference"
+  },
+  "405": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "406": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "407": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "408": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "410": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "412": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "413": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "414": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "415": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "416": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "418": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "420": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "429": {
+    "author": "Anne Steele",
+    "source": "standard hymnody reference"
+  },
+  "434": {
+    "author": "Sidney S. Brewer",
+    "source": "hymnary.org (corrects an earlier mismatch with John Bowring's 'Watchman, tell us of the night')"
+  },
+  "435": {
+    "author": "Thomas Shepherd",
+    "source": "standard hymnody reference"
+  },
+  "437": {
+    "author": "Thomas Scott",
+    "source": "standard hymnody reference"
+  },
+  "440": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "446": {
+    "author": "Horatius Bonar",
+    "source": "standard hymnody reference"
+  },
+  "449": {
+    "author": "David Nelson",
+    "source": "standard hymnody reference"
+  },
+  "454": {
+    "author": "Thomas Hastings",
+    "source": "standard hymnody reference"
+  },
+  "455": {
+    "author": "Joseph Bromehead",
+    "source": "standard hymnody reference"
+  },
+  "456": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "458": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "459": {
+    "author": "Samuel Stennett",
+    "source": "hymnary.org"
+  },
+  "462": {
+    "author": "Augustus Montague Toplady",
+    "source": "standard hymnody reference"
+  },
+  "466": {
+    "author": "William Bingham Tappan",
+    "source": "standard hymnody reference"
+  },
+  "467": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "469": {
+    "author": "John Cennick",
+    "source": "standard hymnody reference"
+  },
+  "470": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "471": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "475": {
+    "author": "Isaac Watts",
+    "source": "hymnary.org"
+  },
+  "477": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "478": {
+    "author": "Philip Doddridge",
+    "source": "standard hymnody reference"
+  },
+  "482": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "486": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "487": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "490": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "491": {
+    "author": "Charles Wesley",
+    "source": "hymnary.org"
+  },
+  "493": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "494": {
+    "author": "Andrew Young",
+    "source": "standard hymnody reference"
+  },
+  "495": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "498": {
+    "author": "Sarah Flower Adams",
+    "source": "hymnary.org"
+  },
+  "502": {
+    "author": "Charles Wesley",
+    "source": "standard hymnody reference"
+  },
+  "503": {
+    "author": "Charles Wesley",
+    "source": "hymnary.org"
+  },
+  "504": {
+    "author": "Bernard Barton",
+    "source": "standard hymnody reference"
+  },
+  "506": {
+    "author": "Phoebe Cary",
+    "source": "standard hymnody reference"
+  },
+  "509": {
+    "author": "John Bowring",
+    "source": "standard hymnody reference"
+  },
+  "510": {
+    "author": "Henry Wadsworth Longfellow",
+    "source": "standard hymnody reference"
+  },
+  "516": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  },
+  "519": {
+    "author": "Arthur Cleveland Coxe",
+    "source": "standard hymnody reference"
+  },
+  "536": {
+    "author": "John Newton",
+    "source": "standard hymnody reference"
+  },
+  "537": {
+    "author": "Norman Macleod",
+    "source": "standard hymnody reference"
+  },
+  "545": {
+    "author": "Henry Francis Lyte",
+    "source": "standard hymnody reference"
+  },
+  "549": {
+    "author": "Joseph Swain",
+    "source": "standard hymnody reference"
+  },
+  "550": {
+    "author": "Jane Crewdson",
+    "source": "standard hymnody reference"
+  },
+  "552": {
+    "author": "Frances Laughton Mace",
+    "source": "standard hymnody reference"
+  },
+  "553": {
+    "author": "Isaac Watts",
+    "source": "standard hymnody reference"
+  }
 }
