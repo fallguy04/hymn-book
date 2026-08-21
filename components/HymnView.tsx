@@ -87,7 +87,12 @@ export default function HymnView({
       */}
       <motion.article
           key={hymn.number}
-          initial={reduceMotion ? false : { opacity: 0, x: direction > 0 ? 20 : -20 }}
+          // direction is 0 on first render — there is no page turn to imply, so
+          // it only fades. Sliding on load left the text sitting 20px off the
+          // centre line the bars are aligned to.
+          initial={
+            reduceMotion ? false : { opacity: 0, x: direction === 0 ? 0 : direction > 0 ? 20 : -20 }
+          }
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
           drag={reduceMotion ? false : "x"}

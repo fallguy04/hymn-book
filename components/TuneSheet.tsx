@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import TuneList from "./TuneList";
 
@@ -19,14 +19,16 @@ interface TuneSheetProps {
 export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
   const reduceMotion = useReducedMotion();
 
+  if (!isOpen) return null;
+
+  /* Conditional rather than AnimatePresence — see the note in NavDrawer: with
+     the React Compiler on it never unmounts, stranding an invisible sheet over
+     the app. */
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
+    <>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.15 }}
             onClick={onClose}
             className="fixed inset-0 z-[55] bg-black/25 backdrop-blur-[2px]"
@@ -38,7 +40,6 @@ export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
             aria-label={`Tunes for ${meter}`}
             initial={reduceMotion ? { opacity: 0 } : { y: "100%" }}
             animate={reduceMotion ? { opacity: 1 } : { y: 0 }}
-            exit={reduceMotion ? { opacity: 0 } : { y: "100%" }}
             transition={
               reduceMotion ? { duration: 0 } : { type: "spring", damping: 32, stiffness: 320 }
             }
@@ -67,10 +68,8 @@ export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
               </div>
             </div>
 
-            <TuneList meter={meter} addTo={meter} />
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        <TuneList meter={meter} addTo={meter} />
+      </motion.div>
+    </>
   );
 }

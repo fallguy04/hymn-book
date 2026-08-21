@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { Hymnal } from "@/lib/hymnals";
 import BrowsePanels, { type Panel } from "./BrowsePanels";
 import InstallPrompt from "./InstallPrompt";
@@ -65,14 +65,20 @@ export default function NavDrawer({
     onClose();
   };
 
+  if (!isOpen) return null;
+
+  /*
+    Rendered conditionally rather than through AnimatePresence: with the React
+    Compiler on, AnimatePresence runs the exit animation but never unmounts,
+    which would leave this drawer invisible and on top of the app, eating every
+    click. Mounting only while open also gives BrowsePanels its fresh initial
+    state on each open.
+  */
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
+    <>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.15 }}
             onClick={onClose}
             className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px]"
@@ -85,7 +91,6 @@ export default function NavDrawer({
             aria-label="Menu"
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
             transition={
               reduceMotion ? { duration: 0 } : { type: "spring", damping: 32, stiffness: 320 }
             }
@@ -107,10 +112,8 @@ export default function NavDrawer({
               onSelect={go}
             />
 
-            <InstallPrompt />
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        <InstallPrompt />
+      </motion.div>
+    </>
   );
 }

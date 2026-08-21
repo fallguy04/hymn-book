@@ -100,6 +100,15 @@ body {
   border-radius: 4px;
 }
 
+/* Text fields already show focus through the caret and their own border. The
+   ring on top of that reads as a heavy box around the field — most obviously
+   on the search input, which is focused the instant the palette opens, so the
+   ring appears without anyone having navigated to it. */
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
 /* iOS zooms the page when a font-size < 16px input is focused. Setting the
    search field to 16px is the fix — not disabling user scaling. */
 input,

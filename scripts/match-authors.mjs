@@ -95,8 +95,12 @@ for (const hymn of hymnal.hymns) {
       const proposed = tidyName(hit.author);
       // Cross-check the attributions already in the file against Hymnary.
       const same = proposed.split(" ").at(-1) === hymn.author.split(" ").at(-1);
-      if (same) agreed++;
-      else disagreed += 1, nearMisses.push(`  ${hymn.number}: have "${hymn.author}", Hymnary says "${proposed}"`);
+      if (same) {
+        agreed++;
+      } else {
+        disagreed++;
+        nearMisses.push(`  ${hymn.number}: have "${hymn.author}", Hymnary says "${proposed}"`);
+      }
     }
     continue;
   }

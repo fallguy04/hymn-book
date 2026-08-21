@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import HymnView from "@/components/HymnView";
 import SmartNumpad from "@/components/SmartNumpad";
 import TextSearch from "@/components/TextSearch";
@@ -107,13 +107,17 @@ export default function Home() {
         return;
       }
 
-      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
-
+      // Escape is checked before the typing guard below: the whole point of it
+      // is to back out of the search box, which is exactly when focus is in a
+      // text field.
       if (e.key === "Escape") {
         if (menuOpen) setMenuOpen(false);
+        else if (tunesOpen) setTunesOpen(false);
         else if (searchMode !== "closed") setSearchState("closed");
         return;
       }
+
+      if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
       if (menuOpen) return;
 
       if (e.key === "ArrowRight") paginate(1);
@@ -133,7 +137,7 @@ export default function Home() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen, searchMode, paginate, appendDigit, submitBuffer]);
+  }, [menuOpen, tunesOpen, searchMode, paginate, appendDigit, submitBuffer]);
 
   // On a phone this opens the drawer at that section; on a desktop the sidebar
   // is already there, so it just re-targets it (Sidebar is keyed on the path).
@@ -218,24 +222,26 @@ export default function Home() {
         onClose={() => setTunesOpen(false)}
       />
 
-      {/* Search layer */}
-      <AnimatePresence>
-        {searchMode !== "closed" && (
-          <motion.div
-            key="scrim"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            onClick={() => setSearchState("closed")}
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
-          />
-        )}
-      </AnimatePresence>
+      {/*
+        Search layer, rendered conditionally rather than through
+        AnimatePresence. With the React Compiler on, AnimatePresence ran the
+        exit animation but never unmounted the child — leaving an invisible
+        z-50 overlay sitting on top of the app, swallowing every click. An
+        enter animation needs no presence tracking, and an exit animation is
+        not worth a dead layer over the page.
+      */}
+      {searchMode !== "closed" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.15 }}
+          onClick={() => setSearchState("closed")}
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
+        />
+      )}
 
-      <AnimatePresence mode="wait">
-        {searchMode === "number" && (
-          <div key="numpad" className="fixed inset-x-0 bottom-0 z-50">
+      {searchMode === "number" && (
+          <div className="fixed inset-x-0 bottom-0 z-50">
             <SmartNumpad
               hymnal={hymnal}
               buffer={buffer}
@@ -247,15 +253,13 @@ export default function Home() {
               onSwitchToText={() => setSearchState("text")}
               onClose={() => setSearchState("closed")}
             />
-          </div>
-        )}
+        </div>
+      )}
 
-        {searchMode === "text" && (
+      {searchMode === "text" && (
           <motion.div
-            key="textsearch"
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.15 }}
             className="fixed inset-0 z-50 flex flex-col p-3 pt-6 lg:items-center lg:pt-[12vh]"
           >
@@ -265,9 +269,8 @@ export default function Home() {
               onSwitchToNumber={() => setSearchState("number")}
               onClose={() => setSearchState("closed")}
             />
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
     </>
   );
 }
