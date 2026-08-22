@@ -24,7 +24,10 @@
         15,
         16,
         17,
-        18
+        18,
+        19,
+        20,
+        21
       ],
       "subsections": []
     }
@@ -186,6 +189,162 @@
     },
     {
       "number": 5,
+      "title": "And Can It Be",
+      "meter": "L.M. with refrain",
+      "author": "Charles Wesley",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "And can it be that I should gain",
+          "\tAn interest in the Savior's blood?",
+          "Died He for me, who caused His pain?",
+          "\tFor me, who Him to death pursued?",
+          "Amazing love! How can it be,",
+          "That Thou, my God, shouldst die for me?"
+        ],
+        [
+          "'Tis mystery all: th'Immortal dies:",
+          "\tWho can explore His strange design?",
+          "In vain the firstborn seraph tries",
+          "\tTo sound the depths of love divine.",
+          "'Tis mercy all! Let earth adore,",
+          "Let angel minds inquire no more."
+        ],
+        [
+          "He left His Father's throne above",
+          "\tSo free, so infinite His grace?",
+          "Emptied Himself of all but love,",
+          "\tAnd bled for Adam's helpless race:",
+          "'Tis mercy all, immense and free,",
+          "For O my God, it found out me!"
+        ],
+        [
+          "Long my imprisoned spirit lay,",
+          "\tFast bound in sin and nature's night;",
+          "Thine eye diffused a quick'ning ray?",
+          "\tI woke, the dungeon flamed with light;",
+          "My chains fell off, my heart was free,",
+          "I rose, went forth, and followed Thee."
+        ],
+        [
+          "Still the small inward voice I hear,",
+          "\tThat whispers all my sins forgiv'n;",
+          "Still the atoning blood is near,",
+          "\tThat quenched the wrath of hostile Heav'n.",
+          "I feel the life His wounds impart;",
+          "I feel the Savior in my heart."
+        ],
+        [
+          "No condemnation now I dread;",
+          "\tJesus, and all in Him, is mine;",
+          "Alive in Him, my living Head,",
+          "\tAnd clothed in righteousness divine,",
+          "Bold I approach th'eternal throne,",
+          "And claim the crown, through Christ my own."
+        ]
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Crown Him with Many Crowns",
+      "meter": "S.M.D.",
+      "author": "Matthew Bridges",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Crown Him with many crowns,",
+          "\tThe Lamb upon His throne.",
+          "Hark! How the heav'nly anthem drowns",
+          "\tAll music but its own.",
+          "Awake, my soul, and sing",
+          "\tOf Him who died for thee,",
+          "And hail Him as thy matchless King",
+          "\tThrough all eternity."
+        ],
+        [
+          "Crown Him the virgin's Son,",
+          "\tThe God incarnate born,",
+          "Whose arm those crimson trophies won",
+          "\tWhich now His brow adorn;",
+          "Fruit of the mystic rose,",
+          "\tAs of that rose the stem;",
+          "The root whence mercy ever flows,",
+          "\tThe Babe of Bethlehem."
+        ],
+        [
+          "Crown Him the Son of God,",
+          "\tBefore the worlds began,",
+          "And ye who tread where He hath trod,",
+          "\tCrown Him the Son of Man;",
+          "Who every grief hath known",
+          "\tThat wrings the human breast,",
+          "And takes and bears them for His own,",
+          "\tThat all in Him may rest."
+        ],
+        [
+          "Crown Him the Lord of life,",
+          "\tWho triumphed o'er the grave,",
+          "And rose victorious in the strife",
+          "\tFor those He came to save.",
+          "His glories now we sing,",
+          "\tWho died, and rose on high,",
+          "Who died eternal life to bring,",
+          "\tAnd lives that death may die."
+        ],
+        [
+          "Crown Him the Lord of peace,",
+          "\tWhose pow'r a scepter sways",
+          "From pole to pole, that wars may cease,",
+          "\tAnd all be prayer and praise.",
+          "His reign shall know no end,",
+          "\tAnd round His pierced feet",
+          "Fair flow'rs of paradise extend",
+          "\tTheir fragrance ever sweet."
+        ],
+        [
+          "Crown Him the Lord of love,",
+          "\tBehold His hands and side,",
+          "Those wounds, yet visible above,",
+          "\tIn beauty glorified.",
+          "No angel in the sky",
+          "\tCan fully bear that sight,",
+          "But downward bends his burning eye",
+          "\tAt mysteries so bright."
+        ],
+        [
+          "Crown Him the Lord of Heaven,",
+          "\tEnthroned in worlds above,",
+          "Crown Him the King to Whom is given",
+          "\tThe wondrous name of Love.",
+          "Crown Him with many crowns,",
+          "\tAs thrones before Him fall;",
+          "Crown Him, ye kings, with many crowns,",
+          "\tFor He is King of all."
+        ],
+        [
+          "Crown Him the Lord of lords,",
+          "\tWho over all doth reign,",
+          "Who once on earth, the incarnate Word,",
+          "\tFor ransomed sinners slain,",
+          "Now lives in realms of light,",
+          "\tWhere saints with angels sing",
+          "Their songs before Him day and night,",
+          "\tTheir God, Redeemer, King."
+        ],
+        [
+          "Crown Him the Lord of years,",
+          "\tThe Potentate of time,",
+          "Creator of the rolling spheres,",
+          "\tIneffably sublime.",
+          "All hail, Redeemer, hail!",
+          "\tFor Thou has died for me;",
+          "Thy praise and glory shall not fail",
+          "\tThroughout eternity."
+        ]
+      ]
+    },
+    {
+      "number": 7,
       "title": "For The Beauty Of The Earth",
       "meter": "",
       "author": "Folliot S. Pierpoint",
@@ -242,7 +401,7 @@
       ]
     },
     {
-      "number": 6,
+      "number": 8,
       "title": "Hark, the Voice of Jesus Calling",
       "meter": "",
       "author": "Daniel March",
@@ -287,7 +446,7 @@
       ]
     },
     {
-      "number": 7,
+      "number": 9,
       "title": "Jesus Grant That Balm and Healing",
       "meter": "",
       "author": "Johann Heermann",
@@ -332,7 +491,7 @@
       ]
     },
     {
-      "number": 8,
+      "number": 10,
       "title": "Jesus Sinners Doth Receive",
       "meter": "",
       "author": "Erdmann Neumeister",
@@ -381,7 +540,7 @@
       ]
     },
     {
-      "number": 9,
+      "number": 11,
       "title": "Jesus, King of Glory",
       "meter": "",
       "author": "W. Hope Davison",
@@ -426,7 +585,46 @@
       ]
     },
     {
-      "number": 10,
+      "number": 12,
+      "title": "Man of Sorrows! What a Name",
+      "meter": "7s. with refrain",
+      "author": "Philip P. Bliss",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Man of Sorrows! what a name",
+          "For the Son of God, who came",
+          "Ruined sinners to reclaim.",
+          "\tHallelujah! What a Savior!"
+        ],
+        [
+          "Bearing shame and scoffing rude,",
+          "In my place condemned He stood;",
+          "Sealed my pardon with His blood.",
+          "\tHallelujah! What a Savior!"
+        ],
+        [
+          "Guilty, vile, and helpless we;",
+          "Spotless Lamb of God was He;",
+          "\"Full atonement!\" can it be?",
+          "\tHallelujah! What a Savior!"
+        ],
+        [
+          "Lifted up was He to die;",
+          "\"It is finished!\" was His cry;",
+          "Now in Heav'n exalted high.",
+          "\tHallelujah! What a Savior!"
+        ],
+        [
+          "When He comes, our glorious King,",
+          "All His ransomed home to bring,",
+          "Then anew His song we'll sing:",
+          "\tHallelujah! What a Savior!"
+        ]
+      ]
+    },
+    {
+      "number": 13,
       "title": "Now Praise We Christ, the Holy One",
       "meter": "",
       "author": "Coelius Sedulius",
@@ -467,7 +665,7 @@
       ]
     },
     {
-      "number": 11,
+      "number": 14,
       "title": "O Day of Rest And Gladness",
       "meter": "",
       "author": "Christopher Wordsworth",
@@ -512,7 +710,7 @@
       ]
     },
     {
-      "number": 12,
+      "number": 15,
       "title": "O Sacred Head, Now Wounded",
       "meter": "",
       "author": "Bernard of Clairvaux",
@@ -587,7 +785,7 @@
       ]
     },
     {
-      "number": 13,
+      "number": 16,
       "title": "O That The Lord Would Guide My Ways",
       "meter": "",
       "author": "Isaac Watts",
@@ -620,7 +818,7 @@
       ]
     },
     {
-      "number": 14,
+      "number": 17,
       "title": "Over Kidron Jesus Treadeth",
       "meter": "",
       "author": "Thomas Hansen Kingo",
@@ -665,7 +863,7 @@
       ]
     },
     {
-      "number": 15,
+      "number": 18,
       "title": "See Amid the Winter's Snow",
       "meter": "",
       "author": "Edward Caswall",
@@ -710,7 +908,7 @@
       ]
     },
     {
-      "number": 16,
+      "number": 19,
       "title": "Take My Life And Let It Be",
       "meter": "",
       "author": "Frances R. Havergal",
@@ -743,7 +941,7 @@
       ]
     },
     {
-      "number": 17,
+      "number": 20,
       "title": "To Avert From Men God's Wrath",
       "meter": "",
       "author": null,
@@ -782,7 +980,7 @@
       ]
     },
     {
-      "number": 18,
+      "number": 21,
       "title": "While O'er Our Guilty Land, O Lord",
       "meter": "",
       "author": null,
