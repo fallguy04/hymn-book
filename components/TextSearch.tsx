@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Search as SearchIcon, Hash } from "lucide-react";
 import { type Hymnal, hymnTitle, searchHymns } from "@/lib/hymnals";
+import SuggestSong from "./SuggestSong";
 
 interface TextSearchProps {
   hymnal: Hymnal;
@@ -77,7 +78,12 @@ export default function TextSearch({
 
       <div className="flex-1 overflow-y-auto overscroll-contain p-1.5">
         {term && results.length === 0 && (
-          <p className="mt-12 text-center font-serif italic text-paper-faint">No matches.</p>
+          <div className="mt-12 px-3">
+            <p className="text-center font-serif italic text-paper-faint">
+              Nothing in this book matches &ldquo;{term}&rdquo;.
+            </p>
+            <SuggestSong query={term} hymnalId={hymnal.id} />
+          </div>
         )}
 
         {results.map(({ hymn, snippet }) => (
