@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { X, Search as SearchIcon, Hash } from "lucide-react";
+import { X, Search as SearchIcon, Hash, Lock, HelpCircle } from "lucide-react";
 import {
   type Hymnal,
   hymnTitle,
@@ -9,6 +9,7 @@ import {
   searchAllHymnals,
   searchHymns,
 } from "@/lib/hymnals";
+import { pendingReason, searchPending } from "@/lib/pending";
 import SuggestSong from "./SuggestSong";
 
 interface TextSearchProps {
@@ -79,6 +80,12 @@ export default function TextSearch({
     return searchHymns(target, term);
   }, [hymnal, books, term, scope, multipleBooks]);
 
+  // Songs we know the congregation sings but cannot print the words to. Shown
+  // under the real results, never mixed in with them — somebody typing a number
+  // mid-service must not have to sort a page they can sing from out of a page
+  // they can't.
+  const pending = useMemo(() => searchPending(term), [term]);
+
   return (
     <div className="mx-auto flex h-full w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-paper-rule bg-paper shadow-2xl lg:h-auto lg:max-h-[70vh] lg:max-w-2xl">
       <div className="flex items-center gap-2 border-b border-paper-rule px-3 py-3">
@@ -130,7 +137,7 @@ export default function TextSearch({
       )}
 
       <div className="flex-1 overflow-y-auto overscroll-contain p-1.5">
-        {term && results.length === 0 && (
+        {term && results.length === 0 && pending.length === 0 && (
           <div className="mt-12 px-3">
             <p className="text-center font-serif italic text-paper-faint">
               {scope === "all" && multipleBooks
@@ -195,6 +202,47 @@ export default function TextSearch({
           </button>
           );
         })}
+
+        {/*
+          Songs we know but can't print. Not buttons — there is no page to open,
+          and a row that looks tappable and does nothing is worse than a row that
+          plainly says why it can't be.
+        */}
+        {pending.length > 0 && (
+          <section className="mt-2 border-t border-paper-rule pt-3">
+            <p className="text-label mb-1.5 px-3">Known, but not printable yet</p>
+            <ul>
+              {pending.map((song) => (
+                <li key={song.title} className="px-3 py-2.5">
+                  <div className="flex items-baseline gap-2">
+                    {song.status === "unknown" ? (
+                      <HelpCircle className="h-3.5 w-3.5 shrink-0 translate-y-0.5 text-paper-faint" />
+                    ) : (
+                      <Lock className="h-3.5 w-3.5 shrink-0 translate-y-0.5 text-paper-faint" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-serif text-[1.05rem] leading-snug text-paper-ink">
+                        <Highlight text={song.title} term={term} />
+                      </h3>
+                      {song.author && (
+                        <p className="font-sans text-[0.7rem] text-paper-faint">
+                          <Highlight text={song.author} term={term} />
+                          {song.found && ` · ${song.found}`}
+                        </p>
+                      )}
+                      {!song.author && song.found && (
+                        <p className="font-sans text-[0.7rem] text-paper-faint">{song.found}</p>
+                      )}
+                      <p className="mt-1 font-sans text-[0.7rem] leading-relaxed text-paper-muted">
+                        {pendingReason(song)}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );

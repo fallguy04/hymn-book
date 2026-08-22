@@ -273,6 +273,34 @@ wrong writer in an earlier version of this document.
 
 ---
 
+## 2d. Index-only entries
+
+`data/pending-songs.json` lists the 56 songs the congregation sings that the app
+cannot print the words to — 38 known and in copyright, 18 nobody has identified.
+They appear in search under **"Known, but not printable yet"**, showing the
+title, the writer, where the song is known from, and why there are no words.
+
+A title is a fact and carries no copyright, so this costs nothing and is
+unambiguously legal. The point is that a search for "How Great Thou Art" no
+longer comes back empty, implying the song doesn't exist — it answers with who
+wrote it and what is being done about it.
+
+They are deliberately **not** part of any hymnal. Folding fifty-odd wordless
+entries into Other Songs would put them in the page-through and the contents
+list, so swiping through the book mid-service would keep landing on pages with
+nothing to sing. Search is where somebody is asking a question; that is the only
+place they show up.
+
+**When permission arrives for one:** delete its entry from
+`data/pending-songs.json`, add a real file in `songs/`, and rebuild. Nothing
+else changes.
+
+**When one of the unknowns is identified:** either add the writer and year and
+set `status` to `copyright`, or — if it turns out to be public domain — write
+the song file and delete the entry.
+
+---
+
 ## 3. How to add a song
 
 One plain-text file per song in `songs/`, then:
