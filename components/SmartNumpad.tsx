@@ -1,8 +1,17 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { Delete, Search, ArrowRight } from "lucide-react";
-import { type Hymn, type Hymnal, getHymn, hymnTitle, reachableDigits } from "@/lib/hymnals";
+import { Delete, Search, ArrowRight, CornerDownRight } from "lucide-react";
+import {
+  type Hymn,
+  type Hymnal,
+  findInOtherHymnals,
+  getHymn,
+  hymnTitle,
+  isNumbered,
+  listHymnals,
+  reachableDigits,
+} from "@/lib/hymnals";
 
 interface SmartNumpadProps {
   hymnal: Hymnal;
@@ -12,6 +21,9 @@ interface SmartNumpadProps {
   onDelete: () => void;
   onGo: () => void;
   onSelect: (number: number) => void;
+  /** Jump straight to a hymn in a different book, switching books on the way. */
+  onSelectIn: (number: number, hymnalId: string) => void;
+  onSwitchHymnal: (hymnalId: string) => void;
   onSwitchToText: () => void;
   onClose: () => void;
 }
@@ -29,12 +41,25 @@ export default function SmartNumpad({
   onDelete,
   onGo,
   onSelect,
+  onSelectIn,
+  onSwitchHymnal,
   onSwitchToText,
   onClose,
 }: SmartNumpadProps) {
   const reduceMotion = useReducedMotion();
   const target: Hymn | undefined = buffer ? getHymn(hymnal, Number(buffer)) : undefined;
-  const reachable = reachableDigits(hymnal, buffer);
+  const books = listHymnals();
+
+  // Reachability is measured across every book, not just this one. Dimming the
+  // keys that lead nowhere here would dim the exact keys that lead to the other
+  // book — the pad would be talking someone out of the number they were told.
+  const reachable = new Set(books.flatMap((book) => [...reachableDigits(book, buffer)]));
+
+  // A number this book doesn't have may well be a number another book does.
+  // Somebody typing 700 into a book that stops at 558 heard that number called
+  // out somewhere — far likelier they are in the wrong book than that they
+  // misheard, so offer the way across instead of just refusing.
+  const elsewhere = buffer && !target ? findInOtherHymnals(Number(buffer), hymnal.id) : [];
 
   const press = (key: string) => {
     tick();
@@ -64,9 +89,44 @@ export default function SmartNumpad({
         className="mx-auto mb-3 block h-1 w-10 rounded-full bg-paper-rule"
       />
 
+      {/*
+        Book first, then number — the order the request arrives in when someone
+        at the front says "Other Songs, twelve". Putting it here means the whole
+        lookup is one motion on the surface that is already open, instead of a
+        detour through search.
+      */}
+      {books.length > 1 && (
+        <div
+          role="tablist"
+          aria-label="Book"
+          className="mb-3 flex gap-1 rounded-full bg-paper-sunken p-1"
+        >
+          {books.map((book) => {
+            const active = book.id === hymnal.id;
+            return (
+              <button
+                key={book.id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => {
+                  if (active) return;
+                  tick();
+                  onSwitchHymnal(book.id);
+                }}
+                className={`flex-1 rounded-full py-2 font-sans text-xs font-semibold transition-colors ${
+                  active ? "bg-paper text-paper-ink shadow-sm" : "text-paper-muted"
+                }`}
+              >
+                {isNumbered(book) ? "Hymnal" : book.shortName}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* Live preview: you see which hymn you're heading to before committing,
           which is what the old floating "ticket" was reaching for. */}
-      <div className="mb-3 flex h-14 items-center gap-3 px-1">
+      <div className="mb-3 flex min-h-14 items-center gap-3 px-1">
         {buffer ? (
           <>
             <span className="font-serif text-3xl tabular-nums text-paper-ink">{buffer}</span>
@@ -80,6 +140,29 @@ export default function SmartNumpad({
                 </span>
                 <ArrowRight className="h-4 w-4 shrink-0 text-paper-muted" />
               </button>
+            ) : elsewhere.length > 0 ? (
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <span className="font-sans text-[0.7rem] text-paper-faint">
+                  Not in {isNumbered(hymnal) ? "the hymnal" : hymnal.shortName}
+                </span>
+                {elsewhere.map(({ hymnal: book, hymn }) => (
+                  <button
+                    key={book.id}
+                    onClick={() => onSelectIn(hymn.number, book.id)}
+                    className="flex items-center justify-between gap-2 rounded-xl border border-paper-accent/40 bg-paper-accent/[0.06] px-3 py-2 text-left transition-colors hover:bg-paper-accent/[0.12]"
+                  >
+                    <span className="min-w-0">
+                      <span className="block font-sans text-[0.6rem] font-semibold uppercase tracking-wider text-paper-accent">
+                        {book.shortName}
+                      </span>
+                      <span className="line-clamp-1 font-serif text-[0.95rem] leading-snug text-paper-ink">
+                        {hymnTitle(hymn)}
+                      </span>
+                    </span>
+                    <CornerDownRight className="h-4 w-4 shrink-0 text-paper-accent" />
+                  </button>
+                ))}
+              </div>
             ) : (
               <span className="font-serif italic text-paper-faint">No hymn {buffer}</span>
             )}

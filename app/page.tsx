@@ -8,6 +8,7 @@ import TextSearch from "@/components/TextSearch";
 import TopBar from "@/components/TopBar";
 import BottomBar from "@/components/BottomBar";
 import NavDrawer from "@/components/NavDrawer";
+import BookRibbon from "@/components/BookRibbon";
 import Sidebar from "@/components/Sidebar";
 import TuneSheet from "@/components/TuneSheet";
 import ThemeSync from "@/components/ThemeSync";
@@ -32,6 +33,8 @@ export default function Home() {
   const recents = useHymnalStore((s) => s.recents);
   const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
   const setHymnal = useHymnalStore((s) => s.setHymnal);
+  const positions = useHymnalStore((s) => s.positions);
+  const setPosition = useHymnalStore((s) => s.setPosition);
   const visit = useHymnalStore((s) => s.visit);
 
   const hymnal = useMemo(() => getHymnal(hymnalId) ?? getDefaultHymnal(), [hymnalId]);
@@ -55,7 +58,8 @@ export default function Home() {
 
   useEffect(() => {
     visit(hymn.number);
-  }, [hymn.number, visit]);
+    setPosition(hymnalId, hymn.number);
+  }, [hymn.number, hymnalId, visit, setPosition]);
 
   const neighbours = useMemo(() => {
     const at = hymnal.hymns.findIndex((h) => h.number === hymn.number);
@@ -75,6 +79,26 @@ export default function Home() {
       setSearchState("closed");
     },
     [hymnalId, setHymnal],
+  );
+
+  /**
+   * Cross to another book. The ribbon tab is a bookmark, so it returns you to
+   * where you left off there — landing on song one every time would make the
+   * tab useless for going back and forth, which is the whole point of it.
+   */
+  const switchHymnal = useCallback(
+    (id: string) => {
+      if (id === hymnalId) return;
+      const target = getHymnal(id);
+      if (!target) return;
+      setHymnal(id);
+      const remembered = positions[id];
+      const landing =
+        (remembered !== undefined && getHymn(target, remembered)) || firstHymn(target);
+      setPage([landing.number, 0]);
+      setBuffer("");
+    },
+    [hymnalId, positions, setHymnal],
   );
 
   const paginate = useCallback(
@@ -187,6 +211,7 @@ export default function Home() {
           />
 
           <main className="relative min-h-0 flex-1">
+            <BookRibbon hymnal={hymnal} onSwitch={switchHymnal} />
             <HymnView
               hymnal={hymnal}
               hymn={hymn}
@@ -255,6 +280,8 @@ export default function Home() {
               onDelete={() => setBuffer((prev) => prev.slice(0, -1))}
               onGo={submitBuffer}
               onSelect={goTo}
+              onSelectIn={goTo}
+              onSwitchHymnal={switchHymnal}
               onSwitchToText={() => setSearchState("text")}
               onClose={() => setSearchState("closed")}
             />
@@ -271,13 +298,6 @@ export default function Home() {
             <TextSearch
               hymnal={hymnal}
               onSelect={goTo}
-              onSwitchHymnal={(id) => {
-                setHymnal(id);
-                // Book numbering doesn't line up, so land on that book's first
-                // hymn rather than keeping a number that means something else.
-                const target = getHymnal(id);
-                if (target) setPage([firstHymn(target).number, 0]);
-              }}
               onSwitchToNumber={() => setSearchState("number")}
               onClose={() => setSearchState("closed")}
             />

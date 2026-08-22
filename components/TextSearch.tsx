@@ -16,8 +16,6 @@ interface TextSearchProps {
   hymnal: Hymnal;
   /** Carries the book, since a result may belong to a different one. */
   onSelect: (number: number, hymnalId: string) => void;
-  /** Choosing a book here also changes the one you are reading. */
-  onSwitchHymnal: (hymnalId: string) => void;
   onSwitchToNumber: () => void;
   onClose: () => void;
 }
@@ -48,7 +46,6 @@ function Highlight({ text, term }: { text: string; term: string }) {
 export default function TextSearch({
   hymnal,
   onSelect,
-  onSwitchHymnal,
   onSwitchToNumber,
   onClose,
 }: TextSearchProps) {
@@ -62,13 +59,11 @@ export default function TextSearch({
   const books = listHymnals();
   const multipleBooks = books.length > 1;
 
-  // Picking a book is picking the book you are reading, not just a filter —
-  // one control rather than a switcher in the sidebar and a filter here, which
-  // was two ways to say the same thing in two different places.
-  const chooseScope = (next: Scope) => {
-    setScope(next);
-    if (next !== "all" && next !== hymnal.id) onSwitchHymnal(next);
-  };
+  // Purely a filter on what gets searched. It used to double as the book
+  // switcher, which is what made it confusing: choosing where to *look* also
+  // changed what you were *reading*. Switching books now belongs to the ribbon
+  // tab and the keypad, so this control does one thing.
+  const chooseScope = (next: Scope) => setScope(next);
 
   useEffect(() => {
     input.current?.focus();

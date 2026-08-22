@@ -256,3 +256,24 @@ const surname = (name: string): string => name.trim().split(/\s+/).at(-1) ?? nam
 /** How many hymns still have no attribution, for the index's footnote. */
 export const unattributedCount = (hymnal: Hymnal): number =>
   hymnal.hymns.filter((h) => !h.author).length;
+
+/**
+ * The same number in the other books.
+ *
+ * A dead number is a dead end today: type 700 in a book that stops at 558 and
+ * the pad just says there is no such hymn. But the person typing knows a number
+ * they heard called out, and it is far more likely they are in the wrong book
+ * than that they misheard — so look before saying no.
+ */
+export function findInOtherHymnals(
+  number: number,
+  exceptId: string,
+): { hymnal: Hymnal; hymn: Hymn }[] {
+  const found: { hymnal: Hymnal; hymn: Hymn }[] = [];
+  for (const hymnal of HYMNALS) {
+    if (hymnal.id === exceptId) continue;
+    const hymn = getHymn(hymnal, number);
+    if (hymn) found.push({ hymnal, hymn });
+  }
+  return found;
+}

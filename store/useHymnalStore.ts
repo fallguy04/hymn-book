@@ -11,6 +11,12 @@ export interface SavedTune {
 
 interface HymnalState {
   hymnalId: string;
+  /**
+   * Where you last were in each book, keyed by book id. The ribbon tab is a
+   * bookmark, so crossing to the other book and back should land you where you
+   * left off rather than at song one.
+   */
+  positions: Record<string, number>;
   favorites: number[];
   recents: number[];
   tunes: SavedTune[];
@@ -19,6 +25,7 @@ interface HymnalState {
   installDismissed: boolean;
 
   setHymnal: (id: string) => void;
+  setPosition: (hymnalId: string, number: number) => void;
   toggleFavorite: (number: number) => void;
   visit: (number: number) => void;
   addTune: (tune: SavedTune) => void;
@@ -44,6 +51,7 @@ export const useHymnalStore = create<HymnalState>()(
   persist(
     (set) => ({
       hymnalId: "brethren",
+      positions: {},
       favorites: [],
       recents: [],
       tunes: [],
@@ -52,6 +60,13 @@ export const useHymnalStore = create<HymnalState>()(
       installDismissed: false,
 
       setHymnal: (hymnalId) => set({ hymnalId }),
+
+      setPosition: (hymnalId, number) =>
+        set((s) =>
+          s.positions[hymnalId] === number
+            ? s
+            : { positions: { ...s.positions, [hymnalId]: number } },
+        ),
 
       toggleFavorite: (number) =>
         set((s) => ({
