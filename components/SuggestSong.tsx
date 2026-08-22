@@ -21,6 +21,7 @@ type State = "idle" | "open" | "sending" | "sent" | "error";
  */
 export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
   const [state, setState] = useState<State>("idle");
+  const [requester, setRequester] = useState("");
   const [title, setTitle] = useState(query);
   const [note, setNote] = useState("");
 
@@ -32,7 +33,7 @@ export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
       const response = await fetch("/api/suggestions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: cleanTitle, note, query, hymnalId }),
+        body: JSON.stringify({ requester, title: cleanTitle, note, query, hymnalId }),
       });
       setState(response.ok ? "sent" : "error");
     } catch {
@@ -70,7 +71,20 @@ export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
 
   return (
     <div className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl border border-paper-rule bg-paper-sunken p-3 text-left">
-      <label className="text-label block" htmlFor="suggest-title">
+      <label className="text-label block" htmlFor="suggest-name">
+        Your name
+      </label>
+      <input
+        id="suggest-name"
+        value={requester}
+        onChange={(e) => setRequester(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && submit()}
+        placeholder="Who's asking"
+        autoComplete="name"
+        className="w-full rounded-xl border border-paper-rule bg-paper px-3 py-2 font-serif text-paper-ink outline-none placeholder:text-paper-faint"
+      />
+
+      <label className="text-label block pt-1" htmlFor="suggest-title">
         Song title
       </label>
       <input

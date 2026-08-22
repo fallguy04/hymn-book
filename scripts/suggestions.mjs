@@ -61,6 +61,7 @@ for (const row of rows) {
   const when = new Date(row.created_at).toLocaleString();
   const mark = row.status === "done" ? "✓" : "•";
   console.log(`${mark} #${row.id}  ${row.title}`);
+  console.log(`     from:     ${row.requester || "— not given —"}`);
   if (row.note) console.log(`     note:     ${row.note}`);
   // Worth showing when it differs: it is what they actually typed, which
   // sometimes says more about what they wanted than the title they settled on.

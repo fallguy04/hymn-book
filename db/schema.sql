@@ -36,6 +36,9 @@ CREATE INDEX IF NOT EXISTS sync_codes_expires_at_idx ON sync_codes (expires_at);
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS song_suggestions (
   id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  -- Who asked. A name, not an identity: no email, no account, nothing to
+  -- verify. It exists so you know who to go and talk to.
+  requester   TEXT,
   title       TEXT NOT NULL,
   note        TEXT,
   query       TEXT,
@@ -43,5 +46,8 @@ CREATE TABLE IF NOT EXISTS song_suggestions (
   status      TEXT NOT NULL DEFAULT 'new',
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Added after the table shipped; harmless to re-run.
+ALTER TABLE song_suggestions ADD COLUMN IF NOT EXISTS requester TEXT;
 
 CREATE INDEX IF NOT EXISTS song_suggestions_status_idx ON song_suggestions (status, created_at DESC);
