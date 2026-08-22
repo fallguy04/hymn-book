@@ -15,11 +15,14 @@ interface TextSearchProps {
   hymnal: Hymnal;
   /** Carries the book, since a result may belong to a different one. */
   onSelect: (number: number, hymnalId: string) => void;
+  /** Choosing a book here also changes the one you are reading. */
+  onSwitchHymnal: (hymnalId: string) => void;
   onSwitchToNumber: () => void;
   onClose: () => void;
 }
 
-type Scope = "book" | "all";
+/** A book id, or every book at once. */
+type Scope = string | "all";
 
 /** Wrap each occurrence of the term so matches are visible at a glance. */
 function Highlight({ text, term }: { text: string; term: string }) {
@@ -44,26 +47,37 @@ function Highlight({ text, term }: { text: string; term: string }) {
 export default function TextSearch({
   hymnal,
   onSelect,
+  onSwitchHymnal,
   onSwitchToNumber,
   onClose,
 }: TextSearchProps) {
   const [term, setTerm] = useState("");
-  // Defaults to the current book. Someone looking up a number mid-service
+  // Defaults to the book you are in. Someone looking up a number mid-service
   // wants their own hymnal's 26, not every 26 in every book — crossing books
   // is a deliberate act, not the default.
-  const [scope, setScope] = useState<Scope>("book");
+  const [scope, setScope] = useState<Scope>(hymnal.id);
   const input = useRef<HTMLInputElement>(null);
 
-  const multipleBooks = listHymnals().length > 1;
+  const books = listHymnals();
+  const multipleBooks = books.length > 1;
+
+  // Picking a book is picking the book you are reading, not just a filter —
+  // one control rather than a switcher in the sidebar and a filter here, which
+  // was two ways to say the same thing in two different places.
+  const chooseScope = (next: Scope) => {
+    setScope(next);
+    if (next !== "all" && next !== hymnal.id) onSwitchHymnal(next);
+  };
 
   useEffect(() => {
     input.current?.focus();
   }, []);
 
-  const results = useMemo(
-    () => (scope === "all" && multipleBooks ? searchAllHymnals(term) : searchHymns(hymnal, term)),
-    [hymnal, term, scope, multipleBooks],
-  );
+  const results = useMemo(() => {
+    if (scope === "all" && multipleBooks) return searchAllHymnals(term);
+    const target = books.find((b) => b.id === scope) ?? hymnal;
+    return searchHymns(target, term);
+  }, [hymnal, books, term, scope, multipleBooks]);
 
   return (
     <div className="mx-auto flex h-full w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-paper-rule bg-paper shadow-2xl lg:h-auto lg:max-h-[70vh] lg:max-w-2xl">
@@ -97,24 +111,21 @@ export default function TextSearch({
       </div>
 
       {multipleBooks && (
-        <div className="flex shrink-0 gap-1 border-b border-paper-rule px-3 py-2">
-          {(
-            [
-              ["book", hymnal.shortName],
-              ["all", "All songs"],
-            ] as const
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => setScope(id)}
-              aria-pressed={scope === id}
-              className={`rounded-full px-3 py-1.5 font-sans text-[0.7rem] font-semibold transition-colors ${
-                scope === id ? "bg-paper-ink text-paper" : "text-paper-muted hover:bg-paper-sunken"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="flex shrink-0 gap-1 overflow-x-auto border-b border-paper-rule px-3 py-2 no-scrollbar">
+          {[...books.map((b) => [b.id, b.shortName] as const), ["all", "All songs"] as const].map(
+            ([id, label]) => (
+              <button
+                key={id}
+                onClick={() => chooseScope(id)}
+                aria-pressed={scope === id}
+                className={`shrink-0 rounded-full px-3 py-1.5 font-sans text-[0.7rem] font-semibold transition-colors ${
+                  scope === id ? "bg-paper-ink text-paper" : "text-paper-muted hover:bg-paper-sunken"
+                }`}
+              >
+                {label}
+              </button>
+            ),
+          )}
         </div>
       )}
 
@@ -124,7 +135,7 @@ export default function TextSearch({
             <p className="text-center font-serif italic text-paper-faint">
               {scope === "all" && multipleBooks
                 ? `Nothing in any book matches “${term}”.`
-                : `Nothing in ${hymnal.shortName} matches “${term}”.`}
+                : `Nothing in ${(books.find((b) => b.id === scope) ?? hymnal).shortName} matches “${term}”.`}
             </p>
             <SuggestSong query={term} hymnalId={hymnal.id} />
           </div>

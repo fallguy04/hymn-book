@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X, BookOpen, Users, Star, Music, Settings, ChevronRight, ChevronLeft } from "lucide-react";
-import { type Hymnal, getHymn, hymnTitle, listHymnals, authorIndex } from "@/lib/hymnals";
+import { type Hymnal, getHymn, hymnTitle, authorIndex } from "@/lib/hymnals";
 import { useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
@@ -46,7 +46,6 @@ export default function BrowsePanels({
   const [panel, setPanel] = useState<Panel | null>(initialPanel ?? null);
   const favorites = useHymnalStore((s) => s.favorites);
   const tunes = useHymnalStore((s) => s.tunes);
-  const setHymnal = useHymnalStore((s) => s.setHymnal);
 
   const counts: Record<Panel, number | null> = {
     contents: hymnal.hymns.length,
@@ -89,24 +88,6 @@ export default function BrowsePanels({
           </button>
         )}
       </header>
-
-      {/* Book switcher only earns its space once there's a second book. */}
-      {!active && listHymnals().length > 1 && (
-        <div className="shrink-0 border-b border-paper-rule px-4 py-3">
-          <label className="text-label mb-1.5 block">Hymnal</label>
-          <select
-            value={hymnal.id}
-            onChange={(e) => setHymnal(e.target.value)}
-            className="w-full rounded-xl bg-paper-sunken px-3 py-2.5 font-sans text-sm text-paper-ink"
-          >
-            {listHymnals().map((h) => (
-              <option key={h.id} value={h.id}>
-                {h.shortName}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {!active && (

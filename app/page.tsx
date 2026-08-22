@@ -270,6 +270,13 @@ export default function Home() {
             <TextSearch
               hymnal={hymnal}
               onSelect={goTo}
+              onSwitchHymnal={(id) => {
+                setHymnal(id);
+                // Book numbering doesn't line up, so land on that book's first
+                // hymn rather than keeping a number that means something else.
+                const target = getHymnal(id);
+                if (target) setPage([firstHymn(target).number, 0]);
+              }}
               onSwitchToNumber={() => setSearchState("number")}
               onClose={() => setSearchState("closed")}
             />

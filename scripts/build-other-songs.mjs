@@ -24,6 +24,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 
+const SONGS_DIR = "songs";
 const ABC_DIR = "vendor/open-hymnal/abc";
 const XML = "vendor/open-hymnal/openhymnal.xml";
 const COLLECTION = "data/hymnals/brethren.json";
@@ -105,7 +106,7 @@ for (const file of readdirSync(ABC_DIR).filter((f) => f.endsWith(".abc"))) {
   abc.set(title.toLowerCase(), {
     title,
     author: parseAuthor(credits.join("  ")),
-    meter: text.match(/^M:\s*(\S+)/m)?.[1] ?? "",
+    meter: "",
     stanzas,
   });
 }
@@ -254,6 +255,70 @@ for (const [key, entry] of abc) {
   kept.push({ ...entry, stanzas, verified });
 }
 
+// ---------------------------------------------------------------------------
+// Hand-added songs from songs/*.txt
+//
+// The one source that gets line breaks right, because a person typed them. See
+// songs/README.md for the format.
+// ---------------------------------------------------------------------------
+
+function parseSongFile(text, filename) {
+  const body = text.replace(/\r\n/g, "\n").replace(/\t/g, "\t");
+  const split = body.indexOf("\n\n");
+  if (split === -1) throw new Error(`${filename}: no blank line between the headers and the first stanza`);
+
+  const headers = {};
+  for (const line of body.slice(0, split).split("\n")) {
+    const m = line.match(/^([A-Za-z][A-Za-z ]*):\s*(.*)$/);
+    if (m) headers[m[1].trim().toLowerCase()] = m[2].trim();
+  }
+  if (!headers.title) throw new Error(`${filename}: missing a Title: header`);
+
+  const stanzas = body
+    .slice(split)
+    .split(/\n\s*\n/)
+    .map((block) =>
+      block
+        .split("\n")
+        .map((line) => line.replace(/\s+$/, ""))
+        .filter((line) => line.trim())
+        // A tab, or two spaces, is one step of indent — stored as tabs, the
+        // same convention the extracted hymnal uses.
+        .map((line) => {
+          const indent = line.match(/^(\t+|(?: {2})+)/)?.[0] ?? "";
+          const depth = indent.includes("\t") ? indent.length : indent.length / 2;
+          return "\t".repeat(Math.min(3, depth)) + line.trim();
+        }),
+    )
+    .filter((stanza) => stanza.length);
+
+  if (!stanzas.length) throw new Error(`${filename}: no stanzas`);
+
+  return {
+    title: headers.title,
+    author: headers.author || null,
+    meter: headers.meter || "",
+    stanzas,
+    verified: -1, // hand-entered; nothing to verify it against
+  };
+}
+
+if (existsSync(SONGS_DIR)) {
+  for (const file of readdirSync(SONGS_DIR).filter((f) => f.endsWith(".txt"))) {
+    try {
+      const song = parseSongFile(readFileSync(`${SONGS_DIR}/${file}`, "utf8"), file);
+      if (alreadyHave.has(normalize(song.stanzas[0][0].replace(/^\t+/, "").slice(0, 40)))) {
+        rejected.push([song.title, "already in A Collection of Hymns"]);
+        continue;
+      }
+      kept.push(song);
+    } catch (error) {
+      console.error(`✗ ${error.message}`);
+      process.exitCode = 1;
+    }
+  }
+}
+
 kept.sort((a, b) => a.title.localeCompare(b.title));
 
 const hymnal = {
@@ -271,16 +336,21 @@ const hymnal = {
   hymns: kept.map((entry, i) => ({
     number: i + 1,
     title: entry.title,
-    meter: "",
+    // Only hand-added songs carry a real metre. The ABC `M:` field is a time
+    // signature ("4/4"), which is a different thing and would be wrong here.
+    meter: entry.verified === -1 ? entry.meter : "",
     author: entry.author,
-    authorSource: entry.author ? "openhymnal.org" : null,
+    authorSource: entry.author ? (entry.verified === -1 ? "songs/" : "openhymnal.org") : null,
     stanzas: entry.stanzas,
   })),
 };
 
 if (report) {
   console.log(`kept ${kept.length}:`);
-  for (const k of kept) console.log(`  ${k.title} — ${k.author ?? "unattributed"} (${k.verified} verse(s) verified)`);
+  for (const k of kept) {
+    const how = k.verified === -1 ? "hand-entered" : `${k.verified} verse(s) verified`;
+    console.log(`  ${k.title} — ${k.author ?? "unattributed"} (${how})`);
+  }
   console.log(`\nrejected ${rejected.length}:`);
   const why = {};
   for (const [, reason] of rejected) why[reason.replace(/verse \d+/, "verse N")] = (why[reason.replace(/verse \d+/, "verse N")] ?? 0) + 1;
@@ -288,6 +358,10 @@ if (report) {
 } else {
   writeFileSync(OUT, `${JSON.stringify(hymnal, null, 2)}\n`);
   const attributed = kept.filter((k) => k.author).length;
+  const handAdded = kept.filter((k) => k.verified === -1).length;
   console.log(`✓ wrote ${OUT}`);
-  console.log(`  ${kept.length} hymns, ${attributed} attributed, ${rejected.length} rejected`);
+  console.log(
+    `  ${kept.length} songs (${kept.length - handAdded} from Open Hymnal, ${handAdded} from songs/), ` +
+      `${attributed} attributed, ${rejected.length} rejected`,
+  );
 }
