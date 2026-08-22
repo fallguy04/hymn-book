@@ -78,6 +78,43 @@ Start Request. Worth using if the email goes unanswered; note that the address
 above appears widely online but is not printed on Capitol CMG's own contact
 page, which lists only `info@umusic.com`.
 
+### What Capitol CMG actually sells (from their own rate card)
+
+They replied by autoresponder: all requests go through
+[licensing.capitolcmg.com](https://licensing.capitolcmg.com) → **Church/Indie**,
+and **do not register or log in** — the Church/Indie path breaks for logged-in
+users. Their FAQ confirms `CapitolCMGLicensing@umusic.com` is the right address
+for help.
+
+Their non-commercial rate card offers no licence for "lyrics in an app." The
+closest three:
+
+| Licence | What it covers | Rate |
+|---|---|---|
+| **Lyric Display** | lyrics shown on slides/overheads/PowerPoint **during a worship setting** | **$20 per song per 500 views** |
+| **Lyric Reprint** | reprinting lyrics in "some medium (ex. small devotional church resources)", words only | **$0.12 per song per copy** |
+| Bulletin | words only, in a bulletin or song sheet, **one-time** service | $35 per song |
+
+Lyric Display is metered by views and scoped to a worship setting, not an
+on-demand app. Lyric Reprint is metered by copies, and what a "copy" means for
+a web page is undefined. Neither fits cleanly.
+
+**The view-metered rate is the number that matters.** At $20 per song per 500
+views, a congregation of any size burns through 500 views per song in months.
+Eleven Capitol CMG songs at that rate lands in the high hundreds of dollars a
+year — and Capitol CMG is one publisher of six or seven.
+
+Their FAQ points anything unlisted at a **Custom Digital License Request Form**.
+That form asks for a federal identification number, key personnel and
+principals, funding sources, a multi-year business model with revenue streams,
+and existing public-performance licences. It is built for a company launching a
+commercial streaming service, not a congregation with a free app. Not a dead
+end, but plainly not the intended path either.
+
+**This strengthens the case for waiting on CCLI**, whose whole business is
+selling congregations blanket coverage at congregation prices — and for the
+index-only fallback, which costs nothing and is unambiguously legal.
+
 ### Still to write
 
 The camp book brings in publishers nobody has contacted yet: Gaither Music
