@@ -10,3 +10,7 @@ next-env.d.ts
 .env
 .env.*
 !.env.example
+
+# Open Hymnal source files, re-fetchable with scripts/fetch-open-hymnal.sh.
+# ~2.7MB of upstream data; the built other-songs.json is what ships.
+vendor/

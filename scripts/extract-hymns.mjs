@@ -423,7 +423,9 @@ const hymnal = {
   id: "brethren",
   title: "A Collection of Hymns and Sacred Songs",
   subtitle: "Old German Baptist Brethren Church · 32nd Edition",
-  shortName: "Brethren Hymnal",
+  // The book's own name, shortened. "Brethren Hymnal" was a label I invented
+  // and it names a different book — this one is titled on its own title page.
+  shortName: "A Collection of Hymns",
   isDefault: true,
   sections,
   hymns: hymns

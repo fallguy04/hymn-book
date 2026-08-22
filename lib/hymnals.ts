@@ -1,4 +1,5 @@
 import brethren from "@/data/hymnals/brethren.json";
+import otherSongs from "@/data/hymnals/other-songs.json";
 
 /**
  * A line of a stanza. Leading tab characters carry the indentation the printed
@@ -41,11 +42,13 @@ export interface Hymnal {
  * Registered hymnals, in the order they should appear in the book switcher.
  *
  * To add another book, generate a JSON file matching the `Hymnal` shape above
- * and add it here — nothing else in the app needs to change. (Songs of Faith
- * and Praise would slot in this way, but its lyrics are under copyright, so no
- * data file ships with this repo.)
+ * and add it here — nothing else in the app needs to change.
+ *
+ * "Other Songs" is public-domain hymnody from the Open Hymnal Project, built
+ * by scripts/build-other-songs.mjs. It is deliberately not a copy of any
+ * copyrighted hymnal: songs still in copyright are not reproduced here.
  */
-const HYMNALS: Hymnal[] = [brethren as Hymnal];
+const HYMNALS: Hymnal[] = [brethren as Hymnal, otherSongs as Hymnal];
 
 const byId = new Map(HYMNALS.map((h) => [h.id, h]));
 
