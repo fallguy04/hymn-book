@@ -36,7 +36,14 @@
         26,
         27,
         28,
-        29
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
       ],
       "subsections": []
     }
@@ -44,6 +51,36 @@
   "hymns": [
     {
       "number": 1,
+      "title": "'Tis So Sweet to Trust in Jesus",
+      "meter": "8.7.8.7. with refrain",
+      "author": "Louisa M. R. Stead",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "'Tis so sweet to trust in Jesus,",
+          "\tJust to take Him at His Word,",
+          "Just to rest upon His promise,",
+          "\tJust to know, \"Thus saith the Lord.\""
+        ],
+        [
+          "Jesus, Jesus, how I trust Him!",
+          "\tHow I've proved Him o'er and o'er!",
+          "Jesus, Jesus, precious Jesus!",
+          "\tO for grace to trust Him more!"
+        ],
+        [
+          "I'm so glad I learned to trust Him,",
+          "\tPrecious Jesus, Savior, Friend;",
+          "And I know that He is with me,",
+          "\tHe'll be with me to the end."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 2,
       "title": "Abide With Me",
       "meter": "",
       "author": "Henry F. Lyte",
@@ -100,7 +137,7 @@
       ]
     },
     {
-      "number": 2,
+      "number": 3,
       "title": "Abide, O Dearest Jesus",
       "meter": "",
       "author": "Joshua Stegmann",
@@ -133,7 +170,7 @@
       ]
     },
     {
-      "number": 3,
+      "number": 4,
       "title": "All Praise to Jesus' Hallowed Name",
       "meter": "",
       "author": null,
@@ -170,7 +207,7 @@
       ]
     },
     {
-      "number": 4,
+      "number": 5,
       "title": "Amazing Grace",
       "meter": "C.M.",
       "author": "John Newton",
@@ -197,7 +234,7 @@
       ]
     },
     {
-      "number": 5,
+      "number": 6,
       "title": "And Can It Be",
       "meter": "L.M. with refrain",
       "author": "Charles Wesley",
@@ -254,7 +291,7 @@
       ]
     },
     {
-      "number": 6,
+      "number": 7,
       "title": "Count Your Blessings",
       "meter": "11s. with refrain",
       "author": "Johnson Oatman, Jr.",
@@ -296,7 +333,7 @@
       ]
     },
     {
-      "number": 7,
+      "number": 8,
       "title": "Crown Him with Many Crowns",
       "meter": "S.M.D.",
       "author": "Matthew Bridges",
@@ -395,7 +432,28 @@
       ]
     },
     {
-      "number": 8,
+      "number": 9,
+      "title": "Day by Day",
+      "meter": "10.9.10.9.",
+      "author": "Lina Sandell",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Day by day and with each passing moment,",
+          "Strength I find to meet my trials here;",
+          "Trusting in my Father's wise bestowment,",
+          "I've no cause for worry or for fear."
+        ],
+        [
+          "He whose heart is kind beyond all measure",
+          "Gives unto each day what He deems best",
+          "Lovingly, it's part of pain and pleasure,",
+          "Mingling toil with peace and rest."
+        ]
+      ]
+    },
+    {
+      "number": 10,
       "title": "For The Beauty Of The Earth",
       "meter": "",
       "author": "Folliot S. Pierpoint",
@@ -452,7 +510,7 @@
       ]
     },
     {
-      "number": 9,
+      "number": 11,
       "title": "Hark, the Voice of Jesus Calling",
       "meter": "",
       "author": "Daniel March",
@@ -497,7 +555,7 @@
       ]
     },
     {
-      "number": 10,
+      "number": 12,
       "title": "He Bore It All",
       "meter": "Irregular with refrain",
       "author": "J. R. Baxter, Jr.",
@@ -521,7 +579,121 @@
       ]
     },
     {
-      "number": 11,
+      "number": 13,
+      "title": "I Have Decided to Follow Jesus",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "I have decided to follow Jesus;",
+          "I have decided to follow Jesus;",
+          "I have decided to follow Jesus;",
+          "No turning back, no turning back."
+        ],
+        [
+          "The world behind me, the cross before me;",
+          "The world behind me, the cross before me;",
+          "The world behind me, the cross before me;",
+          "No turning back, no turning back."
+        ],
+        [
+          "Though none go with me, still I will follow;",
+          "Though none go with me, still I will follow;",
+          "Though none go with me, still I will follow;",
+          "No turning back, no turning back."
+        ],
+        [
+          "Will you decide now to follow Jesus?",
+          "Will you decide now to follow Jesus?",
+          "Will you decide now to follow Jesus?",
+          "No turning back, no turning back."
+        ]
+      ]
+    },
+    {
+      "number": 14,
+      "title": "I Shall Not Be Moved",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Glory hallelujah, I shall not be moved;",
+          "Anchored in Jehovah, I shall not be moved;",
+          "\tJust like a tree that's planted by the waters,",
+          "\tI shall not be moved."
+        ],
+        [
+          "In His love abiding, I shall not be moved;",
+          "And in Him confiding I shall not be moved;",
+          "\tJust like a tree that's planted by the waters,",
+          "\tI shall not be moved."
+        ],
+        [
+          "Tho all hell assail me, I shall not be moved;",
+          "Jesus will not fail me, I shall not be moved;",
+          "\tJust like a tree that's planted by the waters,",
+          "\tI shall not be moved."
+        ],
+        [
+          "Tho the tempest rages, I shall not be moved;",
+          "On the Rock of Ages, I shall not be moved;",
+          "\tJust like a tree that's planted by the waters,",
+          "\tI shall not be moved."
+        ]
+      ]
+    },
+    {
+      "number": 15,
+      "title": "I Sing the Mighty Power of God",
+      "meter": "C.M.D.",
+      "author": "Isaac Watts",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "I sing the mighty pow'r of God, that made the mountains rise;",
+          "That spread the flowing seas abroad, and built the lofty skies.",
+          "I sing the wisdom that ordained the sun to rule the day;",
+          "The moon shines full at His command, and all the stars obey."
+        ],
+        [
+          "I sing the goodness of the Lord that filled the earth with food;",
+          "He formed the creatures with His word and then pronounced them good.",
+          "Lord, how thy wonders are displayed, where e'er I turn my eye:",
+          "If I survey the ground I tread, or gaze upon the sky."
+        ],
+        [
+          "There's not a plant or flow'r below, but makes Thy glories known;",
+          "And clouds arise, and tempests blow, by order from Thy throne;",
+          "While all that borrows life from Thee is ever in Thy care,",
+          "And ev'ry where that man can be, Thou, God, art present there."
+        ]
+      ]
+    },
+    {
+      "number": 16,
+      "title": "I Will Sing of the Mercies of the Lord Forever",
+      "meter": "Irregular",
+      "author": "James H. Fillmore",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "I will sing of the mercies of the Lord forever,",
+          "\tI will sing, I will sing.",
+          "I will sing of the mercies of the Lord forever,",
+          "\tI will sing of the mercies of the Lord."
+        ],
+        [
+          "With my mouth will I make known",
+          "\tThy faithfulness, Thy faithfulness.",
+          "With my mouth will I make known",
+          "\tThy faithfulness to all generations."
+        ]
+      ]
+    },
+    {
+      "number": 17,
       "title": "Jesus Grant That Balm and Healing",
       "meter": "",
       "author": "Johann Heermann",
@@ -566,7 +738,7 @@
       ]
     },
     {
-      "number": 12,
+      "number": 18,
       "title": "Jesus Paid It All",
       "meter": "6.6.7.7. with refrain",
       "author": "Elvina M. Hall",
@@ -608,7 +780,7 @@
       ]
     },
     {
-      "number": 13,
+      "number": 19,
       "title": "Jesus Sinners Doth Receive",
       "meter": "",
       "author": "Erdmann Neumeister",
@@ -657,7 +829,7 @@
       ]
     },
     {
-      "number": 14,
+      "number": 20,
       "title": "Jesus, King of Glory",
       "meter": "",
       "author": "W. Hope Davison",
@@ -702,7 +874,7 @@
       ]
     },
     {
-      "number": 15,
+      "number": 21,
       "title": "Low in the Grave He Lay",
       "meter": "Irregular with refrain",
       "author": "Robert Lowry",
@@ -740,7 +912,7 @@
       ]
     },
     {
-      "number": 16,
+      "number": 22,
       "title": "Man of Sorrows! What a Name",
       "meter": "7s. with refrain",
       "author": "Philip P. Bliss",
@@ -779,7 +951,7 @@
       ]
     },
     {
-      "number": 17,
+      "number": 23,
       "title": "Now Praise We Christ, the Holy One",
       "meter": "",
       "author": "Coelius Sedulius",
@@ -820,7 +992,7 @@
       ]
     },
     {
-      "number": 18,
+      "number": 24,
       "title": "O Day of Rest And Gladness",
       "meter": "",
       "author": "Christopher Wordsworth",
@@ -865,7 +1037,7 @@
       ]
     },
     {
-      "number": 19,
+      "number": 25,
       "title": "O Sacred Head, Now Wounded",
       "meter": "",
       "author": "Bernard of Clairvaux",
@@ -940,7 +1112,7 @@
       ]
     },
     {
-      "number": 20,
+      "number": 26,
       "title": "O That The Lord Would Guide My Ways",
       "meter": "",
       "author": "Isaac Watts",
@@ -973,7 +1145,45 @@
       ]
     },
     {
-      "number": 21,
+      "number": 27,
+      "title": "Onward, Christian Soldiers",
+      "meter": "6.5.6.5.D. with refrain",
+      "author": "Sabine Baring-Gould",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Onward, Christian soldiers!",
+          "\tMarching as to war,",
+          "With the cross of Jesus",
+          "\tGoing on before.",
+          "Christ, the royal Master,",
+          "\tLeads against the foe;",
+          "Forward into battle,",
+          "\tSee his banners go!"
+        ],
+        [
+          "Onward, Christian soldiers!",
+          "\tMarching as to war,",
+          "With the cross of Jesus",
+          "\tGoing on before."
+        ],
+        [
+          "Like a mighty army",
+          "\tMoves the Church of God;",
+          "Brothers, we are treading",
+          "\tWhere the Saints have trod.",
+          "We are not divided;",
+          "\tAll one body we:",
+          "One in hope and doctrine,",
+          "\tOne in charity."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 28,
       "title": "Over Kidron Jesus Treadeth",
       "meter": "",
       "author": "Thomas Hansen Kingo",
@@ -1018,7 +1228,7 @@
       ]
     },
     {
-      "number": 22,
+      "number": 29,
       "title": "See Amid the Winter's Snow",
       "meter": "",
       "author": "Edward Caswall",
@@ -1063,7 +1273,7 @@
       ]
     },
     {
-      "number": 23,
+      "number": 30,
       "title": "Sweet Will of God",
       "meter": "9.8.9.8. with refrain",
       "author": "Lelia N. Morris",
@@ -1105,7 +1315,7 @@
       ]
     },
     {
-      "number": 24,
+      "number": 31,
       "title": "Take My Life And Let It Be",
       "meter": "",
       "author": "Frances R. Havergal",
@@ -1138,49 +1348,43 @@
       ]
     },
     {
-      "number": 25,
+      "number": 32,
       "title": "The Lord Is My Light",
-      "meter": "10s. with refrain",
-      "author": "James L. Nicholson",
+      "meter": "Irregular",
+      "author": "George F. Root",
       "authorSource": "songs/",
       "stanzas": [
         [
-          "The Lord is my light; then why should I fear?",
-          "By day and by night His presence is near.",
-          "He is my salvation from sorrow and sin;",
-          "This blessed assurance the Spirit doth bring."
+          "The Lord is my light, is my light and my salvation;",
+          "\tWhom shall I fear?",
+          "The Lord is the strength, is the strength of my heart;",
+          "\tIn whom shall I be afraid?"
         ],
         [
-          "The Lord is my light,",
-          "\tHe is my joy and my song;",
-          "By day and by night",
-          "\tHe leads, He leads me along."
+          "Though an host should encamp against me,",
+          "\tMy heart shall not fear;",
+          "Though war should rise against me,",
+          "\tIn this will I be confident."
         ],
         [
-          "The Lord is my light; though clouds may arise,",
-          "Faith, stronger than sight, looks up through the skies",
-          "Where Jesus forever in glory doth reign;",
-          "Then how can I ever in darkness remain?"
+          "One thing I have desired of the Lord,",
+          "\tThat I will seek after:"
         ],
         [
-          "The Lord is my light; the Lord is my strength;",
-          "I know that in Him my soul will at length",
-          "Find safe habitation, find refuge and rest",
-          "In mansions eternal, forever be blest."
-        ],
-        [
-          "The Lord is my light, my all and in all;",
-          "There is in His sight no darkness at all;",
-          "He is my Redeemer, my Savior and King;",
-          "With saints and with angels His praises I'll sing."
+          "That I may dwell in the house of the Lord,",
+          "\tThat I may dwell,",
+          "\tThat I may dwell,",
+          "\tThat I may dwell,",
+          "\tThat I may dwell",
+          "All the days, all the days of my life."
         ]
       ],
       "refrains": [
-        1
+        3
       ]
     },
     {
-      "number": 26,
+      "number": 33,
       "title": "To Avert From Men God's Wrath",
       "meter": "",
       "author": null,
@@ -1219,7 +1423,7 @@
       ]
     },
     {
-      "number": 27,
+      "number": 34,
       "title": "Walking in Sunlight",
       "meter": "10.9.10.9. with refrain",
       "author": "Henry J. Zelley",
@@ -1255,7 +1459,7 @@
       ]
     },
     {
-      "number": 28,
+      "number": 35,
       "title": "While O'er Our Guilty Land, O Lord",
       "meter": "",
       "author": null,
@@ -1300,7 +1504,7 @@
       ]
     },
     {
-      "number": 29,
+      "number": 36,
       "title": "Who Is on the Lord's Side?",
       "meter": "6.5.6.5.D.",
       "author": "Frances R. Havergal",

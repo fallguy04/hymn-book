@@ -134,11 +134,69 @@ copyrighted for most of your life and isn't now.
 *US rule of thumb: published 1930 or earlier → public domain. Later → assume
 copyrighted unless proven otherwise.*
 
-### ❓ Couldn't determine — need a writer or approximate date
+---
+
+## 2b. The YFS camp songbooks (2020 and 2022)
+
+Both `.docx` files were parsed. **2022 is the complete set — 50 songs.** 2020 is
+effectively a subset of it; the only song in 2020 that isn't in 2022 is *Lord,
+Listen to Your Children Praying* (Ken Medema, 1973 — in copyright).
+
+### ✅ Added from the camp book (7)
+
+Public domain, and typed from the camp book's own text so the line breaks are
+the ones the congregation actually sings.
+
+| Song | Author | Year |
+|---|---|---|
+| Day by Day | Lina Sandell, tr. Skoog | 1865 |
+| I Have Decided to Follow Jesus | anonymous / traditional | — |
+| I Shall Not Be Moved | traditional spiritual | — |
+| I Sing the Mighty Power of God | Isaac Watts | 1715 |
+| I Will Sing of the Mercies of the Lord | James H. Fillmore | 1893 |
+| Onward, Christian Soldiers | Sabine Baring-Gould | 1865 |
+| 'Tis So Sweet to Trust in Jesus | Louisa M. R. Stead | 1882 |
+
+Already present: **Take My Life and Let It Be** (Havergal, 1874) and **The Lord
+Is My Light** (Root, 1894 — now carrying the congregation's own text).
+
+### 🔴 In copyright — cannot add without permission (25)
+
+As the Deer · Because He Lives · Bind Us Together · Faithful Love · Father, I
+Adore You · He Has Made Me Glad · He Paid a Debt · Here I Am to Worship · I Love
+You, Lord · I Stand in Awe of You · If That Isn't Love · In Moments Like These ·
+Instruments of Your Peace · Just a Little Talk with Jesus · Lord, Listen to Your
+Children Praying · Our God, He Is Alive · Sanctuary · Seek Ye First · Shine,
+Jesus, Shine · Step by Step · There Is a Redeemer · Thy Word · Unto Thee, O Lord
+· We Have This Moment · We Shall Assemble · We Will Glorify
+
+All post-1930. *Just a Little Talk with Jesus* is the closest to expiring —
+Cleavant Derricks, 1937, so roughly 2033.
+
+*(The 2022 book prints "Step by Step" twice, at 36 and 37.)*
+
+### ❓ Unidentified — 14 camp songs
+
+Alive, Alive · Beautiful Lamb of God · Feelin' Fine · Fill Up My Cup · Friends
+Forever · God's Wonderful People · I Want Us to Be Together in Heaven · I Will
+Serve You · Jesus Signed My Pardon · Let the Voice of Thunder Raise · Poured Out
+Like Wine · The Lord Liveth · The Touch of His Hand · We Declare That the
+Kingdom of God Is Here · You Are the Words and the Music
+
+Most read as modern camp choruses, which means copyrighted — but "reads modern"
+isn't evidence. **The Touch of His Hand** is a special case: its page in the
+2022 file is an image, not text, so there is nothing to extract at all.
+
+---
+
+## 2c. Couldn't determine — need a writer or approximate date
 
 Hallelujah for the Blood · God Bless You Go With God · I Will Abide in Thy
-Dwelling Place · Instruments of Your Peace *(the Francis prayer is ancient, but
-the sung setting is almost certainly modern)*
+Dwelling Place
+
+*Instruments of Your Peace* is now settled: the camp book's text ("Walls of
+pride and prejudice shall cease") is a modern setting, not the ancient Francis
+prayer. **In copyright.**
 
 Any one of these settles it: a writer's name, a decade, the songbook it was
 learned from, or a copyright line printed at the foot of the page. Titles alone

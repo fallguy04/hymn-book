@@ -272,6 +272,14 @@ function SettingsPanel() {
           the printed page drops a line it has been restored from the original hymn, and noted in
           the project&rsquo;s corrections file.
         </p>
+        {/* The policy existed but nothing linked to it, which makes it a file
+            rather than a disclosure. */}
+        <a
+          href="/privacy"
+          className="mt-3 inline-block font-sans text-[0.7rem] text-paper-muted underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-ink"
+        >
+          Privacy
+        </a>
       </section>
     </div>
   );
