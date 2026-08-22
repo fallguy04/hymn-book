@@ -54,15 +54,38 @@ Four drafts, in Gmail:
 
 | To | Covers | Address |
 |---|---|---|
-| CCLI | Does the CCL cover this at all? | via [ccli.com](https://ccli.com/) support · 1-800-234-2446 |
-| Capitol CMG Publishing | Keith Green, Geoff Moore/Chapman, Kendrick, Lafferty, Ball | `CapitolCMGLicensing@umusic.com` |
-| Hallal Music (Ken Young) | Faithful Love · Consider Him | form at hallalmusic.com/contact · 432-638-9932 |
-| Shepherd's Heart Music | Jesus, Flow Like a River | form at dennisjernigan.com/contact-us · 918-781-1200 |
+| To | Covers | Address | Status |
+|---|---|---|---|
+| Capitol CMG Publishing | the largest cluster — ~9 camp songs plus Green, Moore/Chapman, Kendrick | `CapitolCMGLicensing@umusic.com` | **sent 22 Aug 2026** |
+| Hallal Music (Ken Young) | Faithful Love · Consider Him | `info@hallalmusic.com` | **sent 22 Aug 2026** |
+| Shepherd's Heart Music | Jesus, Flow Like a River | `mail@dennisjernigan.com` | **sent 22 Aug 2026** |
+| CCLI | Does the CCL cover this at all? | **no email exists** — form only | not sent |
 
-Three of the four have no published email address — send those through the
-contact form or by phone. Each draft asks the recipient to redirect it if they
-don't administer the song, since publisher assignments are easy to get wrong
-from the outside.
+Each asks for **blanket coverage of the catalog**, not a fixed title list, since
+the list grows as members ask for songs. Each also asks the recipient to
+redirect it if they don't administer the song, because publisher assignments are
+easy to get wrong from outside.
+
+**CCLI publishes no email address.** Their contact page lists a phone, a street
+address, business hours and a web form — nothing else. The form is also behind a
+Cloudflare Turnstile bot check and requires a phone number, so it has to be
+submitted by hand: [ccli.com/us/en/contact-ccli](https://ccli.com/us/en/contact-ccli),
+or call 1-800-234-2446 (6am–5pm PT).
+
+**Capitol CMG's own preferred route** is the portal at
+[licensing.capitolcmg.com](https://licensing.capitolcmg.com) → CHURCH / INDIE →
+Start Request. Worth using if the email goes unanswered; note that the address
+above appears widely online but is not printed on Capitol CMG's own contact
+page, which lists only `info@umusic.com`.
+
+### Still to write
+
+The camp book brings in publishers nobody has contacted yet: Gaither Music
+(Because He Lives · We Have This Moment), Word Music (Lord, Listen to Your
+Children Praying), Ellis J. Crum (He Paid a Debt), Sacred Selections (Our God,
+He Is Alive), Brentwood-Benson (He Has Made Me Glad), Integrity (We Shall
+Assemble). Worth waiting on CCLI's answer first — if they cover it, none of
+these are needed.
 
 ---
 
@@ -184,8 +207,15 @@ Like Wine · The Lord Liveth · The Touch of His Hand · We Declare That the
 Kingdom of God Is Here · You Are the Words and the Music
 
 Most read as modern camp choruses, which means copyrighted — but "reads modern"
-isn't evidence. **The Touch of His Hand** is a special case: its page in the
-2022 file is an image, not text, so there is nothing to extract at all.
+isn't evidence.
+
+**Neither songbook prints a single copyright line.** No ©, no CCLI numbers, no
+writer credits anywhere in either file — so the books themselves can't settle
+any of these. Identification has to come from someone who knows the songs.
+
+*(An earlier note here said The Touch of His Hand was a page image with no
+extractable text. That was a parser bug — its page is set at a different size
+and was being skipped. The text is available; only the attribution is missing.)*
 
 ---
 
