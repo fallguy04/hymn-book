@@ -1,22 +1,4 @@
 {
-  "_readme": [
-    "Author attributions, kept separate from the extracted text so that re-running",
-    "scripts/extract-hymns.mjs never overwrites research. The hymnal itself prints",
-    "no authors at all, so every entry here comes from outside the book and is",
-    "matched by first line — the stable key for public-domain hymnody, since these",
-    "titles are the Brethren editors' topical labels rather than the hymns' names.",
-    "",
-    "Only well-documented authorship is claimed. Hymns that are anonymous, are",
-    "centos assembled from several writers (hymn 1 is Watts plus Tate and Brady),",
-    "or are Brethren-specific texts of uncertain origin are deliberately absent and",
-    "render as unattributed. Absence here means 'not established', not 'anonymous'.",
-    "'How firm a foundation' (523-524) is a case in point: it is signed only 'K—'",
-    "in Rippon's Selection, and Keene, Keith and Kirkham have all been proposed.",
-    "",
-    "source: 'hymnary.org' was checked directly against that entry.",
-    "source: 'standard hymnody reference' is settled, widely published authorship",
-    "that was not individually re-verified against a primary source."
-  ],
   "2": {
     "author": "Isaac Watts",
     "source": "hymnary.org"
@@ -617,6 +599,10 @@
     "author": "David Nelson",
     "source": "standard hymnody reference"
   },
+  "452": {
+    "author": "William Hunter",
+    "source": "hymnary.org (scripture API, matched by first line)"
+  },
   "454": {
     "author": "Thomas Hastings",
     "source": "standard hymnody reference"
@@ -628,6 +614,10 @@
   "456": {
     "author": "Isaac Watts",
     "source": "standard hymnody reference"
+  },
+  "457": {
+    "author": "Elizabeth Mills",
+    "source": "hymnary.org (scripture API, matched by first line)"
   },
   "458": {
     "author": "Isaac Watts",
@@ -686,8 +676,8 @@
     "source": "standard hymnody reference"
   },
   "490": {
-    "author": "John Newton",
-    "source": "standard hymnody reference"
+    "author": "George Heath",
+    "source": "hymnary.org (corrects an earlier misattribution to John Newton)"
   },
   "491": {
     "author": "Charles Wesley",
@@ -768,5 +758,23 @@
   "553": {
     "author": "Isaac Watts",
     "source": "standard hymnody reference"
-  }
+  },
+  "_readme": [
+    "Author attributions, kept separate from the extracted text so that re-running",
+    "scripts/extract-hymns.mjs never overwrites research. The hymnal itself prints",
+    "no authors at all, so every entry here comes from outside the book and is",
+    "matched by first line — the stable key for public-domain hymnody, since these",
+    "titles are the Brethren editors' topical labels rather than the hymns' names.",
+    "",
+    "Only well-documented authorship is claimed. Hymns that are anonymous, are",
+    "centos assembled from several writers (hymn 1 is Watts plus Tate and Brady),",
+    "or are Brethren-specific texts of uncertain origin are deliberately absent and",
+    "render as unattributed. Absence here means 'not established', not 'anonymous'.",
+    "'How firm a foundation' (523-524) is a case in point: it is signed only 'K—'",
+    "in Rippon's Selection, and Keene, Keith and Kirkham have all been proposed.",
+    "",
+    "source: 'hymnary.org' was checked directly against that entry.",
+    "source: 'standard hymnody reference' is settled, widely published authorship",
+    "that was not individually re-verified against a primary source."
+  ]
 }

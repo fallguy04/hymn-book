@@ -15713,8 +15713,8 @@
       "number": 452,
       "title": "The fatherland.",
       "meter": "9s and 8s.",
-      "author": null,
-      "authorSource": null,
+      "author": "William Hunter",
+      "authorSource": "hymnary.org (scripture API, matched by first line)",
       "stanzas": [
         [
           "THERE is a place where my hopes are stayed",
@@ -15912,8 +15912,8 @@
       "number": 457,
       "title": "Sighing for home. —Psalm 55:6.",
       "meter": "C.M.",
-      "author": null,
-      "authorSource": null,
+      "author": "Elizabeth Mills",
+      "authorSource": "hymnary.org (scripture API, matched by first line)",
       "stanzas": [
         [
           "O LAND of rest for thee I sigh!",
@@ -17107,8 +17107,8 @@
       "number": 490,
       "title": "Christian watchfulness.",
       "meter": "S.M.",
-      "author": "John Newton",
-      "authorSource": "standard hymnody reference",
+      "author": "George Heath",
+      "authorSource": "hymnary.org (corrects an earlier misattribution to John Newton)",
       "stanzas": [
         [
           "MY soul! be on thy guard,",
