@@ -26,6 +26,16 @@ interface HymnalState {
   setTheme: (theme: Theme) => void;
   setTextSize: (size: TextSize) => void;
   dismissInstall: () => void;
+  applySync: (incoming: SyncedState) => void;
+}
+
+/** The part of the store a sync code carries. Recents are left out — they're
+ *  a trail through this device, not a preference worth moving. */
+export interface SyncedState {
+  favorites: number[];
+  tunes: SavedTune[];
+  theme: Theme;
+  textSize: TextSize;
 }
 
 const RECENTS_LIMIT = 8;
@@ -70,6 +80,26 @@ export const useHymnalStore = create<HymnalState>()(
       setTheme: (theme) => set({ theme }),
       setTextSize: (textSize) => set({ textSize }),
       dismissInstall: () => set({ installDismissed: true }),
+
+      /**
+       * Merge rather than replace. Someone restoring a code onto a device they
+       * have already been using should not silently lose the hymns they
+       * starred on it — a union can be pruned afterwards, a wipe cannot be
+       * undone. Appearance is taken from the incoming side, since that is the
+       * setting you were deliberately carrying over.
+       */
+      applySync: (incoming) =>
+        set((s) => ({
+          favorites: [...new Set([...s.favorites, ...incoming.favorites])].sort((a, b) => a - b),
+          tunes: [
+            ...s.tunes,
+            ...incoming.tunes.filter(
+              (t) => !s.tunes.some((own) => own.name === t.name && own.meter === t.meter),
+            ),
+          ],
+          theme: incoming.theme,
+          textSize: incoming.textSize,
+        })),
     }),
     {
       name: "hymnal",

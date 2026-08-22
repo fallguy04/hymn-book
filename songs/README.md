@@ -34,6 +34,16 @@ I once was lost, but now am found,
   than scraped ones.
 - **Indent a line** with a tab or two spaces to inset it, the way a hymnal
   indents alternating lines. Two tabs indents further.
+- **Mark a refrain** by putting `Refrain:` (or `Chorus:`) alone on the first
+  line of its stanza. It then prints once, labelled, in italics — and it stops
+  being counted as a verse, so the stanza after it is verse 2 rather than
+  verse 3. Getting that wrong matters the moment somebody calls out a number.
+
+```
+Refrain:
+Jesus paid it all,
+	All to Him I owe;
+```
 
 Anything else — extra blank lines, trailing spaces, Windows line endings — is
 tidied up on import.

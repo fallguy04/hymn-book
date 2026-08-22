@@ -10,9 +10,11 @@ import { RefreshCw } from "lucide-react";
  */
 export default function ServiceWorker() {
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
+  /** A newer build is deployed than the one this page is running. */
+  const [stale, setStale] = useState(false);
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator) || process.env.NODE_ENV !== "production") return;
+    if (process.env.NODE_ENV !== "production") return;
 
     /**
      * Hand the worker every same-origin asset this page actually loaded, so
@@ -65,22 +67,60 @@ export default function ServiceWorker() {
       }
     };
 
+    /**
+     * Ask the server which build is live and compare it to the one this page
+     * was served as. This is the check that catches the case the worker cannot:
+     * an installed PWA resumed from the app switcher never navigates, so it
+     * never fetches new HTML, never registers a new worker, and sits happily on
+     * a build from weeks ago. Nothing goes wrong — it just quietly stops being
+     * the app you deployed.
+     */
+    const checkForNewBuild = async () => {
+      if (document.visibilityState !== "visible") return;
+      try {
+        const response = await fetch("/api/version", { cache: "no-store" });
+        if (!response.ok) return;
+        const { buildId } = await response.json();
+        if (buildId && buildId !== process.env.NEXT_PUBLIC_BUILD_ID) setStale(true);
+      } catch {
+        // Offline, most likely. The build we have is the one we can run.
+      }
+    };
+
+    // Every return to the app is a chance to notice a deploy — that is exactly
+    // when a resumed PWA has been away long enough for one to have happened.
+    document.addEventListener("visibilitychange", checkForNewBuild);
+    checkForNewBuild();
+
+    const start = () => {
+      if ("serviceWorker" in navigator) register();
+    };
+
     // Hydration usually happens after `load` has already fired, so waiting on
     // the event would mean never registering at all. Only defer if the page is
     // genuinely still loading.
-    if (document.readyState === "complete") {
-      register();
-      return;
-    }
-    window.addEventListener("load", register, { once: true });
-    return () => window.removeEventListener("load", register);
+    if (document.readyState === "complete") start();
+    else window.addEventListener("load", start, { once: true });
+
+    return () => {
+      document.removeEventListener("visibilitychange", checkForNewBuild);
+      window.removeEventListener("load", start);
+    };
   }, []);
 
-  if (!waiting) return null;
+  if (!waiting && !stale) return null;
 
   return (
     <button
       onClick={() => {
+        // Two ways to be out of date, and they need different handling. A
+        // waiting worker has to be told to take over first, or the reload just
+        // serves the same old build again. A stale page with no waiting worker
+        // — the resumed-PWA case — only needs the reload.
+        if (!waiting) {
+          location.reload();
+          return;
+        }
         waiting.postMessage({ type: "SKIP_WAITING" });
         navigator.serviceWorker.addEventListener("controllerchange", () => location.reload(), {
           once: true,

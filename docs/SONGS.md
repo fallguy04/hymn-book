@@ -39,10 +39,30 @@ alone does **not** make it legal to put copyrighted lyrics in a public app.
    copyrightable, so "SFP 728 — How Great Thou Art" is safe to display. Useful
    for "what number is that?" without reproducing anything.
 
-**Also worth knowing:** access control matters. A members-only app is a far
-weaker target than a public one, and it's the difference between "song sheets
-for our congregation" and "publishing lyrics on the internet." If you pursue
-path 1 or 2, offer that up front — it makes a yes much more likely.
+**Access control was considered and ruled out.** A members-only app would be an
+easier ask — it's the difference between "song sheets for our congregation" and
+"publishing lyrics on the internet" — but the app stays public. The permission
+requests say so plainly, because a permission granted on a false description of
+the app isn't worth having.
+
+What's offered instead: credit on every song, no printing or export, immediate
+removal on request, and no revenue of any kind.
+
+### Requests sent
+
+Four drafts, in Gmail:
+
+| To | Covers | Address |
+|---|---|---|
+| CCLI | Does the CCL cover this at all? | via [ccli.com](https://ccli.com/) support · 1-800-234-2446 |
+| Capitol CMG Publishing | Keith Green, Geoff Moore/Chapman, Kendrick, Lafferty, Ball | `CapitolCMGLicensing@umusic.com` |
+| Hallal Music (Ken Young) | Faithful Love · Consider Him | form at hallalmusic.com/contact · 432-638-9932 |
+| Shepherd's Heart Music | Jesus, Flow Like a River | form at dennisjernigan.com/contact-us · 918-781-1200 |
+
+Three of the four have no published email address — send those through the
+contact form or by phone. Each draft asks the recipient to redirect it if they
+don't administer the song, since publisher assignments are easy to get wrong
+from the outside.
 
 ---
 
@@ -58,22 +78,38 @@ path 1 or 2, offer that up front — it makes a yes much more likely.
 | And Can It Be | Other Songs (Wesley, 1738) |
 | Crown Him with Many Crowns | Other Songs (Bridges, 1851) |
 
-### 🟢 Public domain — can be added, just needs text
+### 🟡 Added, drafted from memory — **need proofreading before use**
 
-| Song | Author | Year |
-|---|---|---|
-| Jesus Paid It All | Elvina Hall | 1865 |
-| Low in the Grave He Lay | Robert Lowry | 1874 |
-| Who Is on the Lord's Side | Frances Havergal | 1877 |
-| The Lord Is My Light | George F. Root | d. 1895 |
-| Count Your Blessings | Johnson Oatman Jr. | 1897 |
-| Walking in Sunlight | Henry J. Zelley | 1899 |
-| Sweet Will of God | Lelia Morris | 1900 |
-| **He Bore It All** | Baxter / Stamps | **1926** |
+All eight are public domain. None was in the Open Hymnal Project and every
+external text source failed, so these were written out from knowledge rather
+than transcribed. Check each against a printed copy; the `Source:` line in each
+file says so too.
 
-**He Bore It All** is the surprise: published 1926, renewed 1954, so its 95-year
-term ran out and it entered the public domain in **2022**. It was copyrighted
-for most of your life and isn't now.
+| Song | Author | Year | State |
+|---|---|---|---|
+| Jesus Paid It All | Elvina M. Hall | 1865 | complete draft |
+| Low in the Grave He Lay | Robert Lowry | 1874 | complete draft |
+| Who Is on the Lord's Side? | Frances R. Havergal | 1877 | complete draft |
+| Count Your Blessings | Johnson Oatman, Jr. | 1897 | complete draft |
+| Walking in Sunlight | Henry J. Zelley | 1899 | complete draft |
+| Sweet Will of God | Lelia N. Morris | 1900 | complete draft |
+| **He Bore It All** | J. R. Baxter, Jr. / V. O. Stamps | **1926** | **stanza 1 + refrain only** |
+| The Lord Is My Light | George F. Root | 1894 | **opening only** |
+
+Two are deliberately incomplete. Writing a stanza I half-remember into a book
+people sing from is worse than leaving a visible gap, so the gap is left:
+
+- **He Bore It All** — stanza 1 and the refrain are corroborated; stanzas 2–3
+  need typing from a copy.
+- **The Lord Is My Light** — Root's setting of Psalm 27 repeats phrases in a way
+  particular to his arrangement, and those repeats can't be guessed at. Note
+  there is a *different* hymn of the same title by James L. Nicholson (1877),
+  "The Lord is my light; then why should I fear?" — that one is well documented
+  but is not the one this congregation sings.
+
+**He Bore It All** is the surprise of the list: published 1926, renewed 1954, so
+its 95-year term ran out and it entered the public domain in **2022**. It was
+copyrighted for most of your life and isn't now.
 
 ### 🔴 Still in copyright — cannot add lyrics without permission
 
@@ -104,6 +140,12 @@ Hallelujah for the Blood · God Bless You Go With God · I Will Abide in Thy
 Dwelling Place · Instruments of Your Peace *(the Francis prayer is ancient, but
 the sung setting is almost certainly modern)*
 
+Any one of these settles it: a writer's name, a decade, the songbook it was
+learned from, or a copyright line printed at the foot of the page. Titles alone
+aren't enough — several of these are common phrases attached to more than one
+song, which is exactly how "The Lord Is My Light" came to be attributed to the
+wrong writer in an earlier version of this document.
+
 ---
 
 ## 3. How to add a song
@@ -132,7 +174,10 @@ Sin had left a crimson stain,
 ```
 
 - Headers first, then **one blank line**, then stanzas separated by blank lines.
-- `Title` is required; `Author`, `Meter`, `Source` are optional.
+- `Title` is required; `Author`, `Meter`, `Source`, `Note` are optional.
+- **A refrain** is a stanza whose first line is just `Refrain:` (or `Chorus:`).
+  It prints once, labelled and in italics, and is skipped when numbering the
+  verses — so the stanza after it is verse 2, not verse 3.
 - **Line breaks are kept exactly as typed** — this is the point. Every automated
   source loses them; that's why the Open Hymnal import yielded 17 of 300.
 - **Indent** a line with a tab or two spaces. Two tabs indents further.

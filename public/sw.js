@@ -29,12 +29,16 @@ const APP_SHELL = "/";
 const PRECACHE = [APP_SHELL, "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {
+  // Deliberately no skipWaiting() here. Taking over the moment it installs
+  // beat the page to the "Update available" banner: by the time the button
+  // appeared the worker had already activated, so `controllerchange` had
+  // fired, and tapping it waited for an event that would never come again.
+  // The new worker waits; the banner is what activates it.
   event.waitUntil(
     caches
       .open(SHELL)
       // Individually, so one 404 can't fail the whole install.
-      .then((cache) => Promise.allSettled(PRECACHE.map((url) => cache.add(url))))
-      .then(() => self.skipWaiting()),
+      .then((cache) => Promise.allSettled(PRECACHE.map((url) => cache.add(url)))),
   );
 });
 
@@ -76,6 +80,11 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  // API calls are never cached. /api/version exists to tell the page whether it
+  // is running the build that is actually deployed; answering that from cache
+  // would have it confirm, forever, that the stale build is current.
+  if (url.pathname.startsWith("/api/")) return;
 
   // Navigations: try the network so a deploy is picked up, fall back to the
   // cached shell when there's nothing to reach.

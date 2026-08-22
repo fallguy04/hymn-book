@@ -176,6 +176,7 @@ export default function Home() {
 
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar
+            hymnal={hymnal}
             hymn={hymn}
             isFavorite={favorites.includes(hymn.number)}
             onOpenMenu={() => {

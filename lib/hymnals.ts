@@ -20,6 +20,12 @@ export interface Hymn {
   author: string | null;
   authorSource: string | null;
   stanzas: Stanza[];
+  /**
+   * Indices into `stanzas` that are the recurring refrain rather than a verse.
+   * Absent on hymns that have none — which is all 558 of the collection, since
+   * the printed book sets no refrains.
+   */
+  refrains?: number[];
 }
 
 export interface Section {
@@ -34,9 +40,22 @@ export interface Hymnal {
   subtitle: string;
   shortName: string;
   isDefault?: boolean;
+  /**
+   * Whether a hymn's number is part of its identity. In the collection it is —
+   * people call for "hymn 73" and the number is printed on the page. In "Other
+   * Songs" the numbers are just positions in an alphabetical list, so putting
+   * "Hymn 1" above a song implies a name it doesn't have. They still order and
+   * address the songs; they're only kept off the page furniture.
+   *
+   * Absent means true, so a book has to opt out.
+   */
+  numbered?: boolean;
   sections: Section[];
   hymns: Hymn[];
 }
+
+/** Does this book's numbering mean anything to the person holding it? */
+export const isNumbered = (hymnal: Hymnal): boolean => hymnal.numbered !== false;
 
 /**
  * Registered hymnals, in the order they should appear in the book switcher.

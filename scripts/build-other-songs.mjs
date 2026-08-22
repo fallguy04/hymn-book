@@ -294,11 +294,25 @@ function parseSongFile(text, filename) {
 
   if (!stanzas.length) throw new Error(`${filename}: no stanzas`);
 
+  // A stanza opening with a bare "Refrain:" or "Chorus:" is the recurring one.
+  // It has to be marked rather than left as an ordinary stanza: the reader
+  // numbers stanzas as it renders them, so an unmarked refrain becomes "verse
+  // 2" and every real verse after it is numbered one too high.
+  const refrains = [];
+  stanzas.forEach((stanza, i) => {
+    if (!/^\t*(refrain|chorus)\s*:?\s*$/i.test(stanza[0])) return;
+    refrains.push(i);
+    stanza.shift();
+  });
+  const empty = refrains.find((i) => stanzas[i].length === 0);
+  if (empty !== undefined) throw new Error(`${filename}: a refrain marker with no lines under it`);
+
   return {
     title: headers.title,
     author: headers.author || null,
     meter: headers.meter || "",
     stanzas,
+    refrains,
     verified: -1, // hand-entered; nothing to verify it against
   };
 }
@@ -326,6 +340,9 @@ const hymnal = {
   title: "Other Songs",
   subtitle: "Public-domain hymns · from the Open Hymnal Project",
   shortName: "Other Songs",
+  // The numbers here are alphabetical positions, not names anybody calls a song
+  // by, so they order the book without being printed over it. See `isNumbered`.
+  numbered: false,
   sections: [
     {
       title: "OTHER SONGS",
@@ -342,6 +359,10 @@ const hymnal = {
     author: entry.author,
     authorSource: entry.author ? (entry.verified === -1 ? "songs/" : "openhymnal.org") : null,
     stanzas: entry.stanzas,
+    // Indices into `stanzas`. Omitted when there are none, so the 558 hymns of
+    // the extracted collection — which prints no refrains at all — stay as they
+    // are and the field costs nothing.
+    ...(entry.refrains?.length ? { refrains: entry.refrains } : {}),
   })),
 };
 

@@ -1,20 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { X, BookOpen, Users, Star, Music, Settings, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  X,
+  BookOpen,
+  Users,
+  Star,
+  Music,
+  Settings,
+  RefreshCw,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import { type Hymnal, getHymn, hymnTitle, authorIndex } from "@/lib/hymnals";
 import { useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
+import SyncPanel from "./SyncPanel";
 
-export type Panel = "contents" | "authors" | "favorites" | "tunes" | "settings";
+export type Panel = "contents" | "authors" | "favorites" | "tunes" | "sync" | "settings";
 
 const PANELS: { id: Panel; label: string; icon: typeof BookOpen }[] = [
   { id: "contents", label: "Contents", icon: BookOpen },
   { id: "authors", label: "Authors", icon: Users },
   { id: "favorites", label: "Favorites", icon: Star },
   { id: "tunes", label: "Tunes", icon: Music },
+  { id: "sync", label: "Sync", icon: RefreshCw },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -52,6 +64,7 @@ export default function BrowsePanels({
     authors: authorIndex(hymnal).length,
     favorites: favorites.length,
     tunes: tunes.length,
+    sync: null,
     settings: null,
   };
 
@@ -142,6 +155,12 @@ export default function BrowsePanels({
         )}
 
         {panel === "tunes" && <TuneList addTo={currentMeter || undefined} />}
+
+        {panel === "sync" && (
+          <div className="flex-1 overflow-y-auto overscroll-contain">
+            <SyncPanel />
+          </div>
+        )}
 
         {panel === "settings" && (
           <div className="flex-1 overflow-y-auto overscroll-contain">

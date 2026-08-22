@@ -1,9 +1,10 @@
 "use client";
 
 import { Menu, Star } from "lucide-react";
-import type { Hymn } from "@/lib/hymnals";
+import { type Hymn, type Hymnal, isNumbered } from "@/lib/hymnals";
 
 interface TopBarProps {
+  hymnal: Hymnal;
   hymn: Hymn;
   isFavorite: boolean;
   onOpenMenu: () => void;
@@ -15,7 +16,13 @@ interface TopBarProps {
  * flow, which meant scrolling back up to reach them and a hamburger that only
  * existed at the top of the page.
  */
-export default function TopBar({ hymn, isFavorite, onOpenMenu, onToggleFavorite }: TopBarProps) {
+export default function TopBar({
+  hymnal,
+  hymn,
+  isFavorite,
+  onOpenMenu,
+  onToggleFavorite,
+}: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-paper-rule/60 bg-paper/85 backdrop-blur-md">
       {/*
@@ -42,8 +49,20 @@ export default function TopBar({ hymn, isFavorite, onOpenMenu, onToggleFavorite 
           <Menu className="h-5 w-5" />
         </button>
 
-        <span className="col-start-2 justify-self-center font-serif text-[1.05rem] text-paper-ink">
-          Hymn <span className="tabular-nums">{hymn.number}</span>
+        {/*
+          "Hymn 73" is the hymn's name in the collection. In a book numbered
+          only by alphabetical position it names nothing, so that book gets its
+          own title here instead — still orienting, without inventing a number
+          anybody would call out.
+        */}
+        <span className="col-start-2 justify-self-center truncate px-2 font-serif text-[1.05rem] text-paper-ink">
+          {isNumbered(hymnal) ? (
+            <>
+              Hymn <span className="tabular-nums">{hymn.number}</span>
+            </>
+          ) : (
+            hymnal.shortName
+          )}
         </span>
 
         <div className="col-start-3 flex items-center justify-self-end">

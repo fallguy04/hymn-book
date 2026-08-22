@@ -3,6 +3,7 @@
   "title": "Other Songs",
   "subtitle": "Public-domain hymns · from the Open Hymnal Project",
   "shortName": "Other Songs",
+  "numbered": false,
   "sections": [
     {
       "title": "OTHER SONGS",
@@ -27,7 +28,15 @@
         18,
         19,
         20,
-        21
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
       ],
       "subsections": []
     }
@@ -246,6 +255,48 @@
     },
     {
       "number": 6,
+      "title": "Count Your Blessings",
+      "meter": "11s. with refrain",
+      "author": "Johnson Oatman, Jr.",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "When upon life's billows you are tempest tossed,",
+          "When you are discouraged, thinking all is lost,",
+          "Count your many blessings, name them one by one,",
+          "And it will surprise you what the Lord hath done."
+        ],
+        [
+          "Count your blessings, name them one by one;",
+          "Count your blessings, see what God hath done;",
+          "Count your blessings, name them one by one;",
+          "Count your many blessings, see what God hath done."
+        ],
+        [
+          "Are you ever burdened with a load of care?",
+          "Does the cross seem heavy you are called to bear?",
+          "Count your many blessings, ev'ry doubt will fly,",
+          "And you will be singing as the days go by."
+        ],
+        [
+          "When you look at others with their lands and gold,",
+          "Think that Christ has promised you His wealth untold;",
+          "Count your many blessings, money cannot buy",
+          "Your reward in heaven, nor your home on high."
+        ],
+        [
+          "So, amid the conflict, whether great or small,",
+          "Do not be discouraged, God is over all;",
+          "Count your many blessings, angels will attend,",
+          "Help and comfort give you to your journey's end."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 7,
       "title": "Crown Him with Many Crowns",
       "meter": "S.M.D.",
       "author": "Matthew Bridges",
@@ -344,7 +395,7 @@
       ]
     },
     {
-      "number": 7,
+      "number": 8,
       "title": "For The Beauty Of The Earth",
       "meter": "",
       "author": "Folliot S. Pierpoint",
@@ -401,7 +452,7 @@
       ]
     },
     {
-      "number": 8,
+      "number": 9,
       "title": "Hark, the Voice of Jesus Calling",
       "meter": "",
       "author": "Daniel March",
@@ -446,7 +497,31 @@
       ]
     },
     {
-      "number": 9,
+      "number": 10,
+      "title": "He Bore It All",
+      "meter": "Irregular with refrain",
+      "author": "J. R. Baxter, Jr.",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "My precious Savior suffered pain and agony,",
+          "\tHe bore it all that I might live;",
+          "He broke the bonds of sin and set the captive free,",
+          "\tHe bore it all that I might live."
+        ],
+        [
+          "He bore it all that I might see His shining face,",
+          "\tHe bore it all that I might live;",
+          "I stood condemned to die but Jesus took my place,",
+          "\tHe bore it all that I might live."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 11,
       "title": "Jesus Grant That Balm and Healing",
       "meter": "",
       "author": "Johann Heermann",
@@ -491,7 +566,49 @@
       ]
     },
     {
-      "number": 10,
+      "number": 12,
+      "title": "Jesus Paid It All",
+      "meter": "6.6.7.7. with refrain",
+      "author": "Elvina M. Hall",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "I hear the Savior say,",
+          "\t\"Thy strength indeed is small;",
+          "Child of weakness, watch and pray,",
+          "\tFind in Me thine all in all.\""
+        ],
+        [
+          "Jesus paid it all,",
+          "\tAll to Him I owe;",
+          "Sin had left a crimson stain,",
+          "\tHe washed it white as snow."
+        ],
+        [
+          "Lord, now indeed I find",
+          "\tThy pow'r, and Thine alone,",
+          "Can change the leper's spots",
+          "\tAnd melt the heart of stone."
+        ],
+        [
+          "For nothing good have I",
+          "\tWhereby Thy grace to claim;",
+          "I'll wash my garments white",
+          "\tIn the blood of Calv'ry's Lamb."
+        ],
+        [
+          "And when before the throne",
+          "\tI stand in Him complete,",
+          "\"Jesus died my soul to save,\"",
+          "\tMy lips shall still repeat."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 13,
       "title": "Jesus Sinners Doth Receive",
       "meter": "",
       "author": "Erdmann Neumeister",
@@ -540,7 +657,7 @@
       ]
     },
     {
-      "number": 11,
+      "number": 14,
       "title": "Jesus, King of Glory",
       "meter": "",
       "author": "W. Hope Davison",
@@ -585,7 +702,45 @@
       ]
     },
     {
-      "number": 12,
+      "number": 15,
+      "title": "Low in the Grave He Lay",
+      "meter": "Irregular with refrain",
+      "author": "Robert Lowry",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Low in the grave He lay,",
+          "\tJesus my Savior,",
+          "Waiting the coming day,",
+          "\tJesus my Lord!"
+        ],
+        [
+          "Up from the grave He arose,",
+          "With a mighty triumph o'er His foes;",
+          "He arose a Victor from the dark domain,",
+          "And He lives forever with His saints to reign.",
+          "\tHe arose! He arose!",
+          "\tHallelujah! Christ arose!"
+        ],
+        [
+          "Vainly they watch His bed,",
+          "\tJesus my Savior;",
+          "Vainly they seal the dead,",
+          "\tJesus my Lord!"
+        ],
+        [
+          "Death cannot keep his prey,",
+          "\tJesus my Savior;",
+          "He tore the bars away,",
+          "\tJesus my Lord!"
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 16,
       "title": "Man of Sorrows! What a Name",
       "meter": "7s. with refrain",
       "author": "Philip P. Bliss",
@@ -624,7 +779,7 @@
       ]
     },
     {
-      "number": 13,
+      "number": 17,
       "title": "Now Praise We Christ, the Holy One",
       "meter": "",
       "author": "Coelius Sedulius",
@@ -665,7 +820,7 @@
       ]
     },
     {
-      "number": 14,
+      "number": 18,
       "title": "O Day of Rest And Gladness",
       "meter": "",
       "author": "Christopher Wordsworth",
@@ -710,7 +865,7 @@
       ]
     },
     {
-      "number": 15,
+      "number": 19,
       "title": "O Sacred Head, Now Wounded",
       "meter": "",
       "author": "Bernard of Clairvaux",
@@ -785,7 +940,7 @@
       ]
     },
     {
-      "number": 16,
+      "number": 20,
       "title": "O That The Lord Would Guide My Ways",
       "meter": "",
       "author": "Isaac Watts",
@@ -818,7 +973,7 @@
       ]
     },
     {
-      "number": 17,
+      "number": 21,
       "title": "Over Kidron Jesus Treadeth",
       "meter": "",
       "author": "Thomas Hansen Kingo",
@@ -863,7 +1018,7 @@
       ]
     },
     {
-      "number": 18,
+      "number": 22,
       "title": "See Amid the Winter's Snow",
       "meter": "",
       "author": "Edward Caswall",
@@ -908,7 +1063,49 @@
       ]
     },
     {
-      "number": 19,
+      "number": 23,
+      "title": "Sweet Will of God",
+      "meter": "9.8.9.8. with refrain",
+      "author": "Lelia N. Morris",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "My stubborn will at last hath yielded;",
+          "\tI would be Thine, and Thine alone;",
+          "And this the prayer my lips are bringing,",
+          "\t\"Lord, let in me Thy will be done.\""
+        ],
+        [
+          "Sweet will of God, still fold me closer,",
+          "\tTill I am wholly lost in Thee;",
+          "Sweet will of God, still fold me closer,",
+          "\tTill I am wholly lost in Thee."
+        ],
+        [
+          "I'm tired of sin, footsore and weary,",
+          "\tThe darksome path hath dreary grown,",
+          "But now a light has ris'n to cheer me;",
+          "\tI find in Thee my Star, my Sun."
+        ],
+        [
+          "Thy precious will, O conqu'ring Savior,",
+          "\tDoth now embrace and compass me;",
+          "All discords hushed, my peace a river,",
+          "\tMy soul a prisoned bird set free."
+        ],
+        [
+          "Shut in with Thee, O Lord, forever,",
+          "\tMy wayward feet no more to roam;",
+          "What pow'r from Thee my soul can sever?",
+          "\tThe center of God's will my home."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 24,
       "title": "Take My Life And Let It Be",
       "meter": "",
       "author": "Frances R. Havergal",
@@ -941,7 +1138,49 @@
       ]
     },
     {
-      "number": 20,
+      "number": 25,
+      "title": "The Lord Is My Light",
+      "meter": "10s. with refrain",
+      "author": "James L. Nicholson",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "The Lord is my light; then why should I fear?",
+          "By day and by night His presence is near.",
+          "He is my salvation from sorrow and sin;",
+          "This blessed assurance the Spirit doth bring."
+        ],
+        [
+          "The Lord is my light,",
+          "\tHe is my joy and my song;",
+          "By day and by night",
+          "\tHe leads, He leads me along."
+        ],
+        [
+          "The Lord is my light; though clouds may arise,",
+          "Faith, stronger than sight, looks up through the skies",
+          "Where Jesus forever in glory doth reign;",
+          "Then how can I ever in darkness remain?"
+        ],
+        [
+          "The Lord is my light; the Lord is my strength;",
+          "I know that in Him my soul will at length",
+          "Find safe habitation, find refuge and rest",
+          "In mansions eternal, forever be blest."
+        ],
+        [
+          "The Lord is my light, my all and in all;",
+          "There is in His sight no darkness at all;",
+          "He is my Redeemer, my Savior and King;",
+          "With saints and with angels His praises I'll sing."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 26,
       "title": "To Avert From Men God's Wrath",
       "meter": "",
       "author": null,
@@ -980,7 +1219,43 @@
       ]
     },
     {
-      "number": 21,
+      "number": 27,
+      "title": "Walking in Sunlight",
+      "meter": "10.9.10.9. with refrain",
+      "author": "Henry J. Zelley",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Walking in sunlight all of my journey;",
+          "\tOver the mountains, through the deep vale;",
+          "Jesus has said, \"I'll never forsake thee,\"",
+          "\tPromise divine that never can fail."
+        ],
+        [
+          "Heavenly sunlight, heavenly sunlight,",
+          "\tFlooding my soul with glory divine:",
+          "Hallelujah, I am rejoicing,",
+          "\tSinging His praises, Jesus is mine."
+        ],
+        [
+          "Shadows around me, shadows above me,",
+          "\tNever conceal my Savior and Guide;",
+          "He is the Light, in Him is no darkness;",
+          "\tEver I'm walking close to His side."
+        ],
+        [
+          "In the bright sunlight, ever rejoicing,",
+          "\tPressing my way to mansions above;",
+          "Singing His praises gladly I'm walking,",
+          "\tWalking in sunlight, sunlight of love."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 28,
       "title": "While O'er Our Guilty Land, O Lord",
       "meter": "",
       "author": null,
@@ -1021,6 +1296,71 @@
           "Redeemed by Christ after the fall.",
           "Marked with Your Name in Baptism,",
           "Our home remains in Your Kingdom."
+        ]
+      ]
+    },
+    {
+      "number": 29,
+      "title": "Who Is on the Lord's Side?",
+      "meter": "6.5.6.5.D.",
+      "author": "Frances R. Havergal",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Who is on the Lord's side?",
+          "\tWho will serve the King?",
+          "Who will be His helpers,",
+          "\tOther lives to bring?",
+          "Who will leave the world's side?",
+          "\tWho will face the foe?",
+          "Who is on the Lord's side?",
+          "\tWho for Him will go?",
+          "By Thy call of mercy,",
+          "\tBy Thy grace divine,",
+          "We are on the Lord's side—",
+          "\tSavior, we are Thine."
+        ],
+        [
+          "Not for weight of glory,",
+          "\tNot for crown and palm,",
+          "Enter we the army,",
+          "\tRaise the warrior psalm;",
+          "But for love that claimeth",
+          "\tLives for whom He died:",
+          "He whom Jesus nameth",
+          "\tMust be on His side.",
+          "By Thy love constraining,",
+          "\tBy Thy grace divine,",
+          "We are on the Lord's side—",
+          "\tSavior, we are Thine."
+        ],
+        [
+          "Jesus, Thou hast bought us,",
+          "\tNot with gold or gem,",
+          "But with Thine own life-blood,",
+          "\tFor Thy diadem.",
+          "With Thy blessing filling",
+          "\tEach who comes to Thee,",
+          "Thou hast made us willing,",
+          "\tThou hast made us free.",
+          "By Thy grand redemption,",
+          "\tBy Thy grace divine,",
+          "We are on the Lord's side—",
+          "\tSavior, we are Thine."
+        ],
+        [
+          "Fierce may be the conflict,",
+          "\tStrong may be the foe,",
+          "But the King's own army",
+          "\tNone can overthrow.",
+          "Round His standard ranging,",
+          "\tVictory is secure,",
+          "For His truth unchanging",
+          "\tMakes the triumph sure.",
+          "Joyfully enlisting",
+          "\tBy Thy grace divine,",
+          "We are on the Lord's side—",
+          "\tSavior, we are Thine."
         ]
       ]
     }

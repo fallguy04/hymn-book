@@ -16,8 +16,15 @@ interface HymnViewProps {
 
 const INDENT_CLASS = ["", "stanza-indent-1", "stanza-indent-2", "stanza-indent-3"];
 
-/** Distance × velocity; past this, a drag counts as a page turn. */
+/** Distance × velocity; past this, a flick counts as a page turn. */
 const SWIPE_THRESHOLD = 8000;
+
+/**
+ * How far a drag alone turns the page, with no flick at all. A slow deliberate
+ * swipe ends with almost no velocity, so a velocity test on its own quietly
+ * requires everyone to swipe briskly.
+ */
+const SWIPE_DISTANCE = 80;
 
 /**
  * Hymns open with a word or two set in capitals. Split that run off so it can
@@ -44,6 +51,20 @@ export default function HymnView({
   const scroller = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const path = useMemo(() => sectionPath(hymnal, hymn.number), [hymnal, hymn.number]);
+
+  /**
+   * Verse numbers count verses, not stanzas. A refrain printed between them is
+   * not verse 2 — numbering it as one pushes every real verse after it up by
+   * one, which is exactly the thing a song leader calling "verse three" needs
+   * the page to get right.
+   */
+  const verseNumbers = useMemo(() => {
+    const refrains = new Set(hymn.refrains ?? []);
+    let n = 0;
+    return hymn.stanzas.map((_, s) => (refrains.has(s) ? null : ++n));
+  }, [hymn.stanzas, hymn.refrains]);
+
+  const verseCount = verseNumbers.filter((n) => n !== null).length;
 
   // Landing halfway down the next hymn is the single most jarring thing the
   // old build did. One scroll container, reset on every change of hymn.
@@ -100,9 +121,18 @@ export default function HymnView({
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.15}
           onDragEnd={(_, { offset, velocity }) => {
-            const power = offset.x * velocity.x;
-            if (offset.x < 0 && power < -SWIPE_THRESHOLD) onNext();
-            else if (offset.x > 0 && power > SWIPE_THRESHOLD) onPrev();
+            /*
+              Magnitude × signed velocity — the abs() is what was missing, and
+              it made forward swipes barely work while back swipes always did.
+              An honest swipe has offset and velocity pointing the same way, so
+              multiplying the *signed* offset by velocity gave a positive number
+              in both directions. The back branch tested for positive and so
+              always fired; the forward branch tested for negative and could
+              only fire if you dragged left and flicked back right at the end.
+            */
+            const power = Math.abs(offset.x) * velocity.x;
+            if (offset.x < -SWIPE_DISTANCE || power < -SWIPE_THRESHOLD) onNext();
+            else if (offset.x > SWIPE_DISTANCE || power > SWIPE_THRESHOLD) onPrev();
           }}
           className="mx-auto w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
         >
@@ -142,33 +172,41 @@ export default function HymnView({
             centred title.
           */}
           <div className="mx-auto w-fit max-w-full space-y-7">
-            {hymn.stanzas.map((stanza, s) => (
-              <section key={s} className="relative">
-                {hymn.stanzas.length > 1 && (
-                  <span
-                    aria-hidden
-                    className="absolute -left-5 top-[0.42em] font-sans text-[0.65rem] tabular-nums text-paper-faint"
-                  >
-                    {s + 1}
-                  </span>
-                )}
-                <span className="sr-only">Stanza {s + 1}. </span>
+            {hymn.stanzas.map((stanza, s) => {
+              const verse = verseNumbers[s];
+              const isRefrain = verse === null;
+              return (
+                <section key={s} className={`relative ${isRefrain ? "italic" : ""}`}>
+                  {isRefrain ? (
+                    <span className="text-label mb-1.5 block">Refrain</span>
+                  ) : (
+                    verseCount > 1 && (
+                      <span
+                        aria-hidden
+                        className="absolute -left-5 top-[0.42em] font-sans text-[0.65rem] tabular-nums text-paper-faint"
+                      >
+                        {verse}
+                      </span>
+                    )
+                  )}
+                  {!isRefrain && <span className="sr-only">Stanza {verse}. </span>}
 
-                {stanza.map((line, l) => {
-                  const text = lineText(line);
-                  const [opening, rest] = s === 0 && l === 0 ? splitOpening(text) : ["", text];
-                  return (
-                    <p
-                      key={l}
-                      className={`stanza-line ${INDENT_CLASS[lineIndent(line)]}`}
-                    >
-                      {opening && <span className="opening-caps">{opening}</span>}
-                      {rest}
-                    </p>
-                  );
-                })}
-              </section>
-            ))}
+                  {stanza.map((line, l) => {
+                    const text = lineText(line);
+                    const [opening, rest] = s === 0 && l === 0 ? splitOpening(text) : ["", text];
+                    return (
+                      <p
+                        key={l}
+                        className={`stanza-line ${INDENT_CLASS[lineIndent(line)]}`}
+                      >
+                        {opening && <span className="opening-caps">{opening}</span>}
+                        {rest}
+                      </p>
+                    );
+                  })}
+                </section>
+              );
+            })}
           </div>
 
           {/* Navigation lives in the fixed bottom bar; this just closes the text. */}
