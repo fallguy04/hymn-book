@@ -137,6 +137,30 @@ export function reachableDigits(hymnal: Hymnal, buffer: string): Set<string> {
 export interface SearchResult {
   hymn: Hymn;
   snippet: string | null;
+  /** Which book this came from. Always set, so callers never have to guess. */
+  hymnal: Hymnal;
+}
+
+/**
+ * Search one book, or every registered book at once.
+ *
+ * Kept as two functions rather than a flag because the default has to stay the
+ * safe one. Mid-service, someone typing a number wants their own hymnal's 26,
+ * not a list of every 26 in every book — so single-book search is what the
+ * keypad and the default search use, and crossing books is a deliberate act.
+ */
+export function searchAllHymnals(query: string, limit = 60): SearchResult[] {
+  const perBook = HYMNALS.map((hymnal) => searchHymns(hymnal, query, limit));
+
+  // Interleave by rank rather than concatenating, so a strong match in the
+  // second book still beats a weak one in the first.
+  const merged: SearchResult[] = [];
+  for (let i = 0; merged.length < limit; i++) {
+    const round = perBook.map((results) => results[i]).filter(Boolean);
+    if (round.length === 0) break;
+    merged.push(...round);
+  }
+  return merged.slice(0, limit);
 }
 
 export function searchHymns(hymnal: Hymnal, query: string, limit = 40): SearchResult[] {
@@ -174,7 +198,7 @@ export function searchHymns(hymnal: Hymnal, query: string, limit = 40): SearchRe
   return scored
     .sort((a, b) => a.score - b.score || a.hymn.number - b.hymn.number)
     .slice(0, limit)
-    .map(({ hymn, snippet }) => ({ hymn, snippet }));
+    .map(({ hymn, snippet }) => ({ hymn, snippet, hymnal }));
 }
 
 /** Alphabetical author index: every attributed author and their hymns. */

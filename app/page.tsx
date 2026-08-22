@@ -31,6 +31,7 @@ export default function Home() {
   const favorites = useHymnalStore((s) => s.favorites);
   const recents = useHymnalStore((s) => s.recents);
   const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
+  const setHymnal = useHymnalStore((s) => s.setHymnal);
   const visit = useHymnalStore((s) => s.visit);
 
   const hymnal = useMemo(() => getHymnal(hymnalId) ?? getDefaultHymnal(), [hymnalId]);
@@ -65,12 +66,15 @@ export default function Home() {
   }, [hymnal, hymn.number]);
 
   const goTo = useCallback(
-    (target: number) => {
+    // A search that spans books can hand back a hymn from a different one, so
+    // switch books before turning to the page.
+    (target: number, targetHymnalId?: string) => {
+      if (targetHymnalId && targetHymnalId !== hymnalId) setHymnal(targetHymnalId);
       setPage(([current]) => [target, target > current ? 1 : -1]);
       setBuffer("");
       setSearchState("closed");
     },
-    [],
+    [hymnalId, setHymnal],
   );
 
   const paginate = useCallback(
