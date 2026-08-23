@@ -13,7 +13,7 @@ interface NavDrawerProps {
   openPath?: string[];
   initialPanel?: Panel;
   onClose: () => void;
-  onSelect: (number: number) => void;
+  onSelect: (number: number, hymnalId?: string) => void;
 }
 
 
@@ -60,8 +60,8 @@ export default function NavDrawer({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, onClose]);
 
-  const go = (number: number) => {
-    onSelect(number);
+  const go = (number: number, hymnalId?: string) => {
+    onSelect(number, hymnalId);
     onClose();
   };
 

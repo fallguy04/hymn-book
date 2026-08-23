@@ -14,7 +14,7 @@ import TuneSheet from "@/components/TuneSheet";
 import ThemeSync from "@/components/ThemeSync";
 import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
 import { useIsDesktop } from "@/lib/useIsDesktop";
-import { useHymnalStore } from "@/store/useHymnalStore";
+import { forBook, useHymnalStore } from "@/store/useHymnalStore";
 
 type SearchMode = "closed" | "number" | "text";
 
@@ -57,7 +57,7 @@ export default function Home() {
     searchState === "auto" ? (isDesktop === false ? "number" : "closed") : searchState;
 
   useEffect(() => {
-    visit(hymn.number);
+    visit(hymnalId, hymn.number);
     setPosition(hymnalId, hymn.number);
   }, [hymn.number, hymnalId, visit, setPosition]);
 
@@ -202,12 +202,12 @@ export default function Home() {
           <TopBar
             hymnal={hymnal}
             hymn={hymn}
-            isFavorite={favorites.includes(hymn.number)}
+            isFavorite={forBook(favorites, hymnalId).includes(hymn.number)}
             onOpenMenu={() => {
               setMenuPath(undefined);
               setMenuOpen(true);
             }}
-            onToggleFavorite={() => toggleFavorite(hymn.number)}
+            onToggleFavorite={() => toggleFavorite(hymnalId, hymn.number)}
           />
 
           <main className="relative min-h-0 flex-1">
@@ -275,7 +275,7 @@ export default function Home() {
             <SmartNumpad
               hymnal={hymnal}
               buffer={buffer}
-              recents={recents.filter((n) => n !== hymn.number)}
+              recents={forBook(recents, hymnalId).filter((n) => n !== hymn.number)}
               onKeyPress={appendDigit}
               onDelete={() => setBuffer((prev) => prev.slice(0, -1))}
               onGo={submitBuffer}

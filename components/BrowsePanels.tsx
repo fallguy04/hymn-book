@@ -12,8 +12,8 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import { type Hymnal, getHymn, hymnTitle, authorIndex } from "@/lib/hymnals";
-import { useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
+import { type Hymnal, getHymn, hymnTitle, authorIndex, isNumbered, listHymnals } from "@/lib/hymnals";
+import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
@@ -51,7 +51,7 @@ export default function BrowsePanels({
   currentMeter: string;
   openPath?: string[];
   initialPanel?: Panel;
-  onSelect: (n: number) => void;
+  onSelect: (n: number, hymnalId?: string) => void;
   /** Omitted when this is a permanent sidebar — there is nothing to close. */
   onClose?: () => void;
 }) {
@@ -62,7 +62,7 @@ export default function BrowsePanels({
   const counts: Record<Panel, number | null> = {
     contents: hymnal.hymns.length,
     authors: authorIndex(hymnal).length,
-    favorites: favorites.length,
+    favorites: countAll(favorites),
     tunes: tunes.length,
     sync: null,
     settings: null,
@@ -145,12 +145,7 @@ export default function BrowsePanels({
 
         {panel === "favorites" && (
           <div className="flex-1 overflow-y-auto overscroll-contain px-1 py-2">
-            <HymnList
-              hymnal={hymnal}
-              numbers={favorites}
-              empty="Star a hymn to keep it here."
-              onSelect={onSelect}
-            />
+            <Favorites current={hymnal} onSelect={onSelect} />
           </div>
         )}
 
@@ -172,6 +167,49 @@ export default function BrowsePanels({
   );
 }
 
+/**
+ * Every starred song, grouped by the book it belongs to.
+ *
+ * Showing only the current book's would hide half the list behind a tab, and
+ * a star is a personal shortlist rather than a property of whichever book you
+ * happen to have open. The book heading only appears when there is more than
+ * one group, so the common case stays a plain list.
+ */
+function Favorites({
+  current,
+  onSelect,
+}: {
+  current: Hymnal;
+  onSelect: (n: number, hymnalId?: string) => void;
+}) {
+  const favorites = useHymnalStore((s) => s.favorites);
+
+  // Current book first — that is the one you are most likely reaching for.
+  const groups = listHymnals()
+    .map((book) => ({ book, numbers: forBook(favorites, book.id) }))
+    .filter((g) => g.numbers.length > 0)
+    .sort((a, b) => Number(b.book.id === current.id) - Number(a.book.id === current.id));
+
+  if (groups.length === 0) {
+    return (
+      <p className="px-4 py-10 text-center font-serif italic text-paper-faint">
+        Star a hymn to keep it here.
+      </p>
+    );
+  }
+
+  return (
+    <>
+      {groups.map(({ book, numbers }) => (
+        <section key={book.id} className="mb-4 last:mb-0">
+          {groups.length > 1 && <p className="text-label mb-1 px-3">{book.shortName}</p>}
+          <HymnList hymnal={book} numbers={numbers} empty="" onSelect={onSelect} />
+        </section>
+      ))}
+    </>
+  );
+}
+
 function HymnList({
   hymnal,
   numbers,
@@ -181,7 +219,7 @@ function HymnList({
   hymnal: Hymnal;
   numbers: number[];
   empty: string;
-  onSelect: (n: number) => void;
+  onSelect: (n: number, hymnalId?: string) => void;
 }) {
   if (numbers.length === 0) {
     return <p className="px-4 py-10 text-center font-serif italic text-paper-faint">{empty}</p>;
@@ -194,12 +232,14 @@ function HymnList({
         return (
           <li key={n}>
             <button
-              onClick={() => onSelect(n)}
+              onClick={() => onSelect(n, hymnal.id)}
               className="flex w-full items-baseline gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-paper-sunken"
             >
-              <span className="w-9 shrink-0 font-sans text-[0.7rem] tabular-nums text-paper-faint">
-                {n}
-              </span>
+              {isNumbered(hymnal) && (
+                <span className="w-9 shrink-0 font-sans text-[0.7rem] tabular-nums text-paper-faint">
+                  {n}
+                </span>
+              )}
               <span className="flex-1 font-serif text-[0.95rem] leading-snug text-paper-ink">
                 {hymnTitle(hymn)}
               </span>

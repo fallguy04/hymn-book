@@ -8,7 +8,7 @@ interface SidebarProps {
   currentMeter: string;
   openPath?: string[];
   initialPanel?: Panel;
-  onSelect: (number: number) => void;
+  onSelect: (number: number, hymnalId?: string) => void;
 }
 
 /**

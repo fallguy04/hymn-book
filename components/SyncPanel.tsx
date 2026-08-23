@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, Loader2, ArrowRight } from "lucide-react";
 import { CODE_LENGTH, formatCode, normalizeCode, isCode } from "@/lib/sync";
-import { useHymnalStore, type Theme, type TextSize } from "@/store/useHymnalStore";
+import { countAll, useHymnalStore, type Theme, type TextSize } from "@/store/useHymnalStore";
 
 /**
  * Carrying your starred hymns, tunes and settings to another device.
@@ -70,7 +70,7 @@ export default function SyncPanel() {
       // The total after merging, not the number that arrived. Reporting the
       // incoming count told someone who already had ten stars that they now
       // had one, which reads like the code just wiped them.
-      setRestored(useHymnalStore.getState().favorites.length);
+      setRestored(countAll(useHymnalStore.getState().favorites));
       setEntry("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not find that code.");
@@ -90,7 +90,8 @@ export default function SyncPanel() {
     }
   };
 
-  const nothingToSend = favorites.length === 0 && tunes.length === 0;
+  const starred = countAll(favorites);
+  const nothingToSend = starred === 0 && tunes.length === 0;
 
   return (
     <div className="space-y-6 px-4 py-4">
@@ -127,8 +128,8 @@ export default function SyncPanel() {
         <p className="mt-2 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
           {nothingToSend
             ? "Nothing to carry over yet — star a hymn or save a tune first."
-            : `Carries ${favorites.length} starred ${
-                favorites.length === 1 ? "hymn" : "hymns"
+            : `Carries ${starred} starred ${
+                starred === 1 ? "hymn" : "hymns"
               } and ${tunes.length} saved ${tunes.length === 1 ? "tune" : "tunes"}.`}
         </p>
       </section>

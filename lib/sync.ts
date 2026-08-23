@@ -27,11 +27,20 @@ export const CODE_TTL_HOURS = 24;
 
 /** What travels. Deliberately not the whole store — see `SyncPayload`. */
 export interface SyncPayload {
-  favorites: number[];
+  /** Starred hymn numbers grouped by book id — a number alone names no song. */
+  favorites: Record<string, number[]>;
   tunes: { name: string; meter: string }[];
   theme: string;
   textSize: string;
 }
+
+/** Book ids are our own, but this arrives over the wire; keep them tame. */
+const BOOK_ID = /^[a-z0-9-]{1,64}$/;
+
+const cleanNumbers = (input: unknown): number[] =>
+  Array.isArray(input)
+    ? input.filter((n): n is number => Number.isInteger(n) && n > 0 && n < 10000).slice(0, 2000)
+    : [];
 
 export function generateCode(): string {
   const bytes = new Uint8Array(CODE_LENGTH);
@@ -61,9 +70,19 @@ export function sanitizePayload(input: unknown): SyncPayload | null {
   if (!input || typeof input !== "object") return null;
   const raw = input as Record<string, unknown>;
 
-  const favorites = Array.isArray(raw.favorites)
-    ? raw.favorites.filter((n): n is number => Number.isInteger(n) && n > 0 && n < 10000).slice(0, 2000)
-    : [];
+  // A bare array is a code made before favorites knew about books. Those all
+  // predate the second book, so they are the collection's.
+  const favorites: Record<string, number[]> = {};
+  if (Array.isArray(raw.favorites)) {
+    const legacy = cleanNumbers(raw.favorites);
+    if (legacy.length) favorites.brethren = legacy;
+  } else if (raw.favorites && typeof raw.favorites === "object") {
+    for (const [book, list] of Object.entries(raw.favorites as Record<string, unknown>).slice(0, 20)) {
+      if (!BOOK_ID.test(book)) continue;
+      const numbers = cleanNumbers(list);
+      if (numbers.length) favorites[book] = numbers;
+    }
+  }
 
   const tunes = Array.isArray(raw.tunes)
     ? raw.tunes
