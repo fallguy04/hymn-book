@@ -94,7 +94,7 @@ export default function SyncPanel() {
   const nothingToSend = starred === 0 && tunes.length === 0;
 
   return (
-    <div className="space-y-6 px-4 py-4">
+    <div className="space-y-5">
       <section>
         <p className="text-label mb-2">Move to another device</p>
 
@@ -179,7 +179,7 @@ export default function SyncPanel() {
         </p>
       )}
 
-      <section className="border-t border-paper-rule pt-4">
+      <section>
         <p className="font-sans text-[0.7rem] leading-relaxed text-paper-faint">
           A code holds only hymn numbers, tune names and your display settings — no name, no email,
           nothing that says who you are. It deletes itself after a day.

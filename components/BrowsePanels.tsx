@@ -1,17 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  X,
-  BookOpen,
-  Users,
-  Star,
-  Music,
-  Settings,
-  RefreshCw,
-  ChevronRight,
-  ChevronLeft,
-} from "lucide-react";
+import { X, BookOpen, Users, Star, Music, Settings, ChevronRight, ChevronLeft } from "lucide-react";
 import { type Hymnal, getHymn, hymnTitle, authorIndex, isNumbered, listHymnals } from "@/lib/hymnals";
 import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
@@ -19,14 +9,13 @@ import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
 import SyncPanel from "./SyncPanel";
 
-export type Panel = "contents" | "authors" | "favorites" | "tunes" | "sync" | "settings";
+export type Panel = "contents" | "authors" | "favorites" | "tunes" | "settings";
 
 const PANELS: { id: Panel; label: string; icon: typeof BookOpen }[] = [
   { id: "contents", label: "Contents", icon: BookOpen },
   { id: "authors", label: "Authors", icon: Users },
   { id: "favorites", label: "Favorites", icon: Star },
   { id: "tunes", label: "Tunes", icon: Music },
-  { id: "sync", label: "Sync", icon: RefreshCw },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -64,7 +53,6 @@ export default function BrowsePanels({
     authors: authorIndex(hymnal).length,
     favorites: countAll(favorites),
     tunes: tunes.length,
-    sync: null,
     settings: null,
   };
 
@@ -85,10 +73,14 @@ export default function BrowsePanels({
             <h2 className="flex-1 font-serif text-xl text-paper-ink">{active.label}</h2>
           </>
         ) : (
-          <div className="flex-1 px-2">
-            <h2 className="font-serif text-lg leading-tight text-paper-ink">{hymnal.title}</h2>
-            <p className="mt-0.5 font-sans text-[0.7rem] text-paper-faint">{hymnal.subtitle}</p>
-          </div>
+          /*
+            One line. The full title and subtitle wrapped to four lines on a
+            phone — a quarter of the screen spent naming the book you are
+            already reading, pushing two menu rows toward the fold.
+          */
+          <h2 className="flex-1 truncate px-2 font-serif text-lg text-paper-ink">
+            {hymnal.shortName}
+          </h2>
         )}
 
         {onClose && (
@@ -150,12 +142,6 @@ export default function BrowsePanels({
         )}
 
         {panel === "tunes" && <TuneList addTo={currentMeter || undefined} />}
-
-        {panel === "sync" && (
-          <div className="flex-1 overflow-y-auto overscroll-contain">
-            <SyncPanel />
-          </div>
-        )}
 
         {panel === "settings" && (
           <div className="flex-1 overflow-y-auto overscroll-contain">
@@ -304,6 +290,10 @@ function SettingsPanel() {
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="border-t border-paper-rule pt-5">
+        <SyncPanel />
       </section>
 
       <section className="border-t border-paper-rule pt-4">

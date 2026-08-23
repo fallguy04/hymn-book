@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { Delete, Search, ArrowRight, CornerDownRight } from "lucide-react";
+import { motion, useDragControls, useReducedMotion } from "framer-motion";
+import { Delete, Search, ArrowRight, CornerDownRight, ChevronDown } from "lucide-react";
 import {
   type Hymn,
   type Hymnal,
@@ -47,6 +47,7 @@ export default function SmartNumpad({
   onClose,
 }: SmartNumpadProps) {
   const reduceMotion = useReducedMotion();
+  const dragControls = useDragControls();
   const target: Hymn | undefined = buffer ? getHymn(hymnal, Number(buffer)) : undefined;
   const books = listHymnals();
 
@@ -81,13 +82,37 @@ export default function SmartNumpad({
       animate={{ y: 0, opacity: 1 }}
       exit={reduceMotion ? undefined : { y: 24, opacity: 0 }}
       transition={{ duration: 0.18, ease: "easeOut" }}
-      className="rounded-t-3xl border-t border-paper-rule bg-paper px-5 pb-8 pt-3 shadow-[0_-12px_40px_-16px_rgba(0,0,0,0.25)]"
+      /*
+        Drag down to dismiss, the way a sheet should. `dragListener` is off and
+        the gesture is started by hand from the grip below: with the whole sheet
+        listening, a finger that slid a pixel while pressing 7 would start a
+        drag instead of a keypress, which is the worst possible place to lose an
+        input.
+      */
+      drag={reduceMotion ? false : "y"}
+      dragListener={false}
+      dragControls={dragControls}
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.5 }}
+      onDragEnd={(_, { offset, velocity }) => {
+        if (offset.y > 90 || velocity.y > 600) onClose();
+      }}
+      className="rounded-t-3xl border-t border-paper-rule bg-paper px-5 pb-8 pt-2 shadow-[0_-12px_40px_-16px_rgba(0,0,0,0.25)]"
     >
+      {/*
+        A grip you can see and a target worth aiming at. The old handle was a
+        4px hairline at low contrast — it read as decoration, so the only way
+        out anyone found was the backdrop, if they found one at all.
+      */}
       <button
         onClick={onClose}
+        onPointerDown={(e) => !reduceMotion && dragControls.start(e)}
         aria-label="Close keypad"
-        className="mx-auto mb-3 block h-1 w-10 rounded-full bg-paper-rule"
-      />
+        className="mx-auto mb-1 flex w-full touch-none flex-col items-center gap-0.5 py-2 text-paper-faint transition-colors hover:text-paper-muted"
+      >
+        <span className="block h-1.5 w-10 rounded-full bg-paper-rule" />
+        <ChevronDown className="h-3.5 w-3.5" />
+      </button>
 
       {/*
         Book first, then number — the order the request arrives in when someone
@@ -185,24 +210,18 @@ export default function SmartNumpad({
         )}
       </div>
 
-      <div className="mx-auto grid max-w-sm grid-cols-3 gap-2.5">
+      {/*
+        Four columns. The digits keep their familiar 3×3 block; the right column
+        is delete over a tall Go. There was no commit key at all before — you
+        typed, then had to work out that the preview above was tappable — so the
+        first thing a new user saw was a keypad with no way forward.
+      */}
+      <div className="mx-auto grid max-w-sm grid-cols-4 grid-rows-4 gap-2.5">
         {KEYS.map((key) => (
           <button key={key} onClick={() => press(key)} className={keyClass(key)}>
             {key}
           </button>
         ))}
-
-        <button
-          onClick={onSwitchToText}
-          aria-label="Search by words"
-          className="flex h-14 items-center justify-center rounded-2xl bg-paper-sunken text-paper-muted transition-colors hover:bg-paper-rule active:scale-95"
-        >
-          <Search className="h-5 w-5" />
-        </button>
-
-        <button onClick={() => press("0")} className={keyClass("0")}>
-          0
-        </button>
 
         <button
           onClick={() => {
@@ -211,9 +230,39 @@ export default function SmartNumpad({
           }}
           aria-label="Delete"
           disabled={!buffer}
-          className="flex h-14 items-center justify-center rounded-2xl bg-paper-sunken text-paper-muted transition-colors hover:bg-paper-rule active:scale-95 disabled:opacity-30"
+          className="col-start-4 row-start-1 flex h-14 items-center justify-center rounded-2xl bg-paper-sunken text-paper-muted transition-colors hover:bg-paper-rule active:scale-95 disabled:opacity-30"
         >
           <Delete className="h-5 w-5" />
+        </button>
+
+        <button
+          onClick={() => {
+            tick();
+            onGo();
+          }}
+          disabled={!target}
+          aria-label={target ? `Go to ${hymnTitle(target)}` : "Enter a hymn number first"}
+          className="col-start-4 row-span-3 row-start-2 flex flex-col items-center justify-center gap-1 rounded-2xl bg-paper-ink font-sans text-xs font-semibold text-paper transition-all active:scale-95 disabled:bg-paper-sunken disabled:text-paper-faint/50"
+        >
+          <ArrowRight className="h-5 w-5" />
+          Go
+        </button>
+
+        <button
+          onClick={onSwitchToText}
+          aria-label="Search by words"
+          className="col-start-1 row-start-4 flex h-14 items-center justify-center rounded-2xl bg-paper-sunken text-paper-muted transition-colors hover:bg-paper-rule active:scale-95"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+
+        {/* 0 takes the empty cell beside it: the row read as a missing key
+            otherwise, and 0 is the digit most used in a three-figure number. */}
+        <button
+          onClick={() => press("0")}
+          className={`col-span-2 col-start-2 row-start-4 ${keyClass("0")}`}
+        >
+          0
         </button>
       </div>
     </motion.div>
