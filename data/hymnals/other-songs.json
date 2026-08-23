@@ -4,6 +4,7 @@
   "subtitle": "Songs the congregation sings, outside the collection",
   "shortName": "Other Songs",
   "numbered": false,
+  "expandable": true,
   "sections": [
     {
       "title": "OTHER SONGS",

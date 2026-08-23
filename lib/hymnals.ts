@@ -50,12 +50,23 @@ export interface Hymnal {
    * Absent means true, so a book has to opt out.
    */
   numbered?: boolean;
+  /**
+   * Whether songs can be added to this book. The collection cannot take any —
+   * it is the text of a printed book with 558 hymns in it, and offering to add
+   * a 559th misrepresents what it is. "Other Songs" is the book that grows.
+   *
+   * Absent means false, so a book has to opt in.
+   */
+  expandable?: boolean;
   sections: Section[];
   hymns: Hymn[];
 }
 
 /** Does this book's numbering mean anything to the person holding it? */
 export const isNumbered = (hymnal: Hymnal): boolean => hymnal.numbered !== false;
+
+/** Can a song be added to this book? */
+export const isExpandable = (hymnal: Hymnal): boolean => hymnal.expandable === true;
 
 /**
  * Registered hymnals, in the order they should appear in the book switcher.
@@ -93,6 +104,9 @@ const sectionPaths = new Map(
 );
 
 export const listHymnals = (): Hymnal[] => HYMNALS;
+
+/** The book new songs go into, if there is one. */
+export const expandableHymnal = (): Hymnal | undefined => HYMNALS.find(isExpandable);
 
 export const getHymnal = (id: string): Hymnal | undefined => byId.get(id);
 

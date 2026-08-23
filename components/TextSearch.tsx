@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Search as SearchIcon, Hash, Lock, HelpCircle } from "lucide-react";
 import {
   type Hymnal,
+  expandableHymnal,
   hymnTitle,
+  isExpandable,
   listHymnals,
   searchAllHymnals,
   searchHymns,
@@ -81,6 +83,12 @@ export default function TextSearch({
   // they can't.
   const pending = useMemo(() => searchPending(term), [term]);
 
+  // Which book an empty search is speaking about, and whether anything can be
+  // added to it. The collection cannot take a 559th hymn — it is the text of a
+  // printed book — so offering to add one there misrepresents what it is.
+  const searched = scope === "all" ? null : books.find((b) => b.id === scope) ?? hymnal;
+  const canSuggest = searched ? isExpandable(searched) : Boolean(expandableHymnal());
+
   return (
     <div className="mx-auto flex h-full w-full max-w-lg flex-col overflow-hidden rounded-3xl border border-paper-rule bg-paper shadow-2xl lg:h-auto lg:max-h-[70vh] lg:max-w-2xl">
       <div className="flex items-center gap-2 border-b border-paper-rule px-3 py-3">
@@ -135,11 +143,27 @@ export default function TextSearch({
         {term && results.length === 0 && pending.length === 0 && (
           <div className="mt-12 px-3">
             <p className="text-center font-serif italic text-paper-faint">
-              {scope === "all" && multipleBooks
-                ? `Nothing in any book matches “${term}”.`
-                : `Nothing in ${(books.find((b) => b.id === scope) ?? hymnal).shortName} matches “${term}”.`}
+              {searched
+                ? `Nothing in ${searched.shortName} matches “${term}”.`
+                : `Nothing in any book matches “${term}”.`}
             </p>
-            <SuggestSong query={term} hymnalId={hymnal.id} />
+
+            {canSuggest ? (
+              <SuggestSong query={term} hymnalId={expandableHymnal()?.id ?? hymnal.id} />
+            ) : (
+              // Nothing to offer here but a wider net: the collection is fixed,
+              // so the useful next move is to look in the book that isn't.
+              multipleBooks && (
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => chooseScope("all")}
+                    className="inline-flex items-center gap-2 rounded-full border border-paper-rule bg-paper-sunken px-4 py-2 font-sans text-sm text-paper-ink transition-colors hover:border-paper-faint"
+                  >
+                    Search every book
+                  </button>
+                </div>
+              )
+            )}
           </div>
         )}
 

@@ -120,6 +120,9 @@ const hymnal = {
   // The numbers here are alphabetical positions, not names anybody calls a song
   // by, so they order the book without being printed over it. See `isNumbered`.
   numbered: false,
+  // The book that grows. Suggestions land here; the collection is a fixed
+  // printed text and cannot take a 559th hymn. See `isExpandable`.
+  expandable: true,
   sections: [
     {
       title: "OTHER SONGS",

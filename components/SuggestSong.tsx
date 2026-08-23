@@ -7,6 +7,10 @@ interface SuggestSongProps {
   /** What they searched for — prefills the title and rides along as context. */
   query: string;
   hymnalId: string;
+  /** "Suggest this song" reads wrong with no search behind it. */
+  label?: string;
+  /** Settings has its own headings and spacing; the search panel needs neither. */
+  compact?: boolean;
 }
 
 type State = "idle" | "open" | "sending" | "sent" | "error";
@@ -19,7 +23,12 @@ type State = "idle" | "open" | "sending" | "sent" | "error";
  * stays collapsed to a single line until asked for, so a search that simply
  * found nothing doesn't turn into a form.
  */
-export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
+export default function SuggestSong({
+  query,
+  hymnalId,
+  label = "Suggest this song",
+  compact = false,
+}: SuggestSongProps) {
   const [state, setState] = useState<State>("idle");
   const [requester, setRequester] = useState("");
   const [title, setTitle] = useState(query);
@@ -43,7 +52,7 @@ export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
 
   if (state === "sent") {
     return (
-      <div className="mx-auto mt-6 flex max-w-sm items-center justify-center gap-2 rounded-2xl bg-paper-sunken px-4 py-3 text-center">
+      <div className={`flex items-center justify-center gap-2 rounded-2xl bg-paper-sunken px-4 py-3 text-center ${compact ? "" : "mx-auto mt-6 max-w-sm"}`}>
         <Check className="h-4 w-4 shrink-0 text-paper-accent" />
         <p className="font-serif text-[0.95rem] text-paper-ink">
           Thank you — that&rsquo;s been passed along.
@@ -54,23 +63,25 @@ export default function SuggestSong({ query, hymnalId }: SuggestSongProps) {
 
   if (state === "idle") {
     return (
-      <div className="mt-6 text-center">
+      <div className={compact ? "" : "mt-6 text-center"}>
         <button
           onClick={() => {
             setTitle(query);
             setState("open");
           }}
-          className="inline-flex items-center gap-2 rounded-full border border-paper-rule bg-paper-sunken px-4 py-2 font-sans text-sm text-paper-ink transition-colors hover:border-paper-faint"
+          className={`inline-flex items-center gap-2 rounded-full border border-paper-rule bg-paper-sunken px-4 py-2 font-sans text-sm text-paper-ink transition-colors hover:border-paper-faint ${
+            compact ? "w-full justify-center" : ""
+          }`}
         >
           <Plus className="h-4 w-4 text-paper-muted" />
-          Suggest this song
+          {label}
         </button>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto mt-6 max-w-sm space-y-2 rounded-2xl border border-paper-rule bg-paper-sunken p-3 text-left">
+    <div className={`space-y-2 rounded-2xl border border-paper-rule bg-paper-sunken p-3 text-left ${compact ? "" : "mx-auto mt-6 max-w-sm"}`}>
       <label className="text-label block" htmlFor="suggest-name">
         Your name
       </label>

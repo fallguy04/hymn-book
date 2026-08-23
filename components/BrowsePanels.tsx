@@ -2,12 +2,21 @@
 
 import { useState } from "react";
 import { X, BookOpen, Users, Star, Music, Settings, ChevronRight, ChevronLeft } from "lucide-react";
-import { type Hymnal, getHymn, hymnTitle, authorIndex, isNumbered, listHymnals } from "@/lib/hymnals";
+import {
+  type Hymnal,
+  authorIndex,
+  expandableHymnal,
+  getHymn,
+  hymnTitle,
+  isNumbered,
+  listHymnals,
+} from "@/lib/hymnals";
 import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
 import SyncPanel from "./SyncPanel";
+import SuggestSong from "./SuggestSong";
 
 export type Panel = "contents" | "authors" | "favorites" | "tunes" | "settings";
 
@@ -240,6 +249,7 @@ function HymnList({
 
 function SettingsPanel() {
   const { theme, setTheme, textSize, setTextSize } = useHymnalStore();
+  const suggestTo = expandableHymnal();
 
   const themes: { id: Theme; label: string }[] = [
     { id: "system", label: "System" },
@@ -291,6 +301,23 @@ function SettingsPanel() {
           ))}
         </div>
       </section>
+
+      {/*
+        The other way in. Asking from a failed search is the better moment —
+        you know exactly what is missing — but that only happens if you happen
+        to search for it first, and someone who simply wants to put a song
+        forward had nowhere to go.
+      */}
+      {suggestTo && (
+        <section className="border-t border-paper-rule pt-5">
+          <p className="text-label mb-2">Missing a song?</p>
+          <SuggestSong query="" hymnalId={suggestTo.id} label="Suggest a song" compact />
+          <p className="mt-2 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
+            Goes to whoever keeps the app. {suggestTo.shortName} is the book that grows &mdash; the
+            collection is the printed book and stays as it is.
+          </p>
+        </section>
+      )}
 
       <section className="border-t border-paper-rule pt-5">
         <SyncPanel />
