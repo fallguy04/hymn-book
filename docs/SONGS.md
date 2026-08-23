@@ -1,7 +1,7 @@
 # Adding songs: status, licensing, instructions
 
-Covers the 33 frequently-sung songs reviewed in August 2026, what may legally
-be added, and how to add it.
+Covers the songs this congregation sings — the original list of 33 plus the
+2020 and 2022 camp songbooks — what may legally be added, and how to add it.
 
 ---
 
@@ -31,7 +31,7 @@ alone does **not** make it legal to put copyrighted lyrics in a public app.
 1. **Ask CCLI directly.** They answer this exact question and can say in writing
    whether a congregation-restricted app counts as "song sheets" under your
    licence. Get it in writing; a support answer on the phone isn't a licence.
-   → [ccli.com](https://ccli.com/) · US support 1-800-234-2446
+   → [ccli.com](https://ccli.com/) · US service centre (360) 553-7500
 2. **Ask the publishers.** For a short list this is realistic. Ken Young's songs
    are Hallal Music; smaller publishers often say yes to a single congregation.
    One email per publisher, and keep the reply.
@@ -50,33 +50,42 @@ removal on request, and no revenue of any kind.
 
 ### Requests sent
 
-Four drafts, in Gmail:
+All four are out.
 
-| To | Covers | Address |
-|---|---|---|
 | To | Covers | Address | Status |
 |---|---|---|---|
 | Capitol CMG Publishing | the largest cluster — ~9 camp songs plus Green, Moore/Chapman, Kendrick | `CapitolCMGLicensing@umusic.com` | **sent 22 Aug 2026** |
 | Hallal Music (Ken Young) | Faithful Love · Consider Him | `info@hallalmusic.com` | **sent 22 Aug 2026** |
 | Shepherd's Heart Music | Jesus, Flow Like a River | `mail@dennisjernigan.com` | **sent 22 Aug 2026** |
-| CCLI | Does the CCL cover this at all? | **no email exists** — form only | not sent |
+| CCLI | Does the CCL cover this at all? | **no email exists** — web form | **sent 22 Aug 2026** |
 
 Each asks for **blanket coverage of the catalog**, not a fixed title list, since
 the list grows as members ask for songs. Each also asks the recipient to
 redirect it if they don't administer the song, because publisher assignments are
 easy to get wrong from outside.
 
-**CCLI publishes no email address.** Their contact page lists a phone, a street
-address, business hours and a web form — nothing else. The form is also behind a
-Cloudflare Turnstile bot check and requires a phone number, so it has to be
-submitted by hand: [ccli.com/us/en/contact-ccli](https://ccli.com/us/en/contact-ccli),
-or call 1-800-234-2446 (6am–5pm PT).
+**CCLI publishes no email address** — their contact page lists a phone, a street
+address, business hours and a web form, nothing else. The form sits behind a
+Cloudflare check and requires a phone number, so it was submitted by hand
+through [ccli.com/us/en/contact-ccli](https://ccli.com/us/en/contact-ccli).
+The phone line is (360) 553-7500 if it goes quiet.
 
-**Capitol CMG's own preferred route** is the portal at
-[licensing.capitolcmg.com](https://licensing.capitolcmg.com) → CHURCH / INDIE →
-Start Request. Worth using if the email goes unanswered; note that the address
-above appears widely online but is not printed on Capitol CMG's own contact
-page, which lists only `info@umusic.com`.
+**CCLI's answer is the one that decides the shape of this.** They sell blanket
+coverage to congregations at congregation prices, which is exactly what this
+needs; every other route is per-publisher and, on Capitol CMG's rates below,
+meters by the view. Nothing further should go to a publisher until they reply —
+a second request while the first is open only muddies which permission covers
+what.
+
+**If they say yes:** the words for all 38 known-copyright songs can go in, their
+entries come out of `data/pending-songs.json`, and the index-only rows become
+real pages.
+
+**If they say no:** the remaining publishers get asked one at a time —
+Gaither, Word, Ellis Crum, Sacred Selections, Brentwood-Benson, Integrity — and
+each song is a separate decision about whether the rate is worth it. The
+index-only listing stays either way; it costs nothing and it is what makes a
+search for a copyrighted song return something other than silence.
 
 ### What Capitol CMG actually sells (from their own rate card)
 
