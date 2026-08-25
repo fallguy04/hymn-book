@@ -46,17 +46,20 @@ export default function BottomBar({
         </button>
 
         {/*
-          Given a pill, a border and an icon: as letterspaced capitals this read
-          as a caption rather than something to press.
+          Filled ink, the same treatment as the keypad's Go key — the one rule
+          is that the primary action on a surface is the filled dark pill. The
+          previous sunken pill sat at 1.12:1 against the bar behind it, with a
+          1.36:1 border; a control boundary needs 3:1 to read as one, so the
+          front door of the app was optically a caption with a halo.
         */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 justify-self-center rounded-full border border-paper-rule bg-paper-sunken px-5 py-2 font-sans text-sm font-medium text-paper-ink shadow-sm transition-all hover:border-paper-faint active:scale-95"
+          className="flex items-center gap-2 justify-self-center rounded-full bg-paper-ink px-5 py-2 font-sans text-sm font-medium text-paper shadow-sm transition-all hover:opacity-90 active:scale-95"
         >
-          <Search className="h-4 w-4 text-paper-muted" />
+          <Search className="h-4 w-4 text-paper/70" />
           Find a hymn
           {isDesktop && (
-            <kbd className="ml-1 rounded border border-paper-rule bg-paper px-1.5 py-0.5 font-sans text-[0.65rem] text-paper-faint">
+            <kbd className="ml-1 rounded border border-paper/25 px-1.5 py-0.5 font-sans text-[0.65rem] text-paper/70">
               ⌘K
             </kbd>
           )}
