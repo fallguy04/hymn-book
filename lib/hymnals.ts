@@ -128,6 +128,16 @@ export const hymnRange = (hymnal: Hymnal): [number, number] => [
   hymnal.hymns[hymnal.hymns.length - 1].number,
 ];
 
+/**
+ * Fold every apostrophe glyph to one.
+ *
+ * The two books disagree: the collection prints 1,810 curly apostrophes and no
+ * straight ones, "Other Songs" 70 straight and no curly. Without folding, a
+ * term containing an apostrophe can only ever match one of them — and iOS
+ * smart punctuation means "'Tis So Sweet" was unfindable by its own first word.
+ */
+export const foldQuotes = (s: string): string => s.replace(/[\u2018\u2019\u201B`\u00B4]/g, "'");
+
 /** Strip the indentation markers to get plain text for search and previews. */
 export const lineText = (line: Line): string => line.replace(/^\t+/, "");
 
@@ -200,13 +210,13 @@ export function searchAllHymnals(query: string, limit = 60): SearchResult[] {
 }
 
 export function searchHymns(hymnal: Hymnal, query: string, limit = 40): SearchResult[] {
-  const term = query.trim().toLowerCase();
+  const term = foldQuotes(query.trim().toLowerCase());
   if (!term) return [];
 
   const scored: { hymn: Hymn; snippet: string | null; score: number }[] = [];
 
   for (const hymn of hymnal.hymns) {
-    const title = hymnTitle(hymn).toLowerCase();
+    const title = foldQuotes(hymnTitle(hymn).toLowerCase());
     const number = String(hymn.number);
 
     let score = -1;
@@ -216,10 +226,12 @@ export function searchHymns(hymnal: Hymnal, query: string, limit = 40): SearchRe
     else if (number.startsWith(term)) score = 1;
     else if (title.startsWith(term)) score = 2;
     else if (title.includes(term)) score = 3;
-    else if (hymn.author?.toLowerCase().includes(term)) score = 4;
+    else if (hymn.author && foldQuotes(hymn.author.toLowerCase()).includes(term)) score = 4;
     else {
       for (const stanza of hymn.stanzas) {
-        const at = stanza.findIndex((line) => lineText(line).toLowerCase().includes(term));
+        const at = stanza.findIndex((line) =>
+          foldQuotes(lineText(line).toLowerCase()).includes(term),
+        );
         if (at !== -1) {
           score = 5;
           snippet = stanza.slice(Math.max(0, at - 1), at + 2).map(lineText).join(" / ");

@@ -67,14 +67,22 @@ export default function SmartNumpad({
     onKeyPress(key);
   };
 
-  const keyClass = (key: string) => {
-    const dead = buffer.length >= 3 || !reachable.has(key);
-    return `h-14 rounded-2xl font-serif text-2xl transition-all active:scale-95 ${
-      dead
-        ? "bg-paper-sunken/50 text-paper-faint/40"
-        : "bg-paper-sunken text-paper-ink hover:bg-paper-rule"
+  /**
+   * A digit leads nowhere in any book, or the buffer is full.
+   *
+   * These used to be dimmed but still live: the click fired, so the WCAG
+   * exemption for disabled controls did not apply, and at 1.55:1 the numeral
+   * was unreadable in a dim room. Now the button is really disabled — and the
+   * dimming moved off the glyph onto the background, so it stays legible.
+   */
+  const isDead = (key: string) => buffer.length >= 3 || !reachable.has(key);
+
+  const keyClass = (key: string) =>
+    `h-14 rounded-2xl font-serif text-2xl transition-all ${
+      isDead(key)
+        ? "bg-paper-sunken/40 text-paper-muted"
+        : "bg-paper-sunken text-paper-ink hover:bg-paper-rule active:scale-95"
     }`;
-  };
 
   return (
     <motion.div
@@ -218,7 +226,12 @@ export default function SmartNumpad({
       */}
       <div className="mx-auto grid max-w-sm grid-cols-4 grid-rows-4 gap-2.5">
         {KEYS.map((key) => (
-          <button key={key} onClick={() => press(key)} className={keyClass(key)}>
+          <button
+            key={key}
+            onClick={() => press(key)}
+            disabled={isDead(key)}
+            className={keyClass(key)}
+          >
             {key}
           </button>
         ))}
@@ -260,6 +273,7 @@ export default function SmartNumpad({
             otherwise, and 0 is the digit most used in a three-figure number. */}
         <button
           onClick={() => press("0")}
+          disabled={isDead("0")}
           className={`col-span-2 col-start-2 row-start-4 ${keyClass("0")}`}
         >
           0

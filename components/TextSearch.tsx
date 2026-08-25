@@ -28,7 +28,11 @@ type Scope = string | "all";
 /** Wrap each occurrence of the term so matches are visible at a glance. */
 function Highlight({ text, term }: { text: string; term: string }) {
   if (!term.trim()) return <>{text}</>;
-  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Any apostrophe in the term matches any apostrophe glyph in the text, so a
+  // match found by the folded search is also the match that gets marked.
+  const escaped = term
+    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/['\u2018\u2019]/g, "['\u2018\u2019]");
   const parts = text.split(new RegExp(`(${escaped})`, "gi"));
   return (
     <>

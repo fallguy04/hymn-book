@@ -92,8 +92,13 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(SHELL).then((cache) => cache.put(APP_SHELL, copy));
+          // Only a successful load of the root is the shell. Storing every
+          // navigation meant one visit to /privacy — or a single transient
+          // 5xx — became the app you got offline, until the next good load.
+          if (response.ok && response.type === "basic" && url.pathname === "/") {
+            const copy = response.clone();
+            caches.open(SHELL).then((cache) => cache.put(APP_SHELL, copy));
+          }
           return response;
         })
         .catch(async () => (await caches.match(APP_SHELL)) ?? Response.error()),

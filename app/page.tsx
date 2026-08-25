@@ -12,7 +12,14 @@ import BookRibbon from "@/components/BookRibbon";
 import Sidebar from "@/components/Sidebar";
 import TuneSheet from "@/components/TuneSheet";
 import ThemeSync from "@/components/ThemeSync";
-import { firstHymn, getDefaultHymnal, getHymn, getHymnal } from "@/lib/hymnals";
+import {
+  firstHymn,
+  getDefaultHymnal,
+  getHymn,
+  getHymnal,
+  hymnTitle,
+  isNumbered,
+} from "@/lib/hymnals";
 import { useIsDesktop } from "@/lib/useIsDesktop";
 import { forBook, useHymnalStore } from "@/store/useHymnalStore";
 
@@ -52,14 +59,60 @@ export default function Home() {
   const isDesktop = useIsDesktop();
   const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
 
+  /**
+   * Whether the persisted store has been read back yet.
+   *
+   * Nothing may be *written* to the store before this is true. Page state
+   * starts at hymn 1, so the visit/position effect firing on mount wrote 1 over
+   * whatever place had been saved — and because zustand serves default state
+   * during the hydration render, it did so once as the default book before the
+   * real one resolved, wiping the saved place in *both* books on every launch.
+   */
+  const [restored, setRestored] = useState(false);
+
   // Held closed until the viewport is known, so nothing flashes open and shut.
   const searchMode: SearchMode =
     searchState === "auto" ? (isDesktop === false ? "number" : "closed") : searchState;
 
+  // Open where you left off. Read straight from the store rather than through
+  // props: this runs once, on rehydration, before the first render that could
+  // record anything.
   useEffect(() => {
+    const restore = () => {
+      const state = useHymnalStore.getState();
+      const book = getHymnal(state.hymnalId) ?? getDefaultHymnal();
+      const remembered = state.positions[book.id];
+      if (remembered !== undefined && getHymn(book, remembered)) setPage([remembered, 0]);
+      setRestored(true);
+    };
+
+    if (useHymnalStore.persist.hasHydrated()) {
+      restore();
+      return;
+    }
+    return useHymnalStore.persist.onFinishHydration(restore);
+  }, []);
+
+  useEffect(() => {
+    if (!restored) return;
     visit(hymnalId, hymn.number);
     setPosition(hymnalId, hymn.number);
-  }, [hymn.number, hymnalId, visit, setPosition]);
+  }, [restored, hymn.number, hymnalId, visit, setPosition]);
+
+  /**
+   * What a screen reader is told when the hymn changes, and what the tab says.
+   *
+   * Paging or pressing Go used to be entirely silent — focus landed on the body
+   * with no announcement and a permanently static title, so a blind user had to
+   * re-explore the page to find out whether anything had happened.
+   */
+  const announcement = restored
+    ? `${isNumbered(hymnal) ? `Hymn ${hymn.number}` : hymnal.shortName}. ${hymnTitle(hymn)}`
+    : "";
+
+  useEffect(() => {
+    if (announcement) document.title = `${announcement} · Hymnal`;
+  }, [announcement]);
 
   const neighbours = useMemo(() => {
     const at = hymnal.hymns.findIndex((h) => h.number === hymn.number);
@@ -177,6 +230,10 @@ export default function Home() {
   return (
     <>
       <ThemeSync />
+
+      <p aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </p>
 
       {/*
         `fixed inset-0` rather than `h-[100dvh]`: iOS has a standing WebKit bug

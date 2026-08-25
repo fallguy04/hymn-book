@@ -29,7 +29,10 @@
   --surface-sunken: #f2eee5;
   --ink: #241f1a;
   --ink-muted: #5d564c;
-  --ink-faint: #8b8375;
+  /* Dark enough to clear 4.5:1 on both paper (5.10) and sunken (4.55). The
+     old value sat at 3.63/3.24 while carrying verse numerals, every form
+     label and the meter button — the one affordance for opening tunes. */
+  --ink-faint: #726b60;
   --rule: #e0d9cb;
   --accent: #8a6a33;
 
@@ -62,7 +65,8 @@
   --surface-sunken: #100e0b;
   --ink: #ece4d6;
   --ink-muted: #a89e8d;
-  --ink-faint: #7a7263;
+  /* 4.55:1 on paper, 4.74:1 on sunken. */
+  --ink-faint: #857d6f;
   --rule: #322c24;
   --accent: #d9b877;
 }
