@@ -1,0 +1,35 @@
+{
+  "_comment": [
+    "Stable ids for the songs in Other Songs, keyed by their file name in songs/.",
+    "",
+    "The book is displayed alphabetically, so a song’s position moves whenever",
+    "another is added or removed — Amazing Grace has already gone from 5 to 2.",
+    "Anything that stored a position (a starred song, a recent, the ribbon",
+    "bookmark, a sync code) then pointed at a different song. These ids never",
+    "move, so those references stay true.",
+    "",
+    "Assigned on first build and never reused. Commit this file; regenerating it",
+    "from scratch would renumber everything and break exactly what it protects."
+  ],
+  "ids": {
+    "tis-so-sweet-to-trust-in-jesus": 1,
+    "amazing-grace": 2,
+    "and-can-it-be": 3,
+    "count-your-blessings": 4,
+    "crown-him-with-many-crowns": 5,
+    "day-by-day": 6,
+    "he-bore-it-all": 7,
+    "i-have-decided-to-follow-jesus": 8,
+    "i-shall-not-be-moved": 9,
+    "i-sing-the-mighty-power-of-god": 10,
+    "i-will-sing-of-the-mercies": 11,
+    "jesus-paid-it-all": 12,
+    "low-in-the-grave-he-lay": 13,
+    "man-of-sorrows": 14,
+    "onward-christian-soldiers": 15,
+    "sweet-will-of-god": 16,
+    "the-lord-is-my-light": 17,
+    "walking-in-sunlight": 18,
+    "who-is-on-the-lords-side": 19
+  }
+}

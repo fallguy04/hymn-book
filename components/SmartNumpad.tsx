@@ -129,18 +129,17 @@ export default function SmartNumpad({
         detour through search.
       */}
       {books.length > 1 && (
-        <div
-          role="tablist"
-          aria-label="Book"
-          className="mb-3 flex gap-1 rounded-full bg-paper-sunken p-1"
-        >
+        /* A group of toggles, not tabs. It announced "tab, 1 of 2" and invited
+           arrow keys that do nothing, while controlling the whole app rather
+           than a panel — the scope chips and theme toggles already get this
+           right with aria-pressed. */
+        <div role="group" aria-label="Book" className="mb-3 flex gap-1 rounded-full bg-paper-sunken p-1">
           {books.map((book) => {
             const active = book.id === hymnal.id;
             return (
               <button
                 key={book.id}
-                role="tab"
-                aria-selected={active}
+                aria-pressed={active}
                 onClick={() => {
                   if (active) return;
                   tick();

@@ -184,6 +184,10 @@ export default function Home() {
       // the one shortcut that has to work no matter what has focus.
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
+        // Close whatever is over the page first, or search mounts underneath it
+        // — visible through the backdrop, focused, and unclickable.
+        setMenuOpen(false);
+        setTunesOpen(false);
         setSearchState("text");
         return;
       }
@@ -199,7 +203,15 @@ export default function Home() {
       }
 
       if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
-      if (menuOpen) return;
+      // Anything covering the page swallows these keys. Without the tunes
+      // guard, a digit mounted the keypad *under* the sheet's backdrop where it
+      // silently buffered keystrokes, and arrows paged the hymn behind the
+      // modal — recording visits to hymns nobody saw.
+      if (menuOpen || tunesOpen) return;
+
+      // Text search owns the alphabet and the digits while it is open; letting
+      // a digit through replaced it with the keypad and threw the query away.
+      if (searchMode === "text") return;
 
       if (e.key === "ArrowRight") paginate(1);
       else if (e.key === "ArrowLeft") paginate(-1);
@@ -219,6 +231,13 @@ export default function Home() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [menuOpen, tunesOpen, searchMode, paginate, appendDigit, submitBuffer]);
+
+  // Crossing to desktop only *hid* the drawer — `menuOpen` stayed true, so the
+  // key handler kept refusing input to an invisible panel and a tablet rotated
+  // back to portrait found it open again, unasked.
+  useEffect(() => {
+    if (isDesktop) setMenuOpen(false);
+  }, [isDesktop]);
 
   // On a phone this opens the drawer at that section; on a desktop the sidebar
   // is already there, so it just re-targets it (Sidebar is keyed on the path).

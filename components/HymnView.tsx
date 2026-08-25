@@ -31,7 +31,11 @@ const SWIPE_DISTANCE = 80;
  * be set in small caps instead of left shouting in full capitals.
  */
 function splitOpening(line: string): [string, string] {
-  const match = line.match(/^[^a-z]*[A-Z][A-Z’'-]*(?=\s|$)/);
+  // The lookahead used to demand whitespace, so any opening run followed by
+  // punctuation — "LORD, at thy sacred feet" — kept shouting in full capitals.
+  // That was 138 of 577 hymns: a quarter of the book, in the one place this
+  // function exists to fix.
+  const match = line.match(/^[^a-z]*[A-Z][A-Z’'-]*(?=[\s,.;:!?]|$)/);
   if (!match) return ["", line];
   const opening = match[0];
   // Guard against a line that is entirely capitals (a shout in the original).
@@ -68,9 +72,12 @@ export default function HymnView({
 
   // Landing halfway down the next hymn is the single most jarring thing the
   // old build did. One scroll container, reset on every change of hymn.
+  // Keyed on the book as well as the number: crossing books to the same number
+  // is a different song, but the number alone hadn't changed — so the reset
+  // never ran and song 3 of the other book opened halfway down.
   useEffect(() => {
     scroller.current?.scrollTo({ top: 0, behavior: "auto" });
-  }, [hymn.number]);
+  }, [hymnal.id, hymn.number]);
 
   // Keep the screen awake while a hymn is on it — you cannot tap the phone
   // mid-verse. Feature-detected; Safari support is partial.
@@ -99,7 +106,17 @@ export default function HymnView({
   }, []);
 
   return (
-    <div ref={scroller} className="h-full w-full overflow-y-auto overscroll-contain no-scrollbar">
+    /* Focusable so arrow keys and PageDown reach it. It is the only scroll
+       container and `body` is overflow:hidden, so without this a keyboard user
+       could not read past the first screen of a long hymn — and on a hymn with
+       no section path and no metre there was nothing inside to tab to either. */
+    <div
+      ref={scroller}
+      tabIndex={0}
+      role="region"
+      aria-label="Hymn text"
+      className="h-full w-full overflow-y-auto overscroll-contain no-scrollbar"
+    >
       {/*
         The new hymn simply replaces the old one and fades in. An exit
         animation would mean waiting for the outgoing article to finish — and
@@ -107,7 +124,7 @@ export default function HymnView({
         transition half-done and the screen blank.
       */}
       <motion.article
-          key={hymn.number}
+          key={`${hymnal.id}:${hymn.number}`}
           // direction is 0 on first render — there is no page turn to imply, so
           // it only fades. Sliding on load left the text sitting 20px off the
           // centre line the bars are aligned to.
@@ -116,7 +133,11 @@ export default function HymnView({
           }
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
-          drag={reduceMotion ? false : "x"}
+          /* Reduced motion means less movement on screen, not fewer ways to
+             turn the page. A drag that tracks the finger is not a vestibular
+             trigger, and removing it left this audience with only the small
+             arrows in the bar. The transitions below still go to zero. */
+          drag="x"
           dragDirectionLock
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.15}
@@ -140,7 +161,7 @@ export default function HymnView({
             {path.length > 0 && (
               <button
                 onClick={() => onOpenSection(path)}
-                className="text-label mb-3 inline-block transition-colors hover:text-paper-accent"
+                className="text-label -mx-2 mb-1 inline-block px-2 py-2 transition-colors hover:text-paper-accent"
               >
                 {path.join(" · ")}
               </button>
@@ -154,7 +175,7 @@ export default function HymnView({
               {hymn.meter && (
                 <button
                   onClick={onOpenTunes}
-                  className="underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
+                  className="-mx-1 inline-block px-1 py-2 underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
                 >
                   {hymn.meter}
                 </button>

@@ -37,7 +37,7 @@ export default function BookRibbon({ hymnal, onSwitch }: BookRibbonProps) {
             aria-current={active ? "true" : undefined}
             aria-label={`Open ${book.title}`}
             title={book.title}
-            className={`pointer-events-auto rounded-l-lg py-3.5 pl-1.5 pr-1 font-sans text-[0.6rem] font-semibold uppercase tracking-[0.16em] transition-all ${
+            className={`pointer-events-auto min-h-[3.25rem] rounded-l-lg py-4 pl-3 pr-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] transition-all ${
               active
                 ? "bg-paper-accent text-paper shadow-sm"
                 : "bg-paper-sunken text-paper-faint hover:bg-paper-rule hover:text-paper-muted"

@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 const SONGS_DIR = "songs";
 const COLLECTION = "data/hymnals/brethren.json";
 const OUT = "data/hymnals/other-songs.json";
+const IDS = "data/other-songs-ids.json";
 
 /** The format's worked example. Documentation, not a song in the book. */
 const TEMPLATE = "EXAMPLE.txt";
@@ -102,7 +103,7 @@ if (existsSync(SONGS_DIR)) {
         rejected.push([song.title, "already in A Collection of Hymns"]);
         continue;
       }
-      kept.push(song);
+      kept.push({ ...song, slug: file.replace(/\.txt$/, "") });
     } catch (error) {
       console.error(`✗ ${error.message}`);
       process.exitCode = 1;
@@ -111,6 +112,28 @@ if (existsSync(SONGS_DIR)) {
 }
 
 kept.sort((a, b) => a.title.localeCompare(b.title));
+
+/**
+ * Stable ids, keyed by file name.
+ *
+ * The book reads alphabetically, so a song's *position* shifts every time
+ * another is added or removed — Amazing Grace has already moved from 5 to 2.
+ * Anything holding a position (a star, a recent, the ribbon bookmark, a sync
+ * code) silently came to point at a different song. Ids are assigned once and
+ * never reused, so those references keep meaning what they meant.
+ *
+ * Keyed by file name rather than title so that correcting a typo in a title
+ * doesn't orphan everyone's star.
+ */
+const ledger = JSON.parse(readFileSync(IDS, "utf8"));
+let nextId = Math.max(0, ...Object.values(ledger.ids)) + 1;
+let assigned = 0;
+for (const song of kept) {
+  if (ledger.ids[song.slug] === undefined) {
+    ledger.ids[song.slug] = nextId++;
+    assigned++;
+  }
+}
 
 const hymnal = {
   id: "other-songs",
@@ -126,12 +149,13 @@ const hymnal = {
   sections: [
     {
       title: "OTHER SONGS",
-      hymns: kept.map((_, i) => i + 1),
+      hymns: kept.map((entry) => ledger.ids[entry.slug]),
       subsections: [],
     },
   ],
-  hymns: kept.map((entry, i) => ({
-    number: i + 1,
+  hymns: kept.map((entry) => ({
+    // A stable id, not a position. The array order is the reading order.
+    number: ledger.ids[entry.slug],
     title: entry.title,
     meter: entry.meter,
     author: entry.author,
@@ -151,8 +175,12 @@ if (report) {
     for (const [title, why] of rejected) console.log(`  ${title} — ${why}`);
   }
 } else {
+  writeFileSync(IDS, `${JSON.stringify(ledger, null, 2)}\n`);
   writeFileSync(OUT, `${JSON.stringify(hymnal, null, 2)}\n`);
   const attributed = kept.filter((k) => k.author).length;
   console.log(`✓ wrote ${OUT}`);
-  console.log(`  ${kept.length} songs, ${attributed} attributed, ${rejected.length} skipped`);
+  console.log(
+    `  ${kept.length} songs, ${attributed} attributed, ${rejected.length} skipped` +
+      (assigned ? `, ${assigned} new id(s) assigned` : ""),
+  );
 }

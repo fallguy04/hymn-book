@@ -144,6 +144,7 @@ export default function SyncPanel() {
             placeholder="K7P Q4M"
             inputMode="text"
             autoCapitalize="characters"
+            autoComplete="off"
             autoCorrect="off"
             spellCheck={false}
             aria-label="Sync code"
@@ -168,13 +169,19 @@ export default function SyncPanel() {
       </section>
 
       {error && (
-        <p className="rounded-xl bg-paper-accent/10 px-3 py-2.5 font-sans text-[0.75rem] text-paper-accent">
+        <p
+          role="alert"
+          className="rounded-xl bg-paper-accent/15 px-3 py-2.5 font-sans text-[0.75rem] text-paper-ink"
+        >
           {error}
         </p>
       )}
 
       {restored !== null && (
-        <p className="rounded-xl bg-paper-sunken px-3 py-2.5 font-sans text-[0.75rem] text-paper-ink">
+        <p
+          role="status"
+          className="rounded-xl bg-paper-sunken px-3 py-2.5 font-sans text-[0.75rem] text-paper-ink"
+        >
           Restored. You now have {restored} starred {restored === 1 ? "hymn" : "hymns"}.
         </p>
       )}

@@ -37,8 +37,14 @@ const normalize = (s) =>
  * about periods and spacing ("C.M.", "CM.", "C. M."), which silently broke
  * meter matching in the tune drawer.
  */
-function normalizeMeter(raw) {
+function normalizeMeter(raw, hymnNumber) {
   let m = normalize(raw).trim().replace(/\s+/g, " ");
+  // A few pages repeat the hymn number on the meter line — 68 prints
+  // "68  7s." — and the number came through as part of the meter, leaving the
+  // only one of 29 meters that isn't a meter at all.
+  if (hymnNumber !== undefined) {
+    m = m.replace(new RegExp(`^${hymnNumber}\\b[\\s.]*`), "").trim();
+  }
   // The book sets a lowercase L where it means a one: "l0s and 8s", "l2s".
   m = m.replace(/\bl(?=\ds\b)/g, "1");
   m = m.replace(/\bC\.?\s?M\.?\b/g, "C.M.")
@@ -165,7 +171,7 @@ for (const page of pages.slice(firstBodyPage)) {
     // hymns (85) print it a second time part-way down; drop the repeat rather
     // than letting it become a line of the stanza.
     if (isMeterLine(text)) {
-      if (!current.meter) current.meter = normalizeMeter(trimmed);
+      if (!current.meter) current.meter = normalizeMeter(trimmed, current.number);
       continue;
     }
 

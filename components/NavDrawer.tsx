@@ -42,7 +42,7 @@ export default function NavDrawer({
       }
       if (e.key !== "Tab" || !node) return;
       const focusable = node.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, [tabindex]:not([tabindex="-1"])',
+        'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])',
       );
       if (!focusable.length) return;
       const first = focusable[0];

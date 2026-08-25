@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Check, Plus, Send } from "lucide-react";
 
 interface SuggestSongProps {
@@ -29,6 +29,11 @@ export default function SuggestSong({
   label = "Suggest this song",
   compact = false,
 }: SuggestSongProps) {
+  // The sidebar renders these panels permanently on desktop, so opening
+  // Settings' form and then ⌘K put two identical forms on the page — every
+  // htmlFor then pointed at the first one, and assistive tech read the wrong
+  // label for the second.
+  const uid = useId();
   const [state, setState] = useState<State>("idle");
   const [requester, setRequester] = useState("");
   const [title, setTitle] = useState(query);
@@ -52,7 +57,10 @@ export default function SuggestSong({
 
   if (state === "sent") {
     return (
-      <div className={`flex items-center justify-center gap-2 rounded-2xl bg-paper-sunken px-4 py-3 text-center ${compact ? "" : "mx-auto mt-6 max-w-sm"}`}>
+      <div
+        role="status"
+        className={`flex items-center justify-center gap-2 rounded-2xl bg-paper-sunken px-4 py-3 text-center ${compact ? "" : "mx-auto mt-6 max-w-sm"}`}
+      >
         <Check className="h-4 w-4 shrink-0 text-paper-accent" />
         <p className="font-serif text-[0.95rem] text-paper-ink">
           Thank you — that&rsquo;s been passed along.
@@ -82,11 +90,11 @@ export default function SuggestSong({
 
   return (
     <div className={`space-y-2 rounded-2xl border border-paper-rule bg-paper-sunken p-3 text-left ${compact ? "" : "mx-auto mt-6 max-w-sm"}`}>
-      <label className="text-label block" htmlFor="suggest-name">
+      <label className="text-label block" htmlFor={`${uid}-name`}>
         Your name
       </label>
       <input
-        id="suggest-name"
+        id={`${uid}-name`}
         value={requester}
         onChange={(e) => setRequester(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
@@ -95,11 +103,11 @@ export default function SuggestSong({
         className="w-full rounded-xl border border-paper-rule bg-paper px-3 py-2 font-serif text-paper-ink outline-none placeholder:text-paper-faint"
       />
 
-      <label className="text-label block pt-1" htmlFor="suggest-title">
+      <label className="text-label block pt-1" htmlFor={`${uid}-title`}>
         Song title
       </label>
       <input
-        id="suggest-title"
+        id={`${uid}-title`}
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
@@ -107,11 +115,11 @@ export default function SuggestSong({
         className="w-full rounded-xl border border-paper-rule bg-paper px-3 py-2 font-serif text-paper-ink outline-none placeholder:text-paper-faint"
       />
 
-      <label className="text-label block pt-1" htmlFor="suggest-note">
+      <label className="text-label block pt-1" htmlFor={`${uid}-note`}>
         Anything else <span className="normal-case tracking-normal">(optional)</span>
       </label>
       <input
-        id="suggest-note"
+        id={`${uid}-note`}
         value={note}
         onChange={(e) => setNote(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
@@ -137,7 +145,7 @@ export default function SuggestSong({
       </div>
 
       {state === "error" && (
-        <p className="pt-1 font-sans text-[0.7rem] text-red-500">
+        <p role="alert" className="pt-1 font-sans text-[0.7rem] text-red-700 dark:text-red-400">
           That didn&rsquo;t go through. Worth trying again in a moment.
         </p>
       )}

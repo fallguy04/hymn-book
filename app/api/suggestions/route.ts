@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sql, hasDatabase } from "@/lib/db";
 import { emailSuggestion } from "@/lib/notify";
+import { clientKey, rateLimit } from "@/lib/ratelimit";
 
 /** Generous enough for a title and a sentence, tight enough to bound abuse. */
 const MAX_TITLE = 200;
@@ -17,6 +18,15 @@ const MAX_NAME = 120;
  * typed when they asked.
  */
 export async function POST(request: Request) {
+  // A row and an email per call, against a 100/day email quota. Nobody in one
+  // congregation suggests five songs in an hour.
+  if (!rateLimit(clientKey(request, "suggest"), { limit: 5, windowMs: 60 * 60 * 1000 })) {
+    return NextResponse.json(
+      { error: "That's a few too many at once. Try again a bit later." },
+      { status: 429 },
+    );
+  }
+
   if (!hasDatabase) {
     return NextResponse.json({ error: "Suggestions are not configured." }, { status: 503 });
   }
