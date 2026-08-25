@@ -38,7 +38,13 @@ function useIsIOS(): boolean {
   return useSyncExternalStore(
     () => () => {},
     () =>
-      /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent),
+      // iPadOS 13+ reports a Macintosh user agent, so an iPad matched neither
+      // this test nor beforeinstallprompt and was simply never offered the app.
+      // A Mac with a touchscreen doesn't exist; multiple touch points plus a
+      // Macintosh UA does mean iPad.
+      (/iphone|ipad|ipod/i.test(navigator.userAgent) ||
+        (/macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) &&
+      !/crios|fxios/i.test(navigator.userAgent),
     () => false,
   );
 }

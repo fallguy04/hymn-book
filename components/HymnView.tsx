@@ -152,8 +152,13 @@ export default function HymnView({
               only fire if you dragged left and flicked back right at the end.
             */
             const power = Math.abs(offset.x) * velocity.x;
-            if (offset.x < -SWIPE_DISTANCE || power < -SWIPE_THRESHOLD) onNext();
-            else if (offset.x > SWIPE_DISTANCE || power > SWIPE_THRESHOLD) onPrev();
+            // A firm flick the other way is a change of mind: dragging past the
+            // distance and then throwing it back used to turn the page anyway.
+            const cancelled = offset.x * velocity.x < -SWIPE_THRESHOLD;
+            if (!cancelled) {
+              if (offset.x < -SWIPE_DISTANCE || power < -SWIPE_THRESHOLD) onNext();
+              else if (offset.x > SWIPE_DISTANCE || power > SWIPE_THRESHOLD) onPrev();
+            }
           }}
           className="mx-auto w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
         >

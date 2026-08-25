@@ -41,7 +41,9 @@ export default function SuggestSong({
 
   const submit = async () => {
     const cleanTitle = title.trim();
-    if (!cleanTitle) return;
+    // Enter calls this directly, skipping the button's disabled state — so a
+    // quick double press sent the same suggestion twice.
+    if (!cleanTitle || state === "sending") return;
     setState("sending");
     try {
       const response = await fetch("/api/suggestions", {

@@ -87,13 +87,27 @@ each song is a separate decision about whether the rate is worth it. The
 index-only listing stays either way; it costs nothing and it is what makes a
 search for a copyrighted song return something other than silence.
 
-### What Capitol CMG actually sells (from their own rate card)
+### Capitol CMG answered: yes, they license a hymnal app
 
-They replied by autoresponder: all requests go through
-[licensing.capitolcmg.com](https://licensing.capitolcmg.com) → **Church/Indie**,
-and **do not register or log in** — the Church/Indie path breaks for logged-in
-users. Their FAQ confirms `CapitolCMGLicensing@umusic.com` is the right address
-for help.
+**24 August 2026.** "You can obtain permission for a Hymnal app on our website."
+The first firm yes from anyone, and it settles whether this is possible at all.
+
+Their instructions, in short: go to
+[licensing.capitolcmg.com](https://licensing.capitolcmg.com) on a desktop, pick
+**Commercial**, sign in, Start License, choose media types, add songs by id, then
+submit for approval. They need the church's mailing address to open the account.
+
+**Two things to settle before starting.** They said *Commercial*, but their own
+FAQ puts "a church, ministry, or nonprofit organization" under Church/Indie with
+a one-time online payment, and reserves Commercial for subscription services
+that "report and pay royalties every quarter." For a volunteer-run free app that
+is a standing obligation, not a formality — worth one question rather than
+discovering it later. And their step 7 says to search "by the Song ID listed
+below": no list arrived, in either the plain-text or HTML part of the message.
+
+A reply asking both, and supplying the licensee details, is drafted in Gmail.
+
+### The rate card behind that (still the thing to watch)
 
 Their non-commercial rate card offers no licence for "lyrics in an app." The
 closest three:
@@ -120,9 +134,12 @@ and existing public-performance licences. It is built for a company launching a
 commercial streaming service, not a congregation with a free app. Not a dead
 end, but plainly not the intended path either.
 
-**This strengthens the case for waiting on CCLI**, whose whole business is
-selling congregations blanket coverage at congregation prices — and for the
-index-only fallback, which costs nothing and is unambiguously legal.
+**This is still the case for waiting on CCLI**, whose whole business is selling
+congregations blanket coverage at congregation prices. Capitol CMG will license
+the app, but on a per-song rate card metered by views, through the path meant
+for commercial services. One blanket licence would be cheaper and far less
+administration than six of those. The index-only fallback stays regardless: it
+costs nothing and is unambiguously legal.
 
 ### Still to write
 
@@ -226,10 +243,15 @@ the ones the congregation actually sings.
 | Onward, Christian Soldiers | Sabine Baring-Gould | 1865 |
 | 'Tis So Sweet to Trust in Jesus | Louisa M. R. Stead | 1882 |
 
-Already present: **Take My Life and Let It Be** (Havergal, 1874) and **The Lord
-Is My Light** (Root, 1894 — now carrying the congregation's own text).
+Also present from the camp books: **The Lord Is My Light** (Root, 1894), now
+carrying the congregation's own text rather than the opening alone.
 
-### 🔴 In copyright — cannot add without permission (25)
+*(An earlier version of this file listed "Take My Life and Let It Be" as already
+present. It never was — no song file, no entry in either book, nothing in the
+git history. It was confused with the other Havergal text, "Who Is on the Lord's
+Side?". If the congregation sings it, it still needs adding.)*
+
+### 🔴 In copyright — cannot add without permission (26)
 
 As the Deer · Because He Lives · Bind Us Together · Faithful Love · Father, I
 Adore You · He Has Made Me Glad · He Paid a Debt · Here I Am to Worship · I Love
@@ -244,7 +266,7 @@ Cleavant Derricks, 1937, so roughly 2033.
 
 *(The 2022 book prints "Step by Step" twice, at 36 and 37.)*
 
-### ❓ Unidentified — 14 camp songs
+### ❓ Unidentified — 15 camp songs
 
 Alive, Alive · Beautiful Lamb of God · Feelin' Fine · Fill Up My Cup · Friends
 Forever · God's Wonderful People · I Want Us to Be Together in Heaven · I Will

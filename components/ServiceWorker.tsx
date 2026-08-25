@@ -81,7 +81,9 @@ export default function ServiceWorker() {
         const response = await fetch("/api/version", { cache: "no-store" });
         if (!response.ok) return;
         const { buildId } = await response.json();
-        if (buildId && buildId !== process.env.NEXT_PUBLIC_BUILD_ID) setStale(true);
+        // Compare against the same fallback the route and the register URL
+        // use, or an unset build id shows a refresh pill that never clears.
+        if (buildId && buildId !== (process.env.NEXT_PUBLIC_BUILD_ID ?? "dev")) setStale(true);
       } catch {
         // Offline, most likely. The build we have is the one we can run.
       }

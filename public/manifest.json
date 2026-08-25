@@ -2,15 +2,21 @@
   "id": "/",
   "name": "A Collection of Hymns and Sacred Songs",
   "short_name": "Hymnal",
-  "description": "The Old German Baptist Brethren hymnal, 32nd Edition — all 558 hymns, available offline.",
+  "description": "The Old German Baptist Brethren hymnal and the other songs the congregation sings \u2014 available offline.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "orientation": "portrait",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "background_color": "#fdfbf7",
   "theme_color": "#fdfbf7",
-  "categories": ["books", "music", "lifestyle"],
+  "categories": [
+    "books",
+    "music",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",

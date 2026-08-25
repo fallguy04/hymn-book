@@ -21,6 +21,7 @@ import {
   isNumbered,
 } from "@/lib/hymnals";
 import { useIsDesktop } from "@/lib/useIsDesktop";
+import { useDialog } from "@/lib/useDialog";
 import { forBook, useHymnalStore } from "@/store/useHymnalStore";
 
 type SearchMode = "closed" | "number" | "text";
@@ -70,9 +71,16 @@ export default function Home() {
    */
   const [restored, setRestored] = useState(false);
 
+
   // Held closed until the viewport is known, so nothing flashes open and shut.
   const searchMode: SearchMode =
     searchState === "auto" ? (isDesktop === false ? "number" : "closed") : searchState;
+  // Focus stays inside whichever layer is over the page, and returns to the
+  // control that opened it. Both were previously open to Tab walking straight
+  // out into the dimmed page behind — and on a phone the keypad is the default
+  // open state, so that was the first thing a keyboard user met.
+  const keypadRef = useDialog<HTMLDivElement>(searchMode === "number");
+  const searchRef = useDialog<HTMLDivElement>(searchMode === "text");
 
   // Open where you left off. Read straight from the store rather than through
   // props: this runs once, on rehydration, before the first render that could
@@ -221,7 +229,13 @@ export default function Home() {
       } else if (/^\d$/.test(e.key)) {
         setSearchState("number");
         appendDigit(e.key);
-      } else if (e.key === "Enter" && searchMode === "number") {
+      } else if (
+        e.key === "Enter" &&
+        searchMode === "number" &&
+        // A focused key handles its own Enter; without this the buffer was
+        // submitted *and* the digit appended, on one press.
+        !(e.target instanceof HTMLButtonElement)
+      ) {
         submitBuffer();
       } else if (e.key === "Backspace" && searchMode === "number") {
         setBuffer((prev) => prev.slice(0, -1));
@@ -342,12 +356,19 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.15 }}
           onClick={() => setSearchState("closed")}
+          aria-hidden="true"
           className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
         />
       )}
 
       {searchMode === "number" && (
-          <div className="fixed inset-x-0 bottom-0 z-50">
+          <div
+            ref={keypadRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Go to a hymn by number"
+            className="fixed inset-x-0 bottom-0 z-50"
+          >
             <SmartNumpad
               hymnal={hymnal}
               buffer={buffer}
@@ -369,6 +390,10 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.15 }}
+            ref={searchRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Find a hymn"
             className="fixed inset-0 z-50 flex flex-col p-3 pt-6 lg:items-center lg:pt-[12vh]"
           >
             <TextSearch

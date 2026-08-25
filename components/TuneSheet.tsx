@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useDialog } from "@/lib/useDialog";
 import { X } from "lucide-react";
 import TuneList from "./TuneList";
 
@@ -18,6 +19,9 @@ interface TuneSheetProps {
  */
 export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
   const reduceMotion = useReducedMotion();
+  // It already claimed aria-modal while leaving focus on the meter button
+  // behind it — telling a screen reader the focused element no longer exists.
+  const panel = useDialog<HTMLDivElement>(isOpen);
 
   if (!isOpen) return null;
 
@@ -31,10 +35,12 @@ export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
             animate={{ opacity: 1 }}
             transition={{ duration: reduceMotion ? 0 : 0.15 }}
             onClick={onClose}
+            aria-hidden="true"
             className="fixed inset-0 z-[55] bg-black/25 backdrop-blur-[2px]"
           />
 
           <motion.div
+            ref={panel}
             role="dialog"
             aria-modal="true"
             aria-label={`Tunes for ${meter}`}
@@ -43,7 +49,7 @@ export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
             transition={
               reduceMotion ? { duration: 0 } : { type: "spring", damping: 32, stiffness: 320 }
             }
-            drag={reduceMotion ? false : "y"}
+            drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.4 }}
             onDragEnd={(_, { offset, velocity }) => {
