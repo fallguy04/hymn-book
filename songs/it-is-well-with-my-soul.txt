@@ -1,7 +1,7 @@
 Title: It Is Well with My Soul
 Author: Horatio G. Spafford, 1873
 Meter: 11.8.11.9 with refrain
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 When peace, like a river, attendeth my way,
 	When sorrows like sea billows roll;
@@ -30,4 +30,4 @@ No pang shall be mine, for in death as in life
 But, Lord, 'tis for Thee, for Thy coming we wait,
 	The sky, not the grave, is our goal;
 Oh trump of the angel! Oh voice of the Lord!
-	Bless�d hope, bless�d rest of my soul!
+	Blessèd hope, blessèd rest of my soul!

@@ -1,7 +1,7 @@
 Title: The Old Rugged Cross
 Author: George Bennard, 1913
 Meter: 12.9.12.8 with refrain
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 On a hill far away stood an old rugged cross,
 	The emblem of suff'ring and shame;
@@ -20,9 +20,9 @@ For the dear Lamb of God left His glory above
 	To bear it to dark Calvary.
 
 In that old rugged cross, stained with blood so divine,
-	A wondrous beauty I see, For 'twas
-On that old cross Jesus suffered and died, To
-	Pardon and sanctify me.
+	A wondrous beauty I see,
+For 'twas on that old cross Jesus suffered and died,
+	To pardon and sanctify me.
 
 To the old rugged cross I will ever be true;
 	Its shame and reproach gladly bear;

@@ -1,7 +1,7 @@
 Title: Beautiful Savior
 Author: German Jesuits, published 1677. Translated by Joseph A. Seiss, 1873
 Meter: 5.5.8.5.5.8
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 Beautiful Savior,
 King of Creation

@@ -1,7 +1,7 @@
 Title: My Faith Looks Up to Thee
 Author: Ray Palmer, 1830
 Meter: 6.6.4.6.6.6.4
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 My faith looks up to Thee,
 Thou Lamb of Calvary,

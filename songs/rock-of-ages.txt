@@ -1,7 +1,7 @@
 Title: Rock of Ages
 Author: Augustus Montague Toplady, 1776
 Meter: 7s.
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 Rock of Ages, cleft for me,
 Let me hide myself in Thee;

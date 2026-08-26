@@ -1,11 +1,11 @@
 Title: Immortal, Invisible
 Author: Walter Chalmers Smith, 1876
 Meter: 11s.
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
 Immortal, invisible, God only wise,
 In light inaccessible hid from our eyes,
-Most bless�d, most glorious, the Ancient of Days,
+Most blessèd, most glorious, the Ancient of Days,
 Almighty, victorious, Thy great Name we praise.
 
 Unresting, unhasting, and silent as light,

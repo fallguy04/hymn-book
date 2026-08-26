@@ -1,11 +1,11 @@
 Title: Blessed Assurance
 Author: Fanny Crosby, 1873
 Meter: 9.10.9.9 with refrain
-Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.
+Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.
 
-Bless�d assurance, Jesus is mine!
+Blessèd assurance, Jesus is mine!
 O what a foretaste of glory divine!
-	Heir of salvation, purchase of God,
+Heir of salvation, purchase of God,
 Born of His Spirit, washed in His blood.
 
 Refrain:
@@ -16,10 +16,10 @@ Praising my Savior, all the day long.
 
 Perfect submission, perfect delight,
 Visions of rapture now burst on my sight;
-	Angels descending bring from above
+Angels descending bring from above
 Echoes of mercy, whispers of love.
 
 Perfect submission, all is at rest
 I in my Savior am happy and blest,
-	Watching and waiting, looking above,
+Watching and waiting, looking above,
 Filled with His goodness, lost in His love.

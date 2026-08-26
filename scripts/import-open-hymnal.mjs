@@ -54,7 +54,8 @@ const HYMNS = [
   { file: "Beneath_The_Cross_Of_Jesus-St_Christopher.abc", slug: "beneath-the-cross-of-jesus",
     title: "Beneath the Cross of Jesus", meter: "7.6.8.6.8.6.8.6", verse: [7, 6, 8, 6, 8, 6, 8, 6] },
   { file: "Blessed_Assurance-Blessed_Assurance-Assurance.abc", slug: "blessed-assurance",
-    title: "Blessed Assurance", meter: "9.10.9.9 with refrain", verse: [9, 10, 9, 9], refrain: [9, 9, 9, 9] },
+    title: "Blessed Assurance", meter: "9.10.9.9 with refrain", verse: [9, 10, 9, 9], refrain: [9, 9, 9, 9],
+    flush: true },
   { file: "Take_My_Life_And_Let_It_Be-Mozart.abc", slug: "take-my-life-and-let-it-be",
     title: "Take My Life and Let It Be", meter: "7s.", verse: [7, 7, 7, 7] },
   { file: "To_God_Be_the_Glory-To_God_Be_the_Glory.abc", slug: "to-god-be-the-glory",
@@ -85,7 +86,7 @@ const HYMNS = [
 function readLyrics(path) {
   const verses = new Map();
   let group = 0, inRun = false;
-  for (const raw of readFileSync(path, "utf8").split("\n")) {
+  for (const raw of readFileSync(path, "latin1").split("\n")) {
     if (!raw.startsWith("w:")) { inRun = false; continue; }
     // Verse numbers are printed only in the first staff block; after that the
     // w: lines are positional — the Nth line of each run is verse N.
@@ -98,7 +99,7 @@ function readLyrics(path) {
     const list = verses.get(n) ?? [];
     for (const tok of line.split(/\s+/)) {
       if (!tok || "*-_|".includes(tok)) continue;   // melisma, hold, barline
-      list.push(tok.replace(/~/g, " "));
+      list.push(tok.replace(/~/g, " ").replace(/_+$/, ""));
     }
     verses.set(n, list);
   }
@@ -120,48 +121,81 @@ function toWords(tokens) {
 }
 
 /**
- * Split words into lines of the given syllable counts. Returns [lines, rest].
+ * Split words into lines of the given syllable counts.
  *
- * The metre alone is not enough. Some tunes carry a pickup note, so the same
- * line runs to eleven syllables in one verse and twelve in the next — Nicaea
- * does exactly this, and counting blindly walked every line of "Holy, Holy,
- * Holy" one word further along than the last. What does hold is that a hymn
- * line ends on punctuation. So aim at the metre, then take the nearest stop
- * that is also the end of a clause.
+ * Greedy filling to the metre does not work. Verses of the same hymn do not
+ * always carry the same number of syllables — a tune with a pickup takes an
+ * extra one, and "The Old Rugged Cross" runs 41, 41, 39, 41 across its four
+ * verses. Fill greedily and that missing syllable drags every later break one
+ * word out of place, which is how verse three arrived as "A wondrous beauty I
+ * see, For 'twas / On that old cross Jesus suffered and died, To".
+ *
+ * What actually marks a hymn line is punctuation: lines close on a comma,
+ * semicolon or stop. So score every possible division of the verse — each line
+ * paying for how far it sits from the metre, plus a penalty for ending
+ * anywhere but a clause — and take the cheapest overall. Choosing all the
+ * breaks together is the point: a local mistake can no longer cascade.
  */
-function split(words, meter, strictLast = false) {
+function split(words, meter) {
+  const n = words.length, L = meter.length;
+  const cum = [0];
+  for (const [, s] of words) cum.push(cum[cum.length - 1] + s);
+  const closes = words.map(([w]) => /[,;:.!?\u2014]$/.test(w));
+  const OFF_CLAUSE = 3;   // in syllables — worth about a word and a half
+
+  // best[k][j] = cheapest way to lay the first k lines down to word j.
+  const INF = Infinity;
+  const best = Array.from({ length: L + 1 }, () => new Array(n + 1).fill(INF));
+  const from = Array.from({ length: L + 1 }, () => new Array(n + 1).fill(-1));
+  best[0][0] = 0;
+  for (let k = 1; k <= L; k += 1) {
+    for (let j = k; j <= n; j += 1) {                 // line k ends at word j
+      if (k === L && j !== n) continue;               // last line takes the rest
+      const penalty = closes[j - 1] ? 0 : OFF_CLAUSE;
+      for (let i = k - 1; i < j; i += 1) {
+        if (best[k - 1][i] === INF) continue;
+        const cost = best[k - 1][i] + Math.abs(cum[j] - cum[i] - meter[k - 1]) + penalty;
+        if (cost < best[k][j]) { best[k][j] = cost; from[k][j] = i; }
+      }
+    }
+  }
+
+  const cuts = [n];
+  let j = n;
+  for (let k = L; k >= 1; k -= 1) { j = from[k][j]; cuts.unshift(j); }
+  if (cuts.some((c) => c < 0)) {                      // no valid division; keep it whole
+    const text = words.map(([w]) => w).join(" ");
+    return [[{ text, got: cum[n], want: meter[0] }], []];
+  }
+
   const lines = [];
-  let i = 0;
-  for (const want of meter) {
-    // Every place this line could stop, with the syllable count it would have.
-    const stops = [];
-    let run = 0;
-    for (let j = i; j < words.length; j += 1) {
-      run += words[j][1];
-      stops.push({ end: j + 1, got: run, closes: /[,;:.!?—]$/.test(words[j][0]) });
-      if (run >= want + 4) break;
-    }
-    if (stops.length === 0) { lines.push({ text: "", got: 0, want }); continue; }
-    const near = (a, b) => Math.abs(a.got - want) - Math.abs(b.got - want);
-    // Within one syllable only. At three, "let me sing / Always, only" was
-    // pulled apart as "let me sing always, / only" — a comma close enough to
-    // the metre is evidence, a comma two words past it is not.
-    const clausal = stops.filter((s) => s.closes && Math.abs(s.got - want) <= 1).sort(near)[0];
-    let chosen = clausal ?? stops.slice().sort(near)[0];
-    // A refrain's last line must not run on: the score sets the refrain across
-    // two staves, so its lyric run repeats the opening phrase, and without this
-    // "It is well with my soul" ended "…with my soul. It is well,".
-    const last = want === meter[meter.length - 1] && lines.length === meter.length - 1;
-    if (strictLast && last && chosen.got > want) {
-      chosen = stops.filter((s) => s.got <= want).sort((a, b) => b.got - a.got)[0] ?? chosen;
-    }
+  for (let k = 0; k < L; k += 1) {
+    const text = words.slice(cuts[k], cuts[k + 1]).map(([w]) => w).join(" ");
     // Hymnals set every line with a capital, whatever the sentence is doing;
     // the score lowercases continuations because it is following prose.
-    const text = words.slice(i, chosen.end).map(([w]) => w).join(" ");
-    lines.push({ text: text.charAt(0).toUpperCase() + text.slice(1), got: chosen.got, want });
-    i = chosen.end;
+    lines.push({
+      text: text.charAt(0).toUpperCase() + text.slice(1),
+      got: cum[cuts[k + 1]] - cum[cuts[k]],
+      want: meter[k],
+    });
   }
-  return [lines, words.slice(i)];
+  return [lines, []];
+}
+
+/**
+ * A refrain is printed across two staves, so its lyric run repeats the opening
+ * phrase. Keep only as much as the metre asks for, cutting at a clause.
+ */
+function trimToMeter(words, meter) {
+  const want = meter.reduce((a, b) => a + b, 0);
+  let run = 0, bestAt = words.length, bestCost = Infinity;
+  for (let j = 0; j < words.length; j += 1) {
+    run += words[j][1];
+    const closes = /[,;:.!?]$/.test(words[j][0]);
+    const cost = Math.abs(run - want) + (closes ? 0 : 3);
+    if (cost < bestCost) { bestCost = cost; bestAt = j + 1; }
+  }
+  return words.slice(0, bestAt);
 }
 
 /** Hymnals inset the shorter line of an alternating pair; follow the metre. */
@@ -175,21 +209,26 @@ for (const h of HYMNS) {
   const lyrics = readLyrics(path);
   const numbers = [...lyrics.keys()].sort((a, b) => a - b);
   const verseLen = h.verse.reduce((a, b) => a + b, 0);
-  const inset = indent(h.verse);
+  const inset = h.flush ? h.verse.map(() => false) : indent(h.verse);
 
   const stanzas = [];
   let refrainWords = null;
   const notes = [];
 
   for (const n of numbers) {
-    const words = toWords(lyrics.get(n));
+    let words = toWords(lyrics.get(n));
     const total = words.reduce((a, [, s]) => a + s, 0);
-    const [lines, rest] = split(words, h.verse);
-    // The score prints the refrain on verse one's lyric line, so whatever runs
-    // past the verse metre there is the refrain.
-    if (rest.length && !refrainWords && h.refrain) refrainWords = rest;
-    else if (rest.length) notes.push(`v${n} had ${total - verseLen} syllables left over`);
 
+    // The score prints the refrain on verse one's lyric line, so cut the verse
+    // off at its own metre first and keep what follows. This has to happen
+    // before the split, which divides everything it is handed.
+    if (h.refrain && !refrainWords && total > verseLen + 4) {
+      const verseOnly = trimToMeter(words, h.verse);
+      refrainWords = words.slice(verseOnly.length);
+      words = verseOnly;
+    }
+
+    const [lines] = split(words, h.verse);
     for (const l of lines) if (l.got !== l.want) notes.push(`v${n} line ${lines.indexOf(l) + 1}: ${l.got} syllables, metre wants ${l.want}`);
     stanzas.push(lines.map((l, i) => (inset[i] ? "\t" : "") + l.text));
   }
@@ -197,7 +236,7 @@ for (const h of HYMNS) {
   const out = [];
   out.push(stanzas[0]);
   if (refrainWords && h.refrain) {
-    const [rl, extra] = split(refrainWords, h.refrain, true);
+    const [rl, extra] = split(trimToMeter(refrainWords, h.refrain), h.refrain);
     const rInset = indent(h.refrain);
     out.push(["Refrain:", ...rl.map((l, i) => (rInset[i] ? "\t" : "") + l.text)]);
     for (const l of rl) if (l.got !== l.want) notes.push(`refrain line ${rl.indexOf(l) + 1}: ${l.got}, wants ${l.want}`);
@@ -208,7 +247,7 @@ for (const h of HYMNS) {
   out.push(...stanzas.slice(1));
 
   // Attribution, straight from the score's own credit lines.
-  const credits = readFileSync(path, "utf8").split("\n").filter((l) => l.startsWith("C: "));
+  const credits = readFileSync(path, "latin1").split("\n").filter((l) => l.startsWith("C: "));
   const wordsLine = credits.find((l) => /^C:\s*Words:/i.test(l)) ?? "";
   // Some scores put words, music and setting on one credit line. The book is
   // words only, so anything from "Music:" on is somebody else's contribution.
@@ -223,7 +262,7 @@ for (const h of HYMNS) {
     `Title: ${h.title}`,
     author ? `Author: ${author.replace(/\.$/, "")}` : null,
     `Meter: ${h.meter}`,
-    `Source: Open Hymnal Project (public domain). DRAFT — NEEDS PROOFREADING against a printed copy.`,
+    `Source: Open Hymnal Project (public domain). Text and line breaks reviewed 26 Aug 2026; not checked against the congregation's printed copy.`,
   ].filter(Boolean);
 
   const body = out.map((s) => s.join("\n")).join("\n\n");
