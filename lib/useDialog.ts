@@ -35,9 +35,16 @@ export function useDialog<T extends HTMLElement>(active = true) {
         ),
       ].filter((el) => el.offsetParent !== null || el === document.activeElement);
 
+    // The panel itself, not its first control. On a phone the keypad is the
+    // *default* open state, so focusing the first button drew a focus ring on
+    // the close grip before anyone had touched the app — it looked like it had
+    // already been used, and the one thing highlighted on arrival was the way
+    // out. The container carries the dialog's label, so a screen reader still
+    // announces what opened; Tab moves from here into the keys.
+    //
     // Don't steal focus from a field that autofocused itself.
     if (!node.contains(document.activeElement)) {
-      (focusable()[0] ?? node).focus({ preventScroll: true });
+      node.focus({ preventScroll: true });
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -49,7 +56,10 @@ export function useDialog<T extends HTMLElement>(active = true) {
       }
       const first = stops[0];
       const last = stops[stops.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      // Tab forward off the container falls into the first control by itself.
+      // Shift-Tab off it would walk backwards out of the panel, so wrap.
+      const onPanel = document.activeElement === node;
+      if (event.shiftKey && (onPanel || document.activeElement === first)) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {

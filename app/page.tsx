@@ -367,7 +367,16 @@ export default function Home() {
             role="dialog"
             aria-modal="true"
             aria-label="Go to a hymn by number"
-            className="fixed inset-x-0 bottom-0 z-50"
+            /* -1 so the hook can rest focus on the panel rather than on a key,
+               and no ring: this is a container that holds focus, not a control
+               anyone is being pointed at. */
+            tabIndex={-1}
+            /* Edge to edge is right on a phone, where the screen is the sheet.
+               Across a monitor it became a full-width band with a small pad
+               marooned in the middle — the keypad kept its size while the
+               furniture around it grew. Past 1024px it becomes what it always
+               was: a card, floated over the page. */
+            className="fixed inset-x-0 bottom-0 z-50 outline-none lg:inset-x-auto lg:bottom-8 lg:left-1/2 lg:w-[26.5rem] lg:-translate-x-1/2"
           >
             <SmartNumpad
               hymnal={hymnal}
@@ -394,7 +403,8 @@ export default function Home() {
             role="dialog"
             aria-modal="true"
             aria-label="Find a hymn"
-            className="fixed inset-0 z-50 flex flex-col p-3 pt-6 lg:items-center lg:pt-[12vh]"
+            tabIndex={-1}
+            className="fixed inset-0 z-50 flex flex-col p-3 pt-6 outline-none lg:items-center lg:pt-[12vh]"
           >
             <TextSearch
               hymnal={hymnal}

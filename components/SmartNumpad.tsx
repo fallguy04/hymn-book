@@ -105,7 +105,9 @@ export default function SmartNumpad({
       onDragEnd={(_, { offset, velocity }) => {
         if (offset.y > 90 || velocity.y > 600) onClose();
       }}
-      className="rounded-t-3xl border-t border-paper-rule bg-paper px-5 pb-8 pt-2 shadow-[0_-12px_40px_-16px_rgba(0,0,0,0.25)]"
+      /* The deep bottom padding clears a phone's home indicator; floated as a
+         card there is nothing below it to clear, so it comes back in. */
+      className="rounded-t-3xl border-t border-paper-rule bg-paper px-5 pb-8 pt-2 shadow-[0_-12px_40px_-16px_rgba(0,0,0,0.25)] lg:rounded-3xl lg:border lg:pb-5 lg:shadow-2xl"
     >
       {/*
         A grip you can see and a target worth aiming at. The old handle was a
