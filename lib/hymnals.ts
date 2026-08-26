@@ -69,6 +69,21 @@ export const isNumbered = (hymnal: Hymnal): boolean => hymnal.numbered !== false
 export const isExpandable = (hymnal: Hymnal): boolean => hymnal.expandable === true;
 
 /**
+ * Whether this book's sections actually divide it into anything.
+ *
+ * The collection is organised topically and the headings do real work — they
+ * are how you find a hymn for a funeral. "Other Songs" carries a single
+ * section named after the book, so every divider it drew announced "OTHER
+ * SONGS" above a list of other songs, and its contents opened onto one
+ * collapsed row you had to expand before you could see the book at all.
+ *
+ * Derived rather than declared: a book that grows real sections gets its
+ * headings back without anyone remembering to set a flag.
+ */
+export const hasSections = (hymnal: Hymnal): boolean =>
+  hymnal.sections.length > 1 || hymnal.sections.some((s) => (s.subsections?.length ?? 0) > 0);
+
+/**
  * Registered hymnals, in the order they should appear in the book switcher.
  *
  * To add another book, generate a JSON file matching the `Hymnal` shape above
@@ -119,9 +134,13 @@ export const getHymn = (hymnal: Hymnal, number: number): Hymn | undefined =>
 /** The hymn to show when a lookup fails — the first in the book. */
 export const firstHymn = (hymnal: Hymnal): Hymn => hymnal.hymns[0];
 
-/** ["THE GOSPEL", "INVITATIONS AND WARNINGS"] for the eyebrow above a title. */
+/**
+ * ["THE GOSPEL", "INVITATIONS AND WARNINGS"] for the eyebrow above a title.
+ * Empty where the book isn't divided — there is no "where in the book" to tell
+ * someone when the answer is always the same place.
+ */
 export const sectionPath = (hymnal: Hymnal, number: number): string[] =>
-  sectionPaths.get(hymnal.id)?.get(number) ?? [];
+  hasSections(hymnal) ? (sectionPaths.get(hymnal.id)?.get(number) ?? []) : [];
 
 export const hymnRange = (hymnal: Hymnal): [number, number] => [
   hymnal.hymns[0].number,

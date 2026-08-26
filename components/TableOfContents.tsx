@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { type Hymnal, type Section, getHymn, hymnTitle } from "@/lib/hymnals";
+import { type Hymnal, type Section, getHymn, hasSections, hymnTitle } from "@/lib/hymnals";
 
 interface TableOfContentsProps {
   hymnal: Hymnal;
@@ -95,6 +95,14 @@ export default function TableOfContents({ hymnal, openPath, onSelect }: TableOfC
       </li>
     );
   };
+
+  // A book with nothing to divide is just a list. Wrapping it in its own name
+  // and collapsing it meant the contents of "Other Songs" opened onto a single
+  // row reading OTHER SONGS, with the songs one tap further in than they were
+  // in any other route to them.
+  if (!hasSections(hymnal)) {
+    return <div className="pb-4">{renderHymns(hymnal.hymns.map((h) => h.number))}</div>;
+  }
 
   return <ul className="pb-4">{hymnal.sections.map((s) => renderSection(s, 0))}</ul>;
 }
