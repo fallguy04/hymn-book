@@ -54,9 +54,15 @@ Only add songs that are **in the public domain**, or that you have a licence to
 reproduce. As a rough guide, a text first published before 1930 is public
 domain in the US; anything later usually isn't, no matter how familiar it is.
 
-A CCLI licence covers reproducing lyrics for congregational use and would cover
-much of a modern hymnal — worth checking whether your congregation holds one
-before adding anything still in copyright.
+**A CCLI licence does not help here.** CCLI confirmed in writing (25 August
+2026) that neither the Church Copyright License nor the Streaming License
+covers displaying lyrics in a website or web app, that it sells no licence
+which does, and that restricting the app to your own congregation makes no
+difference. Permission has to come from each copyright owner directly.
+
+Songs we sing but cannot print are listed in `data/pending-songs.json`, which
+puts the title and writer in the index with no words attached. A title is a
+fact and carries no copyright, so that costs nothing and stays lawful.
 
 `Source:` is free text and exists to record *why* a song is safe to include —
 "public domain (1779)", "CCLI #1234567", "author's permission, 2026-08-14". It

@@ -10,23 +10,46 @@
       "title": "OTHER SONGS",
       "hymns": [
         1,
+        20,
+        21,
         2,
         3,
+        22,
+        23,
+        24,
+        25,
         4,
         5,
         6,
+        26,
         7,
+        27,
         8,
+        28,
         9,
         10,
         11,
+        29,
+        30,
+        31,
         12,
         13,
         14,
+        32,
+        33,
+        34,
+        35,
         15,
+        36,
+        37,
         16,
+        38,
+        39,
         17,
+        40,
+        41,
         18,
+        42,
         19
       ],
       "subsections": []
@@ -61,6 +84,98 @@
       ],
       "refrains": [
         1
+      ]
+    },
+    {
+      "number": 20,
+      "title": "A Mighty Fortress Is Our God",
+      "meter": "8.7.8.7.5.5.5.6.7",
+      "author": "Martin Luther, 1529. Translation composite circa 1868 Pennsylvania Lutheran Church Book",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "A mighty Fortress is our God,",
+          "\tA trusty Shield and Weapon;",
+          "He helps us free from every need",
+          "\tThat hath us now o'ertaken.",
+          "\tThe old evil Foe",
+          "Now means deadly woe;",
+          "Deep guile and great might",
+          "Are his dread arms in fight;",
+          "On Earth is not his equal."
+        ],
+        [
+          "With might of ours can naught be done,",
+          "\tSoon were our loss effected;",
+          "But for us fights the Valiant One,",
+          "\tWhom God Himself elected.",
+          "\tAsk ye, Who is this?",
+          "Jesus Christ it is.",
+          "Of Sabaoth Lord,",
+          "And there's none other God;",
+          "He holds the field forever."
+        ],
+        [
+          "Though devils all the world should fill,",
+          "\tAll eager to devour us.",
+          "We tremble not, we fear no ill,",
+          "\tThey shall not overpower us.",
+          "\tThis world's prince may still",
+          "Scowl fierce as he will,",
+          "He can harm us none,",
+          "He's judged; the deed is done;",
+          "One little word can fell him."
+        ],
+        [
+          "The Word they still shall let remain",
+          "\tNor any thanks have for it;",
+          "He's by our side upon the plain",
+          "\tWith His good gifts and Spirit.",
+          "\tAnd take they our life,",
+          "Goods, fame, child and wife,",
+          "Let these all be gone,",
+          "They yet have nothing won;",
+          "The Kingdom ours remaineth."
+        ]
+      ]
+    },
+    {
+      "number": 21,
+      "title": "Abide with Me",
+      "meter": "10s.",
+      "author": "Henry F. Lyte, 1847",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Abide with me; fast falls the eventide;",
+          "The darkness deepens; Lord with me abide.",
+          "When other helpers fail and comforts flee,",
+          "Help of the helpless, O abide with me."
+        ],
+        [
+          "Swift to its close ebbs out life's little day;",
+          "Earth's joys grow dim; its glories pass away;",
+          "Change and decay in all around I see;",
+          "O Thou who changest not, abide with me."
+        ],
+        [
+          "Not a brief glance I beg, a passing word;",
+          "But as Thou dwell'st with Thy disciples, Lord,",
+          "Familiar, condescending, patient, free.",
+          "Come not to sojourn, but abide with me."
+        ],
+        [
+          "Come not in terrors, as the King of kings,",
+          "But kind and good, with healing in Thy wings,",
+          "Tears for all woes, a heart for every plea?",
+          "Come, Friend of sinners, and thus bide with me."
+        ],
+        [
+          "Thou on my head in early youth didst smile;",
+          "And, though rebellious and perverse meanwhile,",
+          "Thou hast not left me, oft as I left Thee,",
+          "On to the close, O Lord, abide with me."
+        ]
       ]
     },
     {
@@ -162,6 +277,181 @@
           "\tAnd clothed in righteousness divine,",
           "Bold I approach th'eternal throne,",
           "And claim the crown, through Christ my own."
+        ]
+      ]
+    },
+    {
+      "number": 22,
+      "title": "Beautiful Savior",
+      "meter": "5.5.8.5.5.8",
+      "author": "German Jesuits, published 1677. Translated by Joseph A. Seiss, 1873",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Beautiful Savior,",
+          "King of Creation",
+          "Son of God and Son of Man!",
+          "\tTruly I'd love Thee,",
+          "Truly I'd serve Thee,",
+          "Light of my soul, my joy, my crown."
+        ],
+        [
+          "Fair are the meadows,",
+          "Fair are the woodlands,",
+          "Robed in the flow'rs of blooming spring;",
+          "\tJesus is fairer,",
+          "Jesus is purer,",
+          "He makes our sorr'wing spirit sing."
+        ],
+        [
+          "Fair is the sunshine,",
+          "Fair is the moonlight,",
+          "Bright the sparkling stars on high;",
+          "\tJesus shines brighter,",
+          "Jesus shines purer",
+          "Than all the angels in the sky."
+        ],
+        [
+          "Beautiful Savior,",
+          "Lord of the nations,",
+          "Son of God and Son of Man!",
+          "\tGlory and honor,",
+          "Praise, adoration",
+          "Now and forevermore be Thine!"
+        ]
+      ]
+    },
+    {
+      "number": 23,
+      "title": "Beneath the Cross of Jesus",
+      "meter": "7.6.8.6.8.6.8.6",
+      "author": "Elizabeth C. Clephane, 1868",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Beneath the cross of Jesus",
+          "\tI fain would take my stand,",
+          "The shadow of a mighty rock",
+          "\tWithin a weary land;",
+          "A home within the wilderness,",
+          "\tA rest upon the way,",
+          "From the burning of the noontide heat,",
+          "\tAnd the burden of the day."
+        ],
+        [
+          "O safe and happy shelter,",
+          "\tO refuge tried and sweet,",
+          "O trysting place where Heaven's love",
+          "\tAnd Heaven's justice meet!",
+          "As to the holy patriarch",
+          "\tThat wondrous dream was giv'n,",
+          "So seems my Savior's cross to me,",
+          "\tA ladder up to heav'n."
+        ],
+        [
+          "There lies beneath its shadow",
+          "\tBut on the further side",
+          "The darkness of an awful grave",
+          "\tThat gapes both deep and wide",
+          "And there between us stands the cross",
+          "\tTwo arms outstretched to save",
+          "A watchman set to guard the way",
+          "\tFrom that eternal grave."
+        ],
+        [
+          "Upon that cross of Jesus",
+          "\tMine eye at times can see",
+          "The very dying form of One",
+          "\tWho suffered there for me;",
+          "And from my stricken heart with tears",
+          "\tTwo wonders I confess;",
+          "The wonders of redeeming love",
+          "\tAnd my unworthiness."
+        ],
+        [
+          "I take, O cross, thy shadow",
+          "\tFor my abiding place;",
+          "I ask no other sunshine than",
+          "\tThe sunshine of His face;",
+          "Content to let the world go by",
+          "\tTo know no gain or loss,",
+          "My sinful self my only shame,",
+          "\tMy glory all the cross."
+        ]
+      ]
+    },
+    {
+      "number": 24,
+      "title": "Blessed Assurance",
+      "meter": "9.10.9.9 with refrain",
+      "author": "Fanny Crosby, 1873",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Bless�d assurance, Jesus is mine!",
+          "O what a foretaste of glory divine!",
+          "\tHeir of salvation, purchase of God,",
+          "Born of His Spirit, washed in His blood."
+        ],
+        [
+          "This is my story, this is my song,",
+          "Praising my Savior, all the day long;",
+          "This is my story, this is my song,",
+          "Praising my Savior, all the day long."
+        ],
+        [
+          "Perfect submission, perfect delight,",
+          "Visions of rapture now burst on my sight;",
+          "\tAngels descending bring from above",
+          "Echoes of mercy, whispers of love."
+        ],
+        [
+          "Perfect submission, all is at rest",
+          "I in my Savior am happy and blest,",
+          "\tWatching and waiting, looking above,",
+          "Filled with His goodness, lost in His love."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 25,
+      "title": "Blest Be the Tie That Binds",
+      "meter": "S.M.",
+      "author": "John Fawcett, 1782",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Blest be the tie that binds",
+          "Our hearts in Christian love;",
+          "The fellowship of kindred minds",
+          "\tIs like to that above."
+        ],
+        [
+          "Before our Father's throne",
+          "We pour our ardent prayers;",
+          "Our fears, our hopes, our aims are one",
+          "\tOur comforts and our cares."
+        ],
+        [
+          "We share each other's woes,",
+          "Our mutual burdens bear;",
+          "And often for each other flows",
+          "\tThe sympathizing tear."
+        ],
+        [
+          "When we asunder part,",
+          "It gives us inward pain;",
+          "But we shall still be joined in heart,",
+          "\tAnd hope to meet again."
+        ],
+        [
+          "This glorious hope revives",
+          "Our courage by the way;",
+          "While each in expectation lives,",
+          "\tAnd longs to see the day."
         ]
       ]
     },
@@ -328,6 +618,52 @@
       ]
     },
     {
+      "number": 26,
+      "title": "For the Beauty of the Earth",
+      "meter": "7s. with refrain",
+      "author": "Folliot S. Pierpoint, 1864",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "For the beauty of the earth",
+          "For the glory of the skies,",
+          "For the love which from our birth",
+          "Over and around us lies."
+        ],
+        [
+          "Lord of all, to Thee we raise,",
+          "This our hymn of grateful praise."
+        ],
+        [
+          "For the beauty of each hour,",
+          "Of the day and of the night,",
+          "Hill and vale, and tree and flow'r,",
+          "Sun and moon, and stars of light."
+        ],
+        [
+          "For the joy of ear and eye,",
+          "For the heart and mind's delight,",
+          "For the mystic harmony",
+          "Linking sense to sound and sight."
+        ],
+        [
+          "For the joy of human love,",
+          "Brother, sister, parent, child,",
+          "Friends on earth and friends above,",
+          "For all gentle thoughts and mild."
+        ],
+        [
+          "For Thy Church, that evermore",
+          "Lifteth holy hands above,",
+          "Off'ring up on every shore",
+          "Her pure sacrifice of love."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
       "number": 7,
       "title": "He Bore It All",
       "meter": "Irregular with refrain",
@@ -349,6 +685,39 @@
       ],
       "refrains": [
         1
+      ]
+    },
+    {
+      "number": 27,
+      "title": "Holy, Holy, Holy",
+      "meter": "11.12.12.10",
+      "author": "Reginald Heber, 1826",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Holy, holy, holy! Lord God Almighty!",
+          "Early in the morning our song shall rise to Thee;",
+          "Holy, holy, holy, merciful and mighty!",
+          "\tGod in three Persons, blessed Trinity!"
+        ],
+        [
+          "Holy, holy, holy! All the saints adore Thee,",
+          "Casting down their golden crowns around the glassy sea;",
+          "Cherubim and seraphim falling down before Thee,",
+          "\tWho was, and is, and evermore shall be."
+        ],
+        [
+          "Holy, holy, holy! though the darkness hide Thee,",
+          "Though the eye of sinful man Thy glory may not see;",
+          "Only Thou art holy; there is none beside Thee,",
+          "\tPerfect in pow'r, in love, and purity."
+        ],
+        [
+          "Holy, holy, holy! Lord God Almighty!",
+          "All Thy works shall praise Thy Name, in earth, and sky,",
+          "And sea; Holy, holy, holy; merciful and",
+          "\tMighty! God in three Persons, blessed"
+        ]
       ]
     },
     {
@@ -382,6 +751,54 @@
           "Will you decide now to follow Jesus?",
           "No turning back, no turning back."
         ]
+      ]
+    },
+    {
+      "number": 28,
+      "title": "I Need Thee Every Hour",
+      "meter": "6.4.6.4 with refrain",
+      "author": "Annie Sherwood Hawks, 1872",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "I need Thee ev'ry hour,",
+          "\tMost gracious_ Lord;",
+          "No tender voice like Thine",
+          "\tCan peace_ afford."
+        ],
+        [
+          "I need Thee, O I need Thee;",
+          "\tEv'ry hour I need Thee;",
+          "O bless me now, my Savior,",
+          "\tI come to Thee!"
+        ],
+        [
+          "I need Thee ev'ry hour,",
+          "\tStay Thou_ near_ by;",
+          "Temptations lose their pow'r",
+          "\tWhen Thou_ art_ nigh."
+        ],
+        [
+          "I need Thee ev'ry hour,",
+          "\tIn joy or pain;",
+          "Come quickly and abide,",
+          "\tOr life_ is_ vain."
+        ],
+        [
+          "I need Thee ev'ry hour,",
+          "\tTeach me Thy will;",
+          "And Thy rich promises",
+          "\tIn me fulfill."
+        ],
+        [
+          "I need Thee ev'ry hour,",
+          "\tMost Holy One;",
+          "O make me Thine indeed,",
+          "\tThou blessed Son!"
+        ]
+      ],
+      "refrains": [
+        1
       ]
     },
     {
@@ -463,6 +880,127 @@
           "With my mouth will I make known",
           "\tThy faithfulness to all generations."
         ]
+      ]
+    },
+    {
+      "number": 29,
+      "title": "Immortal, Invisible",
+      "meter": "11s.",
+      "author": "Walter Chalmers Smith, 1876",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Immortal, invisible, God only wise,",
+          "In light inaccessible hid from our eyes,",
+          "Most bless�d, most glorious, the Ancient of Days,",
+          "Almighty, victorious, Thy great Name we praise."
+        ],
+        [
+          "Unresting, unhasting, and silent as light,",
+          "Nor wanting, nor wasting, Thou rulest in might;",
+          "Thy justice, like mountains, high soaring above",
+          "Thy clouds, which are fountains of goodness and love."
+        ],
+        [
+          "To all, life Thou givest, to both great and small;",
+          "In all life Thou livest, the true life of all;",
+          "We blossom and flourish as leaves on the tree,",
+          "And wither and perish but naught changeth Thee."
+        ],
+        [
+          "Great Father of glory, pure Father of light,",
+          "Thine angels adore Thee, all veiling their sight;",
+          "But of Thy rich graces this grace, Lord, impart",
+          "Take the veil from our face, the vile from our heart."
+        ],
+        [
+          "All laud we would render; O help us to see",
+          "'Tis only the splendor of light hideth Thee,",
+          "And so let Thy glory, almighty, impart,",
+          "Through Christ in His story, Thy Christ to the heart."
+        ]
+      ]
+    },
+    {
+      "number": 30,
+      "title": "It Is Well with My Soul",
+      "meter": "11.8.11.9 with refrain",
+      "author": "Horatio G. Spafford, 1873",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "When peace, like a river, attendeth my way,",
+          "\tWhen sorrows like sea billows roll;",
+          "Whatever my lot, Thou has taught me to say,",
+          "\tIt is well, it is well, with my soul."
+        ],
+        [
+          "It is well, with my soul,",
+          "It is well, it is well with my soul."
+        ],
+        [
+          "Though Satan should buffet, though trials should come,",
+          "\tLet this blest assurance control,",
+          "That Christ has regarded my helpless estate,",
+          "\tAnd hath shed His own blood for my soul."
+        ],
+        [
+          "My sin, oh, the bliss of this glorious thought!",
+          "\tMy sin, not in part but the whole,",
+          "Is nailed to the cross, and I bear it no more,",
+          "\tPraise the Lord, praise the Lord, O my soul!"
+        ],
+        [
+          "For me, be it Christ, be it Christ hence to live:",
+          "\tIf Jordan above me shall roll,",
+          "No pang shall be mine, for in death as in life",
+          "\tThou wilt whisper Thy peace to my soul."
+        ],
+        [
+          "But, Lord, 'tis for Thee, for Thy coming we wait,",
+          "\tThe sky, not the grave, is our goal;",
+          "Oh trump of the angel! Oh voice of the Lord!",
+          "\tBless�d hope, bless�d rest of my soul!"
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 31,
+      "title": "Jesus Loves Me",
+      "meter": "7s. with refrain",
+      "author": "Anna B. Warner, 1860",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Jesus loves me! This I know,",
+          "For the Bible tells me so.",
+          "Little ones to Him belong;",
+          "They are weak, but He is strong."
+        ],
+        [
+          "Yes, Jesus loves me!",
+          "Yes, Jesus loves me!",
+          "Yes, Jesus loves me!",
+          "The Bible tells me so."
+        ],
+        [
+          "Jesus loves me! He who died",
+          "Heaven's gate to open wide;",
+          "He will wash away my sin,",
+          "Let His little child come in."
+        ],
+        [
+          "Jesus loves me! He will stay",
+          "Close beside me all the way;",
+          "Thou hast bled and died for me,",
+          "I will henceforth live for Thee."
+        ]
+      ],
+      "refrains": [
+        1
       ]
     },
     {
@@ -585,6 +1123,188 @@
       ]
     },
     {
+      "number": 32,
+      "title": "More Love to Thee",
+      "meter": "6.4.6.4.6.6.4.4",
+      "author": "Elizabeth Payson Prentis, 1856",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "More love to Thee, O Christ;",
+          "\tMore love to Thee;",
+          "Hear Thou the pray'r I make",
+          "\tOn bended knee;",
+          "This is my earnest plea,",
+          "More love, O Christ, to Thee,",
+          "\tMore love to Thee;",
+          "More love to Thee."
+        ],
+        [
+          "Once earthly joy I craved,",
+          "\tSought peace and rest;",
+          "Now thee alone I seek,",
+          "\tGive what is best;",
+          "This all my pray'r shall be,",
+          "More love, O Christ, to Thee,",
+          "\tMore love to Thee;",
+          "More love to Thee."
+        ],
+        [
+          "Then shall my latest breath,",
+          "\tWhisper Thy praise,",
+          "This be the parting cry",
+          "\tMy heart shall raise;",
+          "This still its pray'r shall be,",
+          "More love, O Christ, to Thee,",
+          "\tMore love to Thee;",
+          "More love to Thee."
+        ]
+      ]
+    },
+    {
+      "number": 33,
+      "title": "My Faith Looks Up to Thee",
+      "meter": "6.6.4.6.6.6.4",
+      "author": "Ray Palmer, 1830",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "My faith looks up to Thee,",
+          "Thou Lamb of Calvary,",
+          "\tSavior divine!",
+          "Now hear me while I pray,",
+          "Take all my guilt away,",
+          "O let me from this day",
+          "\tBe wholly Thine!"
+        ],
+        [
+          "May Thy rich grace impart",
+          "Strength to my fainting heart,",
+          "\tMy zeal inspire!",
+          "As Thou hast died for me,",
+          "O may my love to Thee,",
+          "Pure warm, and changeless be,",
+          "\tA living fire!"
+        ],
+        [
+          "While life's dark maze I tread,",
+          "And griefs around me spread,",
+          "\tBe Thou my Guide;",
+          "Bid darkness turn to day,",
+          "Wipe sorrow's tears away,",
+          "Nor let me ever stray",
+          "\tFrom Thee aside."
+        ],
+        [
+          "When ends life's transient dream,",
+          "When death's cold sullen stream",
+          "\tOver me roll;",
+          "Blest Savior, then in love,",
+          "Fear and distrust remove;",
+          "O bear me safe above,",
+          "\tA ransomed soul!"
+        ]
+      ]
+    },
+    {
+      "number": 34,
+      "title": "Now Thank We All Our God",
+      "meter": "6.7.6.7.6.6.6.6",
+      "author": "Martin Rinkart, c.1636. Translated Catherine Winkworth, 1856",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Now thank we all our God,",
+          "With heart and hands and voices,",
+          "\tWho wondrous things has done,",
+          "In Whom this world rejoices;",
+          "\tWho from our mothers' arms",
+          "Has blessed us on our way",
+          "With countless gifts of love,",
+          "And still is ours today."
+        ],
+        [
+          "O may this bounteous God",
+          "Through all our life be near us,",
+          "\tWith ever joyful hearts",
+          "And blessed peace to cheer us;",
+          "\tAnd keep us in His grace,",
+          "And guide us when perplexed;",
+          "And free us from all ills,",
+          "In this world and the next!"
+        ],
+        [
+          "All praise and thanks to God",
+          "The Father now be given;",
+          "\tThe Son and Him Who reigns",
+          "With Them in highest Heaven;",
+          "\tThe one eternal God,",
+          "Whom earth and Heav'n adore;",
+          "For thus it was, is now,",
+          "And shall be evermore."
+        ]
+      ]
+    },
+    {
+      "number": 35,
+      "title": "O Sacred Head, Now Wounded",
+      "meter": "7s. 6s. D.",
+      "author": "Bernard of Clairvaux, 1153. Translated by James W. Alexander, 1830",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "O sacred Head, now wounded,",
+          "\tWith grief and shame weighed down,",
+          "Now scornfully surrounded",
+          "\tWith thorns, Thine only crown;",
+          "O sacred Head, what glory,",
+          "\tWhat bliss till now was Thine!",
+          "Yet, though despised and gory,",
+          "\tI joy to call Thee mine."
+        ],
+        [
+          "What Thou, my Lord, hast suffered,",
+          "\tWas all for sinners' gain;",
+          "Mine, mine was the transgression,",
+          "\tBut Thine the deadly pain.",
+          "Lo, here I fall, my Savior!",
+          "\t'Tis I deserve Thy place;",
+          "Look on me with Thy favor,",
+          "\tVouchsafe to me Thy grace."
+        ],
+        [
+          "Men mock and taunt and jeer Thee,",
+          "\tThou noble countenance,",
+          "Though mighty worlds shall fear Thee",
+          "\tAnd flee before Thy glance.",
+          "How art thou pale with anguish,",
+          "\tWith sore abuse and scorn!",
+          "How doth Thy visage languish",
+          "\tThat once was bright as morn!"
+        ],
+        [
+          "Now from Thy cheeks has vanished",
+          "\tTheir color once so fair;",
+          "From Thy red lips is banished",
+          "\tThe splendor that was there.",
+          "Grim death, with cruel rigor,",
+          "\tHath robbed Thee of Thy life;",
+          "Thus Thou hast lost Thy vigor,",
+          "\tThy strength in this sad strife."
+        ],
+        [
+          "My burden in Thy Passion,",
+          "\tLord, Thou hast borne for me,",
+          "For it was my transgression",
+          "\tWhich brought this woe on Thee.",
+          "I cast me down before Thee,",
+          "\tWrath were my rightful lot;",
+          "Have mercy, I implore Thee;",
+          "\tRedeemer, spurn me not!"
+        ]
+      ]
+    },
+    {
       "number": 15,
       "title": "Onward, Christian Soldiers",
       "meter": "6.5.6.5.D. with refrain",
@@ -620,6 +1340,91 @@
       ],
       "refrains": [
         1
+      ]
+    },
+    {
+      "number": 36,
+      "title": "Praise to the Lord, the Almighty",
+      "meter": "14.14.4.7.8",
+      "author": "Joachim Neander, 1680. Translated by Catherine Winkworth, 1863",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Praise to the Lord, the Almighty, the King of creation!",
+          "O my soul, praise Him, for He is thy health and salvation!",
+          "\tAll ye who hear,",
+          "Now to His temple draw near;",
+          "Praise Him in glad adoration."
+        ],
+        [
+          "Praise to the Lord, Who o'er all things so wondrously reigneth,",
+          "Shelters thee under His wings, yea, so gently sustaineth!",
+          "\tHast thou not seen",
+          "How thy desires have been",
+          "Granted in what He ordaineth"
+        ],
+        [
+          "Praise to the Lord, Who hath fearfully, wondrously, made thee;",
+          "Health hath vouchsafed and, when heedlessly falling, hath stayed thee.",
+          "\tWhat need or grief",
+          "Ever hath failed of relief?",
+          "Wings of His mercy did shade thee."
+        ],
+        [
+          "Praise to the Lord, Who doth prosper thy work and defend thee;",
+          "Surely His goodness and mercy here daily attend thee.",
+          "\tPonder anew",
+          "What the Almighty can do,",
+          "If with His love He befriend thee."
+        ],
+        [
+          "Praise to the Lord, Who, when tempests their warfare are waging,",
+          "Who, when the elements madly around thee are raging,",
+          "\tBiddeth them cease,",
+          "Turneth their fury to peace,",
+          "Whirlwinds and waters assuaging."
+        ]
+      ]
+    },
+    {
+      "number": 37,
+      "title": "Rock of Ages",
+      "meter": "7s.",
+      "author": "Augustus Montague Toplady, 1776",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Rock of Ages, cleft for me,",
+          "Let me hide myself in Thee;",
+          "Let the water and the blood,",
+          "From Thy wounded side which flowed,",
+          "Be of sin the double cure;",
+          "Save from wrath and make me pure."
+        ],
+        [
+          "Not the labor of my hands",
+          "Can fulfill Thy law's demands;",
+          "Could my zeal no respite know,",
+          "Could my tears forever flow,",
+          "All for sin could not atone;",
+          "Thou must save, and Thou alone."
+        ],
+        [
+          "Nothing in my hand I bring,",
+          "Simply to the cross I cling;",
+          "Naked, come to Thee for dress;",
+          "Helpless look to Thee for grace;",
+          "Foul, I to the fountain fly;",
+          "Wash me, Savior, or I die."
+        ],
+        [
+          "While I draw this fleeting breath,",
+          "When mine eyes shall close in death,",
+          "When I soar to worlds unknown,",
+          "See Thee on Thy judgment throne,",
+          "Rock of Ages, cleft for me,",
+          "Let me hide myself in Thee."
+        ]
       ]
     },
     {
@@ -665,6 +1470,104 @@
       ]
     },
     {
+      "number": 38,
+      "title": "Take My Life and Let It Be",
+      "meter": "7s.",
+      "author": "Frances R. Havergal, 1874",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Take my life, and let it be",
+          "Consecrated, Lord, to Thee.",
+          "Take my moments and my days;",
+          "Let them flow in ceaseless praise."
+        ],
+        [
+          "Take my hands, and let them move",
+          "At the impulse of Thy love.",
+          "Take my feet, and let them be",
+          "Swift and beautiful for Thee."
+        ],
+        [
+          "Take my voice, and let me sing",
+          "Always, only, for my King.",
+          "Take my lips, and let them be",
+          "Filled with messages from Thee."
+        ],
+        [
+          "Take my silver and my gold;",
+          "Not a mite would I withhold.",
+          "Take my intellect, and use",
+          "Every pow'r as Thou shalt choose."
+        ],
+        [
+          "Take my will, and make it Thine;",
+          "It shall be no longer mine.",
+          "Take my heart, it is Thine own;",
+          "It shall be Thy royal throne."
+        ]
+      ]
+    },
+    {
+      "number": 39,
+      "title": "The Church's One Foundation",
+      "meter": "7s. 6s. D.",
+      "author": "Samuel John Stone, 1866",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "The Church's one foundation",
+          "\tIs Jesus Christ her Lord,",
+          "She is His new creation",
+          "\tBy water and the Word.",
+          "From heav'n He came and sought her",
+          "\tTo be His holy bride;",
+          "With His own blood He bought her",
+          "\tAnd for her life He died."
+        ],
+        [
+          "She is from every nation,",
+          "\tYet one o'er all the earth;",
+          "Her charter of salvation,",
+          "\tOne Lord, one faith, one birth;",
+          "One holy Name she blesses,",
+          "\tPartakes one holy food,",
+          "And to one hope she presses,",
+          "\tWith every grace endued."
+        ],
+        [
+          "The Church shall never perish!",
+          "\tHer dear Lord to defend,",
+          "To guide, sustain, and cherish,",
+          "\tIs with her to the end:",
+          "Though there be those who hate her,",
+          "\tAnd false sons in her pale,",
+          "Against or foe or traitor",
+          "\tShe ever shall prevail."
+        ],
+        [
+          "Though with a scornful wonder",
+          "\tMen see her sore oppressed,",
+          "By schisms rent asunder,",
+          "\tBy heresies distressed:",
+          "Yet saints their watch are keeping,",
+          "\tTheir cry goes up, 'How long?'",
+          "And soon the night of weeping",
+          "\tShall be the morn of song!"
+        ],
+        [
+          "'Mid toil and tribulation,",
+          "\tAnd tumult of her war,",
+          "She waits the consummation",
+          "\tOf peace forevermore;",
+          "Till, with the vision glorious,",
+          "\tHer longing eyes are blest,",
+          "And the great Church victorious",
+          "\tShall be the Church at rest."
+        ]
+      ]
+    },
+    {
       "number": 17,
       "title": "The Lord Is My Light",
       "meter": "Irregular",
@@ -701,6 +1604,86 @@
       ]
     },
     {
+      "number": 40,
+      "title": "The Old Rugged Cross",
+      "meter": "12.9.12.8 with refrain",
+      "author": "George Bennard, 1913",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "On a hill far away stood an old rugged cross,",
+          "\tThe emblem of suff'ring and shame;",
+          "And I love that old cross where the dearest and best",
+          "\tFor a world of lost sinners was slain."
+        ],
+        [
+          "So I'll cherish the old rugged cross,",
+          "Till my trophies at last I lay down;",
+          "I will cling to the old rugged cross,",
+          "And exchange it some day for a crown."
+        ],
+        [
+          "O that old rugged cross, so despised by the world,",
+          "\tHas a wondrous attraction for me;",
+          "For the dear Lamb of God left His glory above",
+          "\tTo bear it to dark Calvary."
+        ],
+        [
+          "In that old rugged cross, stained with blood so divine,",
+          "\tA wondrous beauty I see, For 'twas",
+          "On that old cross Jesus suffered and died, To",
+          "\tPardon and sanctify me."
+        ],
+        [
+          "To the old rugged cross I will ever be true;",
+          "\tIts shame and reproach gladly bear;",
+          "Then He'll call me some day to my home far away,",
+          "\tWhere His glory forever I'll share."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 41,
+      "title": "To God Be the Glory",
+      "meter": "11s. with refrain",
+      "author": "Fanny Crosby, 1875",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "To God be the glory, great things He has done;",
+          "So loved He the world that He gave us His Son",
+          "Who yielded His life an atonement for sin,",
+          "And opened the life gate that all may go in."
+        ],
+        [
+          "Praise the Lord, praise the Lord,",
+          "Let the earth hear His voice!",
+          "Praise the Lord, praise the Lord,",
+          "Let the people rejoice!",
+          "O come to the Father, through Jesus the Son,",
+          "And give Him the glory, great things He has done."
+        ],
+        [
+          "O perfect redemption, the purchase of blood,",
+          "To every believer the promise of God;",
+          "The vilest offender who truly believes,",
+          "That moment from Jesus a pardon receives."
+        ],
+        [
+          "Great things He has taught us, great things He has done,",
+          "And great our rejoicing through Jesus the Son;",
+          "But purer, and higher, and greater will be",
+          "Our wonder, our transport, when Jesus we see."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
       "number": 18,
       "title": "Walking in Sunlight",
       "meter": "10.9.10.9. with refrain",
@@ -734,6 +1717,45 @@
       ],
       "refrains": [
         1
+      ]
+    },
+    {
+      "number": 42,
+      "title": "When I Survey the Wondrous Cross",
+      "meter": "L.M.",
+      "author": "Isaac Watts, 1707",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "When I survey the wondrous cross",
+          "On which the Prince of Glory died,",
+          "My richest gain I count but loss,",
+          "And pour contempt on all my pride."
+        ],
+        [
+          "Forbid it, Lord, that I should boast,",
+          "Save in the death of Christ my God!",
+          "All the vain things that charm me most,",
+          "I sacrifice them to His blood."
+        ],
+        [
+          "See from His head, His hands, His feet,",
+          "Sorrow and love flow mingled down!",
+          "Did e'er such love and sorrow meet,",
+          "Or thorns compose so rich a crown?"
+        ],
+        [
+          "His dying crimson, like a robe,",
+          "Spreads o'er His body on the tree;",
+          "Then I am dead to all the globe,",
+          "And all the globe is dead to me."
+        ],
+        [
+          "Were the whole realm of nature mine,",
+          "That were a present far too small;",
+          "Love so amazing, so divine,",
+          "Demands my soul, my life, my all."
+        ]
       ]
     },
     {
