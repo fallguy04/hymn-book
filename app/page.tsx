@@ -376,7 +376,7 @@ export default function Home() {
                marooned in the middle — the keypad kept its size while the
                furniture around it grew. Past 1024px it becomes what it always
                was: a card, floated over the page. */
-            className="fixed inset-x-0 bottom-0 z-50 outline-none lg:inset-x-auto lg:bottom-8 lg:left-1/2 lg:w-[26.5rem] lg:-translate-x-1/2"
+            className="fixed inset-x-0 bottom-0 z-50 lg:inset-x-auto lg:bottom-8 lg:left-1/2 lg:w-[26.5rem] lg:-translate-x-1/2"
           >
             <SmartNumpad
               hymnal={hymnal}
@@ -404,7 +404,7 @@ export default function Home() {
             aria-modal="true"
             aria-label="Find a hymn"
             tabIndex={-1}
-            className="fixed inset-0 z-50 flex flex-col p-3 pt-6 outline-none lg:items-center lg:pt-[12vh]"
+            className="fixed inset-0 z-50 flex flex-col p-3 pt-6 lg:items-center lg:pt-[12vh]"
           >
             <TextSearch
               hymnal={hymnal}

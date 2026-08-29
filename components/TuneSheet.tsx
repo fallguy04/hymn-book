@@ -56,7 +56,7 @@ export default function TuneSheet({ meter, isOpen, onClose }: TuneSheetProps) {
             onDragEnd={(_, { offset, velocity }) => {
               if (offset.y > 120 || velocity.y > 600) onClose();
             }}
-            className="fixed inset-x-0 bottom-0 z-[60] mx-auto flex max-h-[70dvh] w-full max-w-[34rem] flex-col rounded-t-3xl border-t border-paper-rule bg-paper shadow-2xl outline-none"
+            className="fixed inset-x-0 bottom-0 z-[60] mx-auto flex max-h-[70dvh] w-full max-w-[34rem] flex-col rounded-t-3xl border-t border-paper-rule bg-paper shadow-2xl"
           >
             <div className="shrink-0 px-4 pb-2 pt-3">
               <div aria-hidden className="mx-auto mb-3 h-1 w-10 rounded-full bg-paper-rule" />

@@ -113,6 +113,20 @@ textarea:focus-visible {
   outline: none;
 }
 
+/* A panel that can only be focused by script. Every dialog here carries
+   tabindex="-1" so the focus trap has somewhere to land, and on a phone the
+   keypad is the *default* open state — so the app drew a ring around the whole
+   sheet before anyone had touched it. Nobody navigated there; nothing should
+   be marked as where they are.
+
+   This has to live here rather than as an `outline-none` class on the panel.
+   Tailwind's utilities sit inside `@layer utilities`, and unlayered CSS wins
+   over layered CSS whatever the specificity — so the rule above beats any
+   utility, and adding one only moved the ring from the grip to the panel. */
+[tabindex="-1"]:focus-visible {
+  outline: none;
+}
+
 /* iOS zooms the page when a font-size < 16px input is focused. Setting the
    search field to 16px is the fix — not disabling user scaling. */
 input,
