@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import HymnView from "@/components/HymnView";
 import SmartNumpad from "@/components/SmartNumpad";
@@ -11,6 +11,7 @@ import NavDrawer from "@/components/NavDrawer";
 import BookRibbon from "@/components/BookRibbon";
 import Sidebar from "@/components/Sidebar";
 import TuneSheet from "@/components/TuneSheet";
+import ShareSheet from "@/components/ShareSheet";
 import ThemeSync from "@/components/ThemeSync";
 import {
   firstHymn,
@@ -56,6 +57,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPath, setMenuPath] = useState<string[] | undefined>();
   const [tunesOpen, setTunesOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const isDesktop = useIsDesktop();
   const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
@@ -85,9 +87,39 @@ export default function Home() {
   // Open where you left off. Read straight from the store rather than through
   // props: this runs once, on rehydration, before the first render that could
   // record anything.
+  // Restore must run once. StrictMode mounts effects twice in development,
+  // and the first pass strips the share parameters from the URL — so the
+  // second pass found none, fell through to the remembered position, and
+  // quietly overwrote the very hymn the person was invited to.
+  const restoredOnce = useRef(false);
+
   useEffect(() => {
     const restore = () => {
+      if (restoredOnce.current) return;
+      restoredOnce.current = true;
       const state = useHymnalStore.getState();
+
+      // A scanned share code lands here as ?h=<number>&b=<book>. It outranks
+      // the remembered place — the person following it was invited to *this*
+      // hymn — and the parameters are stripped so a reload or an install goes
+      // back to being the ordinary app.
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("h")) {
+        const shared = Number(params.get("h"));
+        const sharedBook = getHymnal(params.get("b") ?? "") ?? getDefaultHymnal();
+        window.history.replaceState(null, "", window.location.pathname);
+        if (Number.isInteger(shared) && getHymn(sharedBook, shared)) {
+          if (sharedBook.id !== state.hymnalId) state.setHymnal(sharedBook.id);
+          setPage([shared, 0]);
+          // The keypad-by-default is for someone reaching for a number. This
+          // person was handed one — opening the pad over it hides the very
+          // thing they came to see.
+          setSearchState("closed");
+          setRestored(true);
+          return;
+        }
+      }
+
       const book = getHymnal(state.hymnalId) ?? getDefaultHymnal();
       const remembered = state.positions[book.id];
       if (remembered !== undefined && getHymn(book, remembered)) setPage([remembered, 0]);
@@ -196,6 +228,7 @@ export default function Home() {
         // — visible through the backdrop, focused, and unclickable.
         setMenuOpen(false);
         setTunesOpen(false);
+        setShareOpen(false);
         setSearchState("text");
         return;
       }
@@ -206,6 +239,7 @@ export default function Home() {
       if (e.key === "Escape") {
         if (menuOpen) setMenuOpen(false);
         else if (tunesOpen) setTunesOpen(false);
+        else if (shareOpen) setShareOpen(false);
         else if (searchMode !== "closed") setSearchState("closed");
         return;
       }
@@ -215,7 +249,7 @@ export default function Home() {
       // guard, a digit mounted the keypad *under* the sheet's backdrop where it
       // silently buffered keystrokes, and arrows paged the hymn behind the
       // modal — recording visits to hymns nobody saw.
-      if (menuOpen || tunesOpen) return;
+      if (menuOpen || tunesOpen || shareOpen) return;
 
       // Text search owns the alphabet and the digits while it is open; letting
       // a digit through replaced it with the keypad and threw the query away.
@@ -244,7 +278,7 @@ export default function Home() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [menuOpen, tunesOpen, searchMode, paginate, appendDigit, submitBuffer]);
+  }, [menuOpen, tunesOpen, shareOpen, searchMode, paginate, appendDigit, submitBuffer]);
 
   // Crossing to desktop only *hid* the drawer — `menuOpen` stayed true, so the
   // key handler kept refusing input to an invisible panel and a tablet rotated
@@ -298,6 +332,7 @@ export default function Home() {
               setMenuOpen(true);
             }}
             onToggleFavorite={() => toggleFavorite(hymnalId, hymn.number)}
+            onOpenShare={() => setShareOpen(true)}
           />
 
           <main className="relative min-h-0 flex-1">
@@ -341,6 +376,12 @@ export default function Home() {
         isOpen={tunesOpen && Boolean(hymn.meter)}
         onClose={() => setTunesOpen(false)}
       />
+
+      {/* Conditional rather than AnimatePresence, like every layer here — the
+          React Compiler leaves exit animations stuck over the page. */}
+      {shareOpen && (
+        <ShareSheet hymnal={hymnal} hymn={hymn} onClose={() => setShareOpen(false)} />
+      )}
 
       {/*
         Search layer, rendered conditionally rather than through

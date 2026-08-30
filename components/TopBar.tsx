@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Star } from "lucide-react";
+import { Menu, Share, Star } from "lucide-react";
 import { type Hymn, type Hymnal, isNumbered } from "@/lib/hymnals";
 
 interface TopBarProps {
@@ -9,6 +9,7 @@ interface TopBarProps {
   isFavorite: boolean;
   onOpenMenu: () => void;
   onToggleFavorite: () => void;
+  onOpenShare: () => void;
 }
 
 /**
@@ -22,6 +23,7 @@ export default function TopBar({
   isFavorite,
   onOpenMenu,
   onToggleFavorite,
+  onOpenShare,
 }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 border-b border-paper-rule/60 bg-paper/85 backdrop-blur-md">
@@ -77,6 +79,14 @@ export default function TopBar({
                 isFavorite ? "fill-paper-accent text-paper-accent" : "text-paper-faint"
               }`}
             />
+          </button>
+
+          <button
+            onClick={onOpenShare}
+            aria-label="Share this hymn"
+            className="rounded-full p-2.5 text-paper-faint transition-colors hover:bg-paper-sunken hover:text-paper-ink active:scale-90"
+          >
+            <Share className="h-5 w-5" />
           </button>
         </div>
       </div>
