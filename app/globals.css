@@ -205,7 +205,16 @@ select {
    HTML so it appears before hydration, themed by the same tokens as the app,
    and lifted by app/page.tsx once the reader's place has been restored.
 --------------------------------------------------------------------------- */
+/* The ceremony belongs to the installed app. In a browser tab the page is
+   one navigation among many and a two-second curtain is just in the way, so
+   the curtain and the veil only exist under the data-standalone attribute
+   the head script sets before first paint — a browser visitor never sees a
+   frame of either. */
 #splash {
+  display: none;
+}
+
+[data-standalone] #splash {
   position: fixed;
   inset: 0;
   z-index: 100;
@@ -222,7 +231,7 @@ select {
 /* The reveal is two movements. The curtain lifts a little as it fades, and
    the mark inside drifts ahead of it — the parallax is what makes it read
    as a sheet being raised rather than a picture switching off. */
-#splash.splash-leaving {
+[data-standalone] #splash.splash-leaving {
   opacity: 0;
   transform: translateY(-1.5%);
   visibility: hidden;
@@ -245,20 +254,19 @@ select {
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* The tile is cropped from art whose field colour is not the app's paper, so
-   it sits in a rounded mask scaled just past its own soft corners. */
+/* The tile PNG carries its own transparent rounded corners, baked in by
+   scripts/make-launch-art.mjs — nothing to crop here, just a shadow shaped
+   to the same radius. */
 .splash-tile {
   width: 4.75rem;
   height: 4.75rem;
   border-radius: 1.1rem;
-  overflow: hidden;
   box-shadow: 0 12px 32px -14px rgba(0, 0, 0, 0.4);
 }
 
 .splash-tile img {
-  width: 110%;
-  height: 110%;
-  margin: -5%;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -299,7 +307,7 @@ select {
     opacity 0.8s ease;
 }
 
-#app-shell.app-veiled {
+[data-standalone] #app-shell.app-veiled {
   transform: scale(0.985) translateY(10px);
   opacity: 0.6;
 }

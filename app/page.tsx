@@ -167,6 +167,12 @@ export default function Home() {
   // the ceremony.
   useEffect(() => {
     if (!restored) return;
+    // The curtain is display:none outside the installed app (see globals.css);
+    // drop it from the tree at once rather than running its timers.
+    if (!("standalone" in document.documentElement.dataset)) {
+      setSplash("gone");
+      return;
+    }
     let seen = false;
     try {
       seen = sessionStorage.getItem("hymnal-splash") !== null;

@@ -119,10 +119,43 @@ const splashes = async () => {
   }
 };
 
-/** The tile alone, for the in-app launch curtain. */
+/**
+ * The tile alone, for the in-app launch curtain.
+ *
+ * Two things the raw detection box gets wrong. It is not square — the book's
+ * shadow reads as tile a little further down than up, so 1084×1114 forced
+ * into a square squashed the art by 3%, just enough for the book to look
+ * subtly wrong. And the tile's own rounded corners leave the field colour in
+ * the PNG's corners, which no amount of over-scaling in CSS cleanly hides.
+ * So: square the box around its centre first, then bake the corners away
+ * with a rounded-rectangle alpha mask drawn slightly inside the tile edge.
+ */
 const tile = async () => {
   const { region } = await findTile();
-  const out = await png(sharp(art).extract(region).resize(256, 256)).toBuffer();
+  const meta = await sharp(art).metadata();
+
+  const side = Math.max(region.width, region.height);
+  const cx = region.left + region.width / 2;
+  const cy = region.top + region.height / 2;
+  const square = {
+    left: Math.max(0, Math.min(meta.width - side, Math.round(cx - side / 2))),
+    top: Math.max(0, Math.min(meta.height - side, Math.round(cy - side / 2))),
+    width: side,
+    height: side,
+  };
+
+  const SIZE = 256;
+  const inset = Math.round(SIZE * 0.02);
+  const radius = Math.round(SIZE * 0.21);
+  const mask = Buffer.from(
+    `<svg width="${SIZE}" height="${SIZE}"><rect x="${inset}" y="${inset}" width="${SIZE - 2 * inset}" height="${SIZE - 2 * inset}" rx="${radius}" fill="#fff"/></svg>`,
+  );
+
+  const out = await png(
+    sharp(await sharp(art).extract(square).resize(SIZE, SIZE).png().toBuffer()).composite([
+      { input: mask, blend: "dest-in" },
+    ]),
+  ).toBuffer();
   writeFileSync("public/icons/tile-256.png", out);
   console.log(`  icons/tile-256.png`.padEnd(30), `${Math.round(out.length / 1024)}KB`);
 };

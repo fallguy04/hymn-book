@@ -73,6 +73,11 @@ const THEME_SCRIPT = `
     var dark = theme === "dark" || (theme === "system" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
     document.documentElement.dataset.theme = dark ? "dark" : "light";
+    // Installed-app launches get the curtain; browser tabs do not. Decided
+    // here, before first paint, so neither audience sees the other's frame.
+    if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone) {
+      document.documentElement.dataset.standalone = "";
+    }
     var scale = { s: 0.9, m: 1, l: 1.15, xl: 1.32 }[saved.textSize || "m"];
     document.documentElement.style.setProperty("--type-scale", String(scale));
   } catch (e) {}
