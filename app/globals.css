@@ -213,13 +213,25 @@ select {
   place-items: center;
   background-color: var(--surface);
   background-image: var(--paper-noise);
-  transition: opacity 0.45s ease, visibility 0.45s;
+  transition:
+    opacity 0.65s ease,
+    transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.65s;
 }
 
+/* The reveal is two movements. The curtain lifts a little as it fades, and
+   the mark inside drifts ahead of it — the parallax is what makes it read
+   as a sheet being raised rather than a picture switching off. */
 #splash.splash-leaving {
   opacity: 0;
+  transform: translateY(-1.5%);
   visibility: hidden;
   pointer-events: none;
+}
+
+#splash.splash-leaving .splash-mark {
+  opacity: 0;
+  transform: translateY(-14px);
 }
 
 .splash-mark {
@@ -227,7 +239,10 @@ select {
   flex-direction: column;
   align-items: center;
   gap: 1.15rem;
-  animation: splash-rise 0.55s ease-out both;
+  animation: splash-rise 0.65s ease-out both;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* The tile is cropped from art whose field colour is not the app's paper, so
@@ -270,7 +285,23 @@ select {
   width: 3rem;
   height: 1px;
   background: var(--rule);
-  animation: splash-rule 0.7s 0.25s ease-out both;
+  animation: splash-rule 0.8s 0.35s ease-out both;
+}
+
+/* The other half of the reveal: while the curtain is down the app waits a
+   step back — very slightly small, low, and dim — and eases into place as
+   the curtain lifts. The room comes into focus rather than merely being
+   there. The shell is the only thing transformed; every overlay is a
+   sibling above it, so nothing fixed inside breaks. */
+#app-shell {
+  transition:
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.8s ease;
+}
+
+#app-shell.app-veiled {
+  transform: scale(0.985) translateY(10px);
+  opacity: 0.6;
 }
 
 @keyframes splash-rise {
@@ -298,7 +329,18 @@ select {
   .splash-rule {
     animation: none;
   }
-  #splash {
+  #splash,
+  .splash-mark {
     transition-duration: 0.15s;
+  }
+  #splash.splash-leaving,
+  #splash.splash-leaving .splash-mark {
+    transform: none;
+  }
+  #app-shell {
+    transition: opacity 0.15s ease;
+  }
+  #app-shell.app-veiled {
+    transform: none;
   }
 }

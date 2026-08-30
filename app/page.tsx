@@ -161,8 +161,10 @@ export default function Home() {
   }, [announcement]);
 
   // Lift the curtain once the reader's place is restored. The first launch of
-  // a session holds it long enough for the mark to settle; coming back from
-  // the privacy page repeats none of the ceremony.
+  // a session holds it long enough to actually be read — the mark finishes
+  // settling around the one-second point, and the rest is a quiet beat
+  // before the reveal. Coming back from the privacy page repeats none of
+  // the ceremony.
   useEffect(() => {
     if (!restored) return;
     let seen = false;
@@ -172,9 +174,9 @@ export default function Home() {
     } catch {
       // Storage can be refused; the curtain just plays its full timing.
     }
-    const hold = seen ? 0 : 700;
+    const hold = seen ? 0 : 1350;
     const leave = setTimeout(() => setSplash("leaving"), hold);
-    const gone = setTimeout(() => setSplash("gone"), hold + 500);
+    const gone = setTimeout(() => setSplash("gone"), hold + 700);
     return () => {
       clearTimeout(leave);
       clearTimeout(gone);
@@ -358,7 +360,10 @@ export default function Home() {
         Fixed positioning is pinned to the real viewport on every paint, so
         there's no unit calculation to go stale.
       */}
-      <div className="fixed inset-0 flex overflow-hidden">
+      <div
+        id="app-shell"
+        className={`fixed inset-0 flex overflow-hidden ${splash === "shown" ? "app-veiled" : ""}`}
+      >
         {/* Permanent on a wide screen; the same panels live in the drawer on a
             phone, so there is one implementation behind both. */}
         <Sidebar
