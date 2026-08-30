@@ -37,18 +37,27 @@ export default function BookRibbon({ hymnal, onSwitch }: BookRibbonProps) {
             aria-current={active ? "true" : undefined}
             aria-label={`Open ${book.title}`}
             title={book.title}
-            className={`pointer-events-auto min-h-[3.25rem] rounded-l-lg py-4 pl-3 pr-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] transition-all ${
+            className={`pointer-events-auto relative h-[5.5rem] w-7 rounded-l-lg font-sans text-[0.65rem] font-semibold uppercase tracking-[0.16em] transition-all ${
               active
                 ? "bg-paper-accent text-paper shadow-sm"
                 : "bg-paper-sunken text-paper-faint hover:bg-paper-rule hover:text-paper-muted"
             }`}
           >
             {/*
-              Vertical text, reading top to bottom, the way a spine does. The
-              tab is ~22px wide, so it sits inside the page gutter and never
-              reaches the text.
+              Vertical text, reading top to bottom, the way a spine does — but
+              rotated with a transform rather than written with writing-mode.
+              Safari computes an auto-sized box around vertical-rl content
+              using horizontal metrics, so on iOS the tab came out too small
+              and clipped its own label; Android laid it out correctly, which
+              is exactly the split that was reported. A transform happens
+              after layout, so there is nothing for Safari to mis-measure —
+              the box is fixed at 28×88px and the label just paints inside it.
+              The fixed height also keeps the two tabs even, which the
+              first-word label was doing by hand before.
             */}
-            <span style={{ writingMode: "vertical-rl" }}>{tabLabel(book)}</span>
+            <span className="absolute inset-0 flex rotate-90 items-center justify-center whitespace-nowrap">
+              {tabLabel(book)}
+            </span>
           </button>
         );
       })}
@@ -57,10 +66,8 @@ export default function BookRibbon({ hymnal, onSwitch }: BookRibbonProps) {
 }
 
 /**
- * One short word. Vertical text spends screen height per character, so "Other
- * Songs" set on its side is a tab twice as tall as the one beside it — the
- * first word alone keeps the pair even and still reads. The numbered book is
- * "Hymnal" because that is what people call it out loud.
+ * One short word, so it fits the fixed tab. The numbered book is "Hymnal"
+ * because that is what people call it out loud.
  */
 function tabLabel(book: Hymnal): string {
   if (isNumbered(book)) return "Hymnal";

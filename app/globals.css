@@ -197,3 +197,108 @@ select {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Launch curtain
+   The OS splash (manifest colour on Android, the /splash images on iOS) can
+   only be a still. This is the moment after it: painted in the very first
+   HTML so it appears before hydration, themed by the same tokens as the app,
+   and lifted by app/page.tsx once the reader's place has been restored.
+--------------------------------------------------------------------------- */
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background-color: var(--surface);
+  background-image: var(--paper-noise);
+  transition: opacity 0.45s ease, visibility 0.45s;
+}
+
+#splash.splash-leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  animation: splash-rise 0.55s ease-out both;
+}
+
+/* The tile is cropped from art whose field colour is not the app's paper, so
+   it sits in a rounded mask scaled just past its own soft corners. */
+.splash-tile {
+  width: 4.75rem;
+  height: 4.75rem;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  box-shadow: 0 12px 32px -14px rgba(0, 0, 0, 0.4);
+}
+
+.splash-tile img {
+  width: 110%;
+  height: 110%;
+  margin: -5%;
+  display: block;
+}
+
+.splash-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--ink);
+}
+
+.splash-title small {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.splash-rule {
+  width: 3rem;
+  height: 1px;
+  background: var(--rule);
+  animation: splash-rule 0.7s 0.25s ease-out both;
+}
+
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes splash-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-mark,
+  .splash-rule {
+    animation: none;
+  }
+  #splash {
+    transition-duration: 0.15s;
+  }
+}

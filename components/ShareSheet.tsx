@@ -21,9 +21,11 @@ interface ShareSheetProps {
  * No accounts, no share sheet, no server — the code is drawn on the device,
  * so it works at a camp with no signal.
  *
- * The card is always paper-coloured, even in dark mode — partly because a QR
- * must be dark-on-light for every scanner to read it, but mostly because what
- * you are handing someone is a page from the book.
+ * The card follows the theme; the code does not. A QR has to be dark ink on a
+ * light ground — plenty of scanners refuse an inverted one — so the code sits
+ * on its own small paper plate inside the frame, like a print in a mat. In a
+ * dim auditorium the dark card keeps the screen from becoming a floodlight,
+ * and the plate is the only bright thing, which is the part being scanned.
  */
 
 /* The styling below is measured, not guessed. This exact rendering was run
@@ -35,11 +37,11 @@ const GAP = 0.04;
 const DOT_RADIUS = 0.3;
 const FINDER_RADIUS = 1.2;
 
-/* Hard-coded rather than tokens: the card must not follow the theme. */
+/* Hard-coded rather than tokens: whatever the theme, the code itself is
+   always this ink on this paper — that pair is what the decode tests ran
+   against. Everything around it uses the theme's own tokens. */
 const INK = "#241f1a";
 const PAPER = "#fdfbf7";
-const RULE = "#e0d9cb";
-const FAINT = "#726b60";
 
 /** Diagonal r+c distance each animation band covers. ~13 bands on a v5 code. */
 const BAND = 6;
@@ -105,29 +107,30 @@ export default function ShareSheet({ hymnal, hymn, onClose }: ShareSheetProps) {
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 18, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: reduceMotion ? 0.15 : 0.24, ease: "easeOut" }}
-          style={{ backgroundColor: PAPER, backgroundImage: "var(--paper-noise)" }}
-          className="pointer-events-auto relative w-full max-w-[19.5rem] rounded-3xl p-6 pb-5 shadow-2xl"
+          style={{ backgroundImage: "var(--paper-noise)" }}
+          className="pointer-events-auto relative w-full max-w-[19.5rem] rounded-3xl border border-paper-rule bg-paper p-6 pb-5 shadow-2xl"
         >
           <button
             onClick={onClose}
             aria-label="Close"
-            className="absolute right-2.5 top-2.5 rounded-full p-2 transition-colors hover:bg-black/[0.04]"
-            style={{ color: FAINT }}
+            className="absolute right-2.5 top-2.5 rounded-full p-2 text-paper-faint transition-colors hover:bg-paper-sunken hover:text-paper-muted"
           >
             <X className="h-4 w-4" />
           </button>
 
-          <p
-            className="mb-4 text-center font-sans text-[0.62rem] font-semibold uppercase tracking-[0.18em]"
-            style={{ color: FAINT }}
-          >
+          <p className="mb-4 text-center font-sans text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-paper-faint">
             Share this {isNumbered(hymnal) ? "hymn" : "song"}
           </p>
 
           {/* A bookplate: two hairline rules around the code, the way a
-              printed hymnal frames its presentation page. */}
-          <div className="rounded-2xl border p-1.5" style={{ borderColor: RULE }}>
-            <div className="rounded-xl border p-3.5" style={{ borderColor: RULE }}>
+              printed hymnal frames its presentation page. The inner div is
+              the light plate the code needs to stay scannable — the one
+              surface that ignores the theme. */}
+          <div className="rounded-2xl border border-paper-rule p-1.5">
+            {/* This padding is the code's whole quiet zone now that the
+                surround can be dark: the spec asks for four clear modules,
+                ~26px at this rendered size — so 28px, not a hair less. */}
+            <div className="rounded-xl border border-paper-rule p-7" style={{ backgroundColor: PAPER }}>
               <svg
                 viewBox={`0 0 ${count} ${count}`}
                 role="img"
@@ -184,19 +187,19 @@ export default function ShareSheet({ hymnal, hymn, onClose }: ShareSheetProps) {
           >
             {isNumbered(hymnal) ? (
               <>
-                <p className="font-serif text-[1.35rem] leading-tight" style={{ color: INK }}>
+                <p className="font-serif text-[1.35rem] leading-tight text-paper-ink">
                   Hymn <span className="tabular-nums">{hymn.number}</span>
                 </p>
-                <p className="mt-0.5 line-clamp-1 font-serif text-sm" style={{ color: FAINT }}>
+                <p className="mt-0.5 line-clamp-1 font-serif text-sm text-paper-faint">
                   {hymnTitle(hymn)}
                 </p>
               </>
             ) : (
-              <p className="line-clamp-2 font-serif text-[1.2rem] leading-tight" style={{ color: INK }}>
+              <p className="line-clamp-2 font-serif text-[1.2rem] leading-tight text-paper-ink">
                 {hymnTitle(hymn)}
               </p>
             )}
-            <p className="mt-3 font-sans text-[0.7rem] leading-relaxed" style={{ color: FAINT }}>
+            <p className="mt-3 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
               Point a camera at the code — it opens this {isNumbered(hymnal) ? "hymn" : "song"}.
             </p>
           </motion.div>

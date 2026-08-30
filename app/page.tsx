@@ -58,6 +58,12 @@ export default function Home() {
   const [menuPath, setMenuPath] = useState<string[] | undefined>();
   const [tunesOpen, setTunesOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  /**
+   * The launch curtain over everything. Server-rendered as "shown" so it is
+   * painted before hydration — the whole point is covering the moment the
+   * app is still waking up.
+   */
+  const [splash, setSplash] = useState<"shown" | "leaving" | "gone">("shown");
 
   const isDesktop = useIsDesktop();
   const hymn = getHymn(hymnal, number) ?? firstHymn(hymnal);
@@ -153,6 +159,27 @@ export default function Home() {
   useEffect(() => {
     if (announcement) document.title = `${announcement} · Hymnal`;
   }, [announcement]);
+
+  // Lift the curtain once the reader's place is restored. The first launch of
+  // a session holds it long enough for the mark to settle; coming back from
+  // the privacy page repeats none of the ceremony.
+  useEffect(() => {
+    if (!restored) return;
+    let seen = false;
+    try {
+      seen = sessionStorage.getItem("hymnal-splash") !== null;
+      sessionStorage.setItem("hymnal-splash", "1");
+    } catch {
+      // Storage can be refused; the curtain just plays its full timing.
+    }
+    const hold = seen ? 0 : 700;
+    const leave = setTimeout(() => setSplash("leaving"), hold);
+    const gone = setTimeout(() => setSplash("gone"), hold + 500);
+    return () => {
+      clearTimeout(leave);
+      clearTimeout(gone);
+    };
+  }, [restored]);
 
   const neighbours = useMemo(() => {
     const at = hymnal.hymns.findIndex((h) => h.number === hymn.number);
@@ -297,6 +324,26 @@ export default function Home() {
   return (
     <>
       <ThemeSync />
+
+      {splash !== "gone" && (
+        <div id="splash" aria-hidden="true" className={splash === "leaving" ? "splash-leaving" : ""}>
+          <div className="splash-mark">
+            <span className="splash-tile">
+              {/* eslint-disable-next-line @next/next/no-img-element -- a static
+                  asset painted before hydration; the image pipeline is exactly
+                  what it must not wait for. */}
+              <img src="/icons/tile-256.png" alt="" width={256} height={256} />
+            </span>
+            <p className="splash-title">
+              A Collection of Hymns
+              <br />
+              and Sacred Songs
+              <small>Old German Baptist Brethren Church</small>
+            </p>
+            <span className="splash-rule" />
+          </div>
+        </div>
+      )}
 
       <p aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
