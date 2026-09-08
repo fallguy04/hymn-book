@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Crimson_Pro, Inter } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
+import { Analytics } from "@vercel/analytics/next";
 
 const crimsonPro = Crimson_Pro({
   subsets: ["latin"],
@@ -96,6 +97,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <ServiceWorker />
+        <Analytics />
       </body>
     </html>
   );
