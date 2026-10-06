@@ -313,8 +313,8 @@ function SettingsPanel() {
           <p className="text-label mb-2">Missing a song?</p>
           <SuggestSong query="" hymnalId={suggestTo.id} label="Suggest a song" compact />
           <p className="mt-2 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
-            Goes to whoever keeps the app. {suggestTo.shortName} is the book that grows &mdash; the
-            collection is the printed book and stays as it is.
+            Suggestions go to the app maintainer. New songs may be added to {suggestTo.shortName}.
+            The hymnbook is displayed as published.
           </p>
         </section>
       )}
@@ -325,9 +325,8 @@ function SettingsPanel() {
 
       <section className="border-t border-paper-rule pt-4">
         <p className="font-sans text-[0.7rem] leading-relaxed text-paper-faint">
-          The screen is kept awake while a hymn is open. Text is set from the 32nd edition; where
-          the printed page drops a line it has been restored from the original hymn, and noted in
-          the project&rsquo;s corrections file.
+          The screen is kept awake while a hymn is open. Hymns from the 32nd edition of the Old
+          German Baptist Brethren Church hymnbook.
         </p>
         {/* The policy existed but nothing linked to it, which makes it a file
             rather than a disclosure. */}
