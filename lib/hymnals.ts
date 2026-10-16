@@ -195,15 +195,102 @@ export function reachableDigits(hymnal: Hymnal, buffer: string): Set<string> {
   return reachable;
 }
 
+// Search. The engine itself lives in ./search.ts, free of the app, so it can be
+// tested on its own; everything below wires it to the registered books. The
+// import sits with the code that uses it.
+import {
+  buildIndex,
+  highlightRanges,
+  normalize,
+  search,
+  type BookIndex,
+  type MatchedOn,
+} from "./search";
+
+// So components take everything search-related from this one module.
+export { highlightRanges, normalize };
+export type { MatchedOn };
+
 /**
- * Full-text search across numbers, titles, authors and lyrics. Ranked so that
- * an exact number wins, then title matches, then a line of the text.
+ * One hymn a search turned up, and why.
+ *
+ * Search is forgiving — punctuation, "ev'ry" for "every", small typos, a phrase
+ * that wraps onto the next line — so a result says how it matched. The UI can
+ * then show the line that matched instead of an unexplained hymn, and say so
+ * when it is only a close match.
  */
 export interface SearchResult {
   hymn: Hymn;
-  snippet: string | null;
   /** Which book this came from. Always set, so callers never have to guess. */
   hymnal: Hymnal;
+  /**
+   * For a match in the words: the line that matched and the one after it, as
+   * printed, joined with " / ". Null for every other kind of match.
+   */
+  snippet: string | null;
+  matchedOn: MatchedOn;
+  /** True when the match needed typo tolerance, so the UI can say "close match". */
+  fuzzy: boolean;
+}
+
+/** Built the first time a book is searched, then kept. */
+const searchIndexes = new WeakMap<Hymnal, BookIndex>();
+
+function searchIndex(hymnal: Hymnal): BookIndex {
+  let index = searchIndexes.get(hymnal);
+  if (!index) {
+    index = buildIndex({ id: hymnal.id, numbered: isNumbered(hymnal), hymns: hymnal.hymns });
+    searchIndexes.set(hymnal, index);
+  }
+  return index;
+}
+
+/**
+ * Search the books at once, merged by how well each result matches rather than
+ * book by book, and say how many there were before `limit` cut the list so the
+ * UI can write "Showing 40 of 64".
+ *
+ * The books are searched in registry order, which is also how ties break: the
+ * collection before "Other Songs", then by number. Pass `bookIds` to leave
+ * books out.
+ *
+ *  - Numbers ("26", "#26", "hymn 26") look up the hymn, then every number that
+ *    starts that way — but only in books whose numbers mean something.
+ *  - Words match as a phrase, with the last word allowed to be unfinished, so
+ *    "come thou fo" is already finding hymn 84.
+ *  - If nothing matches as typed, close matches are tried: typos, a word left
+ *    out, a word swapped.
+ */
+export function searchBooks(
+  query: string,
+  opts: { bookIds?: string[]; limit?: number } = {},
+): { results: SearchResult[]; total: number } {
+  const wanted = opts.bookIds;
+  const books = wanted ? HYMNALS.filter((hymnal) => wanted.includes(hymnal.id)) : HYMNALS;
+  return searchIn(books, query, opts.limit ?? 40);
+}
+
+function searchIn(
+  books: Hymnal[],
+  query: string,
+  limit: number,
+): { results: SearchResult[]; total: number } {
+  const { hits, total } = search(books.map(searchIndex), query, { limit });
+
+  const results: SearchResult[] = [];
+  for (const hit of hits) {
+    const hymnal = books.find((book) => book.id === hit.bookId);
+    const hymn = hymnal && getHymn(hymnal, hit.number);
+    if (!hymnal || !hymn) continue;
+    results.push({
+      hymn,
+      hymnal,
+      snippet: hit.snippet,
+      matchedOn: hit.matchedOn,
+      fuzzy: hit.fuzzy,
+    });
+  }
+  return { results, total };
 }
 
 /**
@@ -213,59 +300,16 @@ export interface SearchResult {
  * safe one. Mid-service, someone typing a number wants their own hymnal's 26,
  * not a list of every 26 in every book — so single-book search is what the
  * keypad and the default search use, and crossing books is a deliberate act.
+ *
+ * Both are thin wrappers over the same search as `searchBooks`, which is the one
+ * to use when the UI wants the total as well.
  */
 export function searchAllHymnals(query: string, limit = 60): SearchResult[] {
-  const perBook = HYMNALS.map((hymnal) => searchHymns(hymnal, query, limit));
-
-  // Interleave by rank rather than concatenating, so a strong match in the
-  // second book still beats a weak one in the first.
-  const merged: SearchResult[] = [];
-  for (let i = 0; merged.length < limit; i++) {
-    const round = perBook.map((results) => results[i]).filter(Boolean);
-    if (round.length === 0) break;
-    merged.push(...round);
-  }
-  return merged.slice(0, limit);
+  return searchIn(HYMNALS, query, limit).results;
 }
 
 export function searchHymns(hymnal: Hymnal, query: string, limit = 40): SearchResult[] {
-  const term = foldQuotes(query.trim().toLowerCase());
-  if (!term) return [];
-
-  const scored: { hymn: Hymn; snippet: string | null; score: number }[] = [];
-
-  for (const hymn of hymnal.hymns) {
-    const title = foldQuotes(hymnTitle(hymn).toLowerCase());
-    const number = String(hymn.number);
-
-    let score = -1;
-    let snippet: string | null = null;
-
-    if (number === term) score = 0;
-    else if (number.startsWith(term)) score = 1;
-    else if (title.startsWith(term)) score = 2;
-    else if (title.includes(term)) score = 3;
-    else if (hymn.author && foldQuotes(hymn.author.toLowerCase()).includes(term)) score = 4;
-    else {
-      for (const stanza of hymn.stanzas) {
-        const at = stanza.findIndex((line) =>
-          foldQuotes(lineText(line).toLowerCase()).includes(term),
-        );
-        if (at !== -1) {
-          score = 5;
-          snippet = stanza.slice(Math.max(0, at - 1), at + 2).map(lineText).join(" / ");
-          break;
-        }
-      }
-    }
-
-    if (score >= 0) scored.push({ hymn, snippet, score });
-  }
-
-  return scored
-    .sort((a, b) => a.score - b.score || a.hymn.number - b.hymn.number)
-    .slice(0, limit)
-    .map(({ hymn, snippet }) => ({ hymn, snippet, hymnal }));
+  return searchIn([hymnal], query, limit).results;
 }
 
 /** Alphabetical author index: every attributed author and their hymns. */

@@ -42,27 +42,32 @@ export function pendingReason(song: PendingSong): string {
   return `Still in copyright (${who}). We've asked for permission to print the words.`;
 }
 
+// The same engine that searches the hymns, so a typo or a missing apostrophe
+// ("Feelin' Fine", "God's Wonderful People") costs the same here as anywhere else.
+import { buildIndex, normalize, search, type BookIndex } from "./search";
+
+/** Built the first time anyone searches. The position in SONGS stands in for a number. */
+let index: BookIndex | undefined;
+
 /**
  * Title and author only. Searching the words would be pointless — there are no
  * words here — so a match is on the name of the song or who wrote it.
  */
 export function searchPending(query: string, limit = 8): PendingSong[] {
-  const term = query.trim().toLowerCase();
-  if (term.length < 2) return [];
+  // One letter matches half the alphabet; wait for a second.
+  if (normalize(query).length < 2) return [];
 
-  const scored: { song: PendingSong; score: number }[] = [];
-  for (const song of SONGS) {
-    const title = song.title.toLowerCase();
-    let score = -1;
-    if (title === term) score = 0;
-    else if (title.startsWith(term)) score = 1;
-    else if (title.includes(term)) score = 2;
-    else if (song.author?.toLowerCase().includes(term)) score = 3;
-    if (score >= 0) scored.push({ song, score });
-  }
+  index ??= buildIndex({
+    id: "pending",
+    numbered: false,
+    hymns: SONGS.map((song, position) => ({
+      number: position,
+      title: song.title,
+      author: song.author ?? null,
+      stanzas: [],
+    })),
+  });
 
-  return scored
-    .sort((a, b) => a.score - b.score || a.song.title.localeCompare(b.song.title))
-    .slice(0, limit)
-    .map(({ song }) => song);
+  // SONGS is alphabetical, so ties between equally good matches come out that way too.
+  return search([index], query, { limit }).hits.map((hit) => SONGS[hit.number]);
 }
