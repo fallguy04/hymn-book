@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { ChevronRight, Music } from "lucide-react";
 import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
 
 interface HymnViewProps {
@@ -160,15 +161,25 @@ export default function HymnView({
               else if (offset.x > SWIPE_DISTANCE || power > SWIPE_THRESHOLD) onPrev();
             }
           }}
-          className="mx-auto w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
+          /* min-h-full so a short hymn can still be swiped anywhere on the
+             screen, not only across its eight lines of text. hymn-swipe gives
+             back the pinch-zoom and text selection the drag gesture takes
+             away (see globals.css). */
+          className="hymn-swipe mx-auto min-h-full w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
         >
           <header className="mb-10 text-center">
+            {/* Opens Contents at this section. It used to look like a caption,
+                so almost nobody found it; the chevron says it goes somewhere. */}
             {path.length > 0 && (
               <button
+                type="button"
                 onClick={() => onOpenSection(path)}
-                className="text-label -mx-2 mb-1 inline-block px-2 py-2 transition-colors hover:text-paper-accent"
+                aria-label={`Open Contents at ${path.join(", ")}`}
+                className="mb-1 inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-sans font-semibold uppercase tracking-[0.14em] text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-accent"
+                style={{ fontSize: "calc(0.68rem * var(--type-scale))" }}
               >
                 {path.join(" · ")}
+                <ChevronRight className="h-3.5 w-3.5 shrink-0" />
               </button>
             )}
 
@@ -176,18 +187,27 @@ export default function HymnView({
               {hymn.title || <span className="italic text-paper-muted">Hymn {hymn.number}</span>}
             </h1>
 
-            <p className="mt-3 font-sans text-xs text-paper-faint">
-              {hymn.meter && (
-                <button
-                  onClick={onOpenTunes}
-                  className="-mx-1 inline-block px-1 py-2 underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
-                >
-                  {hymn.meter}
-                </button>
-              )}
-              {hymn.meter && hymn.author && <span aria-hidden> · </span>}
-              {hymn.author && <span>{hymn.author}</span>}
-            </p>
+            {(hymn.meter || hymn.author) && (
+              <p
+                className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-sans text-paper-muted"
+                style={{ fontSize: "calc(0.78rem * var(--type-scale))" }}
+              >
+                {/* The meter is what a song leader picks a tune by. It opens the
+                    tunes noted for it, and now looks like it does something. */}
+                {hymn.meter && (
+                  <button
+                    type="button"
+                    onClick={onOpenTunes}
+                    aria-label={`Tunes for ${hymn.meter}`}
+                    className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-paper-rule px-3 transition-colors hover:border-paper-faint hover:text-paper-accent"
+                  >
+                    <Music className="h-3.5 w-3.5" />
+                    {hymn.meter}
+                  </button>
+                )}
+                {hymn.author && <span>{hymn.author}</span>}
+              </p>
+            )}
           </header>
 
           {/*
@@ -209,7 +229,8 @@ export default function HymnView({
                     verseCount > 1 && (
                       <span
                         aria-hidden
-                        className="absolute -left-5 top-[0.42em] font-sans text-[0.65rem] tabular-nums text-paper-faint"
+                        className="absolute -left-5 top-[0.42em] font-sans tabular-nums text-paper-faint"
+                        style={{ fontSize: "calc(0.68rem * var(--type-scale))" }}
                       >
                         {verse}
                       </span>

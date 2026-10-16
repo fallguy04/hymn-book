@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Check, Link2, Send, X } from "lucide-react";
 import qrcode from "qrcode-generator";
-import { type Hymn, type Hymnal, hymnTitle, isNumbered } from "@/lib/hymnals";
-import { useDialog } from "@/lib/useDialog";
+import { type Hymn, type Hymnal, isNumbered } from "@/lib/hymnals";
+import { hymnHeading, hymnPath, primaryName } from "@/lib/books";
+import Overlay from "./ui/Overlay";
 
 interface ShareSheetProps {
   hymnal: Hymnal;
@@ -13,198 +13,153 @@ interface ShareSheetProps {
   onClose: () => void;
 }
 
-/**
- * A QR code styled like a bookplate, presented like a gift.
- *
- * The whole sharing system is this one card: you hold your phone up, they
- * point a camera at it, and the app opens on the hymn you are looking at.
- * No accounts, no share sheet, no server — the code is drawn on the device,
- * so it works at a camp with no signal.
- *
- * The card follows the theme; the code does not. A QR has to be dark ink on a
- * light ground — plenty of scanners refuse an inverted one — so the code sits
- * on its own small paper plate inside the frame, like a print in a mat. In a
- * dim auditorium the dark card keeps the screen from becoming a floodlight,
- * and the plate is the only bright thing, which is the part being scanned.
- */
-
-/* The styling below is measured, not guessed. This exact rendering was run
-   through jsQR — a decoder far stricter than any phone camera — across every
-   URL length a deployment can produce: finder rounding of 1.2 modules decodes
-   while 2.0 does not, and a 5% dot gap decodes while 8% does not. Change the
-   shapes and re-run the round-trip test before trusting the result. */
+/* Shapes measured, not guessed: this rendering was decoded with jsQR across
+   every URL length a deployment can produce. Finder rounding of 1.2 modules
+   decodes while 2.0 does not; a 4% dot gap decodes while 8% does not. Change
+   them only with a fresh round-trip test. */
 const GAP = 0.04;
 const DOT_RADIUS = 0.3;
 const FINDER_RADIUS = 1.2;
+/** The clear margin a scanner needs around the code, in modules. */
+const QUIET = 4;
 
-/* Hard-coded rather than tokens: whatever the theme, the code itself is
-   always this ink on this paper — that pair is what the decode tests ran
-   against. Everything around it uses the theme's own tokens. */
-const INK = "#241f1a";
-const PAPER = "#fdfbf7";
-
-/** Diagonal r+c distance each animation band covers. ~13 bands on a v5 code. */
-const BAND = 6;
-
+/**
+ * Two ways to pass a hymn on: hold up your phone, or send the link.
+ *
+ * The card is just the code and the hymn's name. It used to be a bookplate —
+ * a double frame, a paper plate, a code that drew itself in bands — which was
+ * handsome once and a lot to look past every time after.
+ *
+ * The code is drawn in the theme's own ink, so at night it is pale on dark
+ * rather than a white square lighting up a dim room. Phone cameras read an
+ * inverted code; the quiet zone is kept at the full four modules either way.
+ *
+ * "Send link" opens the phone's own share sheet (Messages, WhatsApp, email…),
+ * for the person who isn't standing beside you. Where a browser has no share
+ * sheet, the link is copied instead.
+ */
 export default function ShareSheet({ hymnal, hymn, onClose }: ShareSheetProps) {
-  const reduceMotion = useReducedMotion();
-  const panel = useDialog<HTMLDivElement>();
+  const [copied, setCopied] = useState(false);
+  const url = `${location.origin}${hymnPath(hymnal, hymn.number)}`;
+  const canShare = typeof navigator.share === "function";
+  const heading = hymnHeading(hymnal, hymn);
+  const name = primaryName(hymnal, hymn);
 
-  const { count, finders, bands } = useMemo(() => {
-    const url =
-      `${location.origin}/?h=${hymn.number}` + (hymnal.isDefault ? "" : `&b=${hymnal.id}`);
-
+  const { count, dots } = useMemo(() => {
     const qr = qrcode(0, "Q");
     qr.addData(url);
     qr.make();
     const n = qr.getModuleCount();
-
-    // The three finder squares are drawn as whole shapes below, not module by
-    // module — a decoder finds them by scanning for unbroken 1:1:3:1:1 runs,
-    // which per-module styling would slice apart.
+    // The three finder squares are drawn whole below: a decoder finds them by
+    // scanning for unbroken 1:1:3:1:1 runs, which per-module dots would break.
     const inFinder = (r: number, c: number) =>
       (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
-
-    const byBand = new Map<number, [number, number][]>();
+    const cells: [number, number][] = [];
     for (let r = 0; r < n; r++)
-      for (let c = 0; c < n; c++) {
-        if (!qr.isDark(r, c) || inFinder(r, c)) continue;
-        const band = Math.floor((r + c) / BAND);
-        byBand.set(band, [...(byBand.get(band) ?? []), [r, c]]);
-      }
+      for (let c = 0; c < n; c++) if (qr.isDark(r, c) && !inFinder(r, c)) cells.push([r, c]);
+    return { count: n, dots: cells };
+  }, [url]);
 
-    return {
-      count: n,
-      finders: [
-        [0, 0],
-        [0, n - 7],
-        [n - 7, 0],
-      ] as [number, number][],
-      bands: [...byBand.entries()].sort(([a], [b]) => a - b).map(([, cells]) => cells),
-    };
-  }, [hymnal, hymn.number]);
+  const finders: [number, number][] = [
+    [0, 0],
+    [0, count - 7],
+    [count - 7, 0],
+  ];
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Refused clipboard access: the code is still on screen to scan.
+    }
+  };
+
+  const send = async () => {
+    try {
+      await navigator.share({
+        title: heading,
+        text: isNumbered(hymnal) ? `${heading} · ${name}` : name,
+        url,
+      });
+    } catch (e) {
+      // Closing the share sheet without choosing anything is not an error.
+      if ((e as Error).name !== "AbortError") copy();
+    }
+  };
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.15 }}
+    <Overlay label={`Share ${heading}`} placement="center" onClose={onClose} className="relative w-full max-w-[20rem] p-5">
+      <button
+        type="button"
         onClick={onClose}
-        aria-hidden="true"
-        className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px]"
-      />
+        aria-label="Close"
+        className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full text-paper-faint transition-colors hover:bg-paper-sunken hover:text-paper-muted"
+      >
+        <X className="h-5 w-5" />
+      </button>
 
-      {/* The wrapper ignores the pointer so a tap beside the card reaches the
-          backdrop and closes, the way every other layer here closes. */}
-      <div className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-6">
-        <motion.div
-          ref={panel}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Share this hymn"
-          tabIndex={-1}
-          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 18, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: reduceMotion ? 0.15 : 0.24, ease: "easeOut" }}
-          style={{ backgroundImage: "var(--paper-noise)" }}
-          className="pointer-events-auto relative w-full max-w-[19.5rem] rounded-3xl border border-paper-rule bg-paper p-6 pb-5 shadow-2xl"
-        >
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="absolute right-2.5 top-2.5 rounded-full p-2 text-paper-faint transition-colors hover:bg-paper-sunken hover:text-paper-muted"
-          >
-            <X className="h-4 w-4" />
-          </button>
+      <svg
+        viewBox={`${-QUIET} ${-QUIET} ${count + QUIET * 2} ${count + QUIET * 2}`}
+        role="img"
+        aria-label={`QR code that opens ${heading}`}
+        className="mx-auto mt-4 block h-auto w-full max-w-[15rem] text-paper-ink"
+      >
+        {finders.map(([r, c]) => (
+          <g key={`${r}-${c}`}>
+            <rect x={c} y={r} width={7} height={7} rx={FINDER_RADIUS} fill="currentColor" />
+            <rect x={c + 1} y={r + 1} width={5} height={5} style={{ fill: "var(--surface)" }} />
+            <rect x={c + 2} y={r + 2} width={3} height={3} rx={0.9} fill="currentColor" />
+          </g>
+        ))}
+        {dots.map(([r, c]) => (
+          <rect
+            key={`${r}-${c}`}
+            x={c + GAP}
+            y={r + GAP}
+            width={1 - GAP * 2}
+            height={1 - GAP * 2}
+            rx={DOT_RADIUS}
+            fill="currentColor"
+          />
+        ))}
+      </svg>
 
-          <p className="mb-4 text-center font-sans text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-paper-faint">
-            Share this {isNumbered(hymnal) ? "hymn" : "song"}
-          </p>
-
-          {/* A bookplate: two hairline rules around the code, the way a
-              printed hymnal frames its presentation page. The inner div is
-              the light plate the code needs to stay scannable — the one
-              surface that ignores the theme. */}
-          <div className="rounded-2xl border border-paper-rule p-1.5">
-            {/* This padding is the code's whole quiet zone now that the
-                surround can be dark: the spec asks for four clear modules,
-                ~26px at this rendered size — so 28px, not a hair less. */}
-            <div className="rounded-xl border border-paper-rule p-7" style={{ backgroundColor: PAPER }}>
-              <svg
-                viewBox={`0 0 ${count} ${count}`}
-                role="img"
-                aria-label="QR code that opens this hymn"
-                className="block h-auto w-full"
-              >
-                {finders.map(([fr, fc], i) => (
-                  <motion.g
-                    key={i}
-                    initial={reduceMotion ? false : { opacity: 0, scale: 0.55 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={
-                      reduceMotion
-                        ? { duration: 0 }
-                        : { type: "spring", stiffness: 340, damping: 24, delay: 0.1 + i * 0.06 }
-                    }
-                    style={{ transformBox: "fill-box", transformOrigin: "center" }}
-                  >
-                    <rect x={fc} y={fr} width={7} height={7} rx={FINDER_RADIUS} fill={INK} />
-                    <rect x={fc + 1} y={fr + 1} width={5} height={5} fill={PAPER} />
-                    <rect x={fc + 2} y={fr + 2} width={3} height={3} rx={0.9} fill={INK} />
-                  </motion.g>
-                ))}
-
-                {bands.map((cells, i) => (
-                  <motion.g
-                    key={i}
-                    initial={reduceMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.2, delay: reduceMotion ? 0 : 0.14 + i * 0.026 }}
-                  >
-                    {cells.map(([r, c]) => (
-                      <rect
-                        key={`${r}-${c}`}
-                        x={c + GAP}
-                        y={r + GAP}
-                        width={1 - GAP * 2}
-                        height={1 - GAP * 2}
-                        rx={DOT_RADIUS}
-                        fill={INK}
-                      />
-                    ))}
-                  </motion.g>
-                ))}
-              </svg>
-            </div>
-          </div>
-
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: reduceMotion ? 0 : 0.42 }}
-            className="mt-4 text-center"
-          >
-            {isNumbered(hymnal) ? (
-              <>
-                <p className="font-serif text-[1.35rem] leading-tight text-paper-ink">
-                  Hymn <span className="tabular-nums">{hymn.number}</span>
-                </p>
-                <p className="mt-0.5 line-clamp-1 font-serif text-sm text-paper-faint">
-                  {hymnTitle(hymn)}
-                </p>
-              </>
-            ) : (
-              <p className="line-clamp-2 font-serif text-[1.2rem] leading-tight text-paper-ink">
-                {hymnTitle(hymn)}
-              </p>
-            )}
-            <p className="mt-3 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
-              Point a camera at the code — it opens this {isNumbered(hymnal) ? "hymn" : "song"}.
-            </p>
-          </motion.div>
-        </motion.div>
+      <div className="mt-1 text-center">
+        <p className="font-serif text-[1.35rem] leading-tight text-paper-ink">{heading}</p>
+        {isNumbered(hymnal) && (
+          <p className="mt-0.5 line-clamp-1 font-serif text-[0.95rem] text-paper-muted">{name}</p>
+        )}
       </div>
-    </>
+
+      <div className="mt-5 space-y-2">
+        {canShare && (
+          <button
+            type="button"
+            onClick={send}
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-paper-ink font-sans text-[0.95rem] font-semibold text-paper transition-transform active:scale-[0.98]"
+          >
+            <Send className="h-4 w-4" />
+            Send link
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={copy}
+          className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl font-sans text-[0.95rem] font-semibold transition-colors ${
+            canShare
+              ? "text-paper-muted hover:bg-paper-sunken hover:text-paper-ink"
+              : "bg-paper-ink text-paper"
+          }`}
+        >
+          {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
+          {copied ? "Link copied" : "Copy link"}
+        </button>
+        <p role="status" className="sr-only">
+          {copied ? "Link copied" : ""}
+        </p>
+      </div>
+    </Overlay>
   );
 }

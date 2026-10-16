@@ -1,77 +1,83 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import type { Hymn } from "@/lib/hymnals";
+import { type Hymn, type Hymnal, isNumbered } from "@/lib/hymnals";
+import { primaryName } from "@/lib/books";
 
 interface BottomBarProps {
+  hymnal: Hymnal;
   prev: Hymn | null;
   next: Hymn | null;
-  /** Desktop advertises the keyboard shortcut; a phone has no ⌘ key. */
-  isDesktop?: boolean;
+  /** Shows the keyboard shortcut; a phone has no keyboard to advertise. */
+  shortcut: string | null;
   onPrev: () => void;
   onNext: () => void;
-  onOpenSearch: () => void;
+  onFind: () => void;
 }
 
 /**
- * Fixed to the bottom of the viewport rather than sitting at the end of the
- * text: on a long hymn the way out was several screens down, which is no use
- * to someone who needs the next number now.
+ * Fixed to the bottom of the screen, so the next hymn is never several screens
+ * of scrolling away.
  *
- * Same three-column grid as the top bar so the label stays on the page's
- * centre line no matter how wide the adjacent numbers get.
+ * Neighbours show their numbers only where numbers mean something. In the
+ * other book they are internal ids, and on "Abide with Me" the bar used to
+ * read ‹ 20 and 2 › — screen readers said "Previous hymn, 20".
  */
 export default function BottomBar({
+  hymnal,
   prev,
   next,
-  isDesktop,
+  shortcut,
   onPrev,
   onNext,
-  onOpenSearch,
+  onFind,
 }: BottomBarProps) {
+  const numbered = isNumbered(hymnal);
+  const noun = numbered ? "hymn" : "song";
+  const describe = (hymn: Hymn) => (numbered ? String(hymn.number) : primaryName(hymnal, hymn));
+
   return (
-    <nav className="shrink-0 border-t border-paper-rule/60 bg-paper/85 backdrop-blur-md">
-      <div
-        className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-2"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      >
+    // Safe-area padding outside the 56px row, so the row keeps its height on
+    // a phone with a home indicator.
+    <nav
+      className="shrink-0 border-t border-paper-rule/60 bg-paper/85 backdrop-blur-md"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-1.5">
         <button
+          type="button"
           onClick={onPrev}
           disabled={!prev}
-          aria-label={prev ? `Previous hymn, ${prev.number}` : "No previous hymn"}
-          className="flex items-center gap-1 justify-self-start rounded-full py-2 pl-2 pr-3 font-sans text-sm tabular-nums text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink disabled:invisible"
+          aria-label={prev ? `Previous ${noun}, ${describe(prev)}` : `No previous ${noun}`}
+          className="flex min-h-11 items-center gap-1 justify-self-start rounded-full pl-2 pr-3 font-sans text-sm tabular-nums text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink disabled:invisible"
         >
           <ChevronLeft className="h-4 w-4" />
-          {prev?.number}
+          {numbered ? prev?.number : "Previous"}
         </button>
 
-        {/*
-          Filled ink, the same treatment as the keypad's Go key — the one rule
-          is that the primary action on a surface is the filled dark pill. The
-          previous sunken pill sat at 1.12:1 against the bar behind it, with a
-          1.36:1 border; a control boundary needs 3:1 to read as one, so the
-          front door of the app was optically a caption with a halo.
-        */}
+        {/* The primary action on a surface is the filled dark pill. */}
         <button
-          onClick={onOpenSearch}
-          className="flex items-center gap-2 justify-self-center rounded-full bg-paper-ink px-5 py-2 font-sans text-sm font-medium text-paper shadow-sm transition-all hover:opacity-90 active:scale-95"
+          type="button"
+          onClick={onFind}
+          className="flex min-h-11 items-center gap-2 justify-self-center rounded-full bg-paper-ink px-5 font-sans text-sm font-medium text-paper shadow-sm transition-all hover:opacity-90 active:scale-95"
         >
           <Search className="h-4 w-4 text-paper/70" />
           Find a hymn
-          {isDesktop && (
+          {shortcut && (
             <kbd className="ml-1 rounded border border-paper/25 px-1.5 py-0.5 font-sans text-[0.65rem] text-paper/70">
-              ⌘K
+              {shortcut}
             </kbd>
           )}
         </button>
 
         <button
+          type="button"
           onClick={onNext}
           disabled={!next}
-          aria-label={next ? `Next hymn, ${next.number}` : "No next hymn"}
-          className="flex items-center gap-1 justify-self-end rounded-full py-2 pl-3 pr-2 font-sans text-sm tabular-nums text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink disabled:invisible"
+          aria-label={next ? `Next ${noun}, ${describe(next)}` : `No next ${noun}`}
+          className="flex min-h-11 items-center gap-1 justify-self-end rounded-full pl-3 pr-2 font-sans text-sm tabular-nums text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink disabled:invisible"
         >
-          {next?.number}
+          {numbered ? next?.number : "Next"}
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>

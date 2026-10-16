@@ -1,102 +1,125 @@
 "use client";
 
 import { useState } from "react";
-import { X, BookOpen, Users, Star, Music, Settings, ChevronRight, ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import {
-  type Hymnal,
-  authorIndex,
-  expandableHymnal,
-  getHymn,
-  hymnTitle,
-  isNumbered,
-  listHymnals,
-} from "@/lib/hymnals";
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  Lightbulb,
+  Music,
+  Settings,
+  Smartphone,
+  Star,
+  Users,
+  X,
+} from "lucide-react";
+import { type Hymnal, authorIndex, expandableHymnal, getHymn, listHymnals } from "@/lib/hymnals";
+import { bookBlurb, bookName, countLabel } from "@/lib/books";
 import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
 import SyncPanel from "./SyncPanel";
 import SuggestSong from "./SuggestSong";
+import { InstallRow } from "./InstallPrompt";
+import HymnRow from "./ui/HymnRow";
+import Segmented from "./ui/Segmented";
 
-export type Panel = "contents" | "authors" | "favorites" | "tunes" | "settings";
+export type Panel = "contents" | "authors" | "favorites" | "settings" | "sync" | "suggest" | "tunes";
 
-const PANELS: { id: Panel; label: string; icon: typeof BookOpen }[] = [
-  { id: "contents", label: "Contents", icon: BookOpen },
-  { id: "authors", label: "Authors", icon: Users },
-  { id: "favorites", label: "Favorites", icon: Star },
-  { id: "tunes", label: "Tunes", icon: Music },
-  { id: "settings", label: "Settings", icon: Settings },
-];
+/** Where Back goes from each panel. Settings' own pages return to Settings. */
+const PARENT: Record<Panel, Panel | null> = {
+  contents: null,
+  authors: null,
+  favorites: null,
+  settings: null,
+  sync: "settings",
+  suggest: "settings",
+  tunes: "settings",
+};
+
+const TITLE: Record<Panel, string> = {
+  contents: "Contents",
+  authors: "Authors",
+  favorites: "Favorites",
+  settings: "Settings",
+  sync: "Move to another device",
+  suggest: "Suggest a song",
+  tunes: "Your tunes",
+};
+
+interface BrowsePanelsProps {
+  hymnal: Hymnal;
+  /** The hymn on screen, so Contents and Authors can open at it. */
+  current: number;
+  /** Open on Contents at these sections (from the label above a title). */
+  openPath?: string[];
+  onSelect: (number: number, hymnalId: string) => void;
+  onChooseBook: () => void;
+  /** Omitted for the permanent desktop sidebar — there is nothing to close. */
+  onClose?: () => void;
+}
 
 /**
- * Everything you can browse — contents, authors, favorites, tunes, settings —
- * as one component, so the phone's drawer and the desktop sidebar are the same
- * thing in two frames rather than two implementations to keep in step.
+ * The menu: one component in two frames, the phone's drawer and the desktop
+ * sidebar.
  *
- * Two levels: a root menu of full-width rows, and one panel at a time with a
- * back button. Each row is a comfortable target on a phone and reads as a
- * normal sidebar on a desktop.
+ * Regrouped around what an ordinary congregant does. The book you're in is at
+ * the top with a sentence saying what it is, and the way to change it. Text
+ * size sits right on the first screen, because it is the setting this
+ * audience reaches for most and it used to be four taps away. Tunes (a song
+ * leader's notebook) and moving to another device (a once-a-phone job) moved
+ * under Settings, out of the way of finding a hymn.
  */
 export default function BrowsePanels({
   hymnal,
-  currentMeter,
+  current,
   openPath,
-  initialPanel,
   onSelect,
+  onChooseBook,
   onClose,
-}: {
-  hymnal: Hymnal;
-  currentMeter: string;
-  openPath?: string[];
-  initialPanel?: Panel;
-  onSelect: (n: number, hymnalId?: string) => void;
-  /** Omitted when this is a permanent sidebar — there is nothing to close. */
-  onClose?: () => void;
-}) {
-  const [panel, setPanel] = useState<Panel | null>(initialPanel ?? null);
+}: BrowsePanelsProps) {
+  const [panel, setPanel] = useState<Panel | null>(openPath ? "contents" : null);
   const favorites = useHymnalStore((s) => s.favorites);
-  const tunes = useHymnalStore((s) => s.tunes);
+  const textSize = useHymnalStore((s) => s.textSize);
+  const setTextSize = useHymnalStore((s) => s.setTextSize);
 
-  const counts: Record<Panel, number | null> = {
-    contents: hymnal.hymns.length,
-    authors: authorIndex(hymnal).length,
-    favorites: countAll(favorites),
-    tunes: tunes.length,
-    settings: null,
-  };
+  const starred = countAll(favorites);
+  const authorCount = authorIndex(hymnal).length;
 
-  const active = panel ? PANELS.find((p) => p.id === panel)! : null;
+  const subtitle = panel === "contents" || panel === "authors" ? bookName(hymnal) : null;
 
   return (
     <>
-      <header className="flex shrink-0 items-center gap-1 border-b border-paper-rule px-2 py-3">
-        {active ? (
+      <header className="flex shrink-0 items-center gap-1 border-b border-paper-rule px-2 py-2">
+        {panel ? (
           <>
             <button
-              onClick={() => setPanel(null)}
-              aria-label="Back to menu"
-              className="rounded-full p-2 text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
+              type="button"
+              onClick={() => setPanel(PARENT[panel])}
+              aria-label={PARENT[panel] ? `Back to ${TITLE[PARENT[panel]!]}` : "Back to menu"}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-ink"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <h2 className="flex-1 font-serif text-xl text-paper-ink">{active.label}</h2>
+            <h2 className="min-w-0 flex-1 truncate font-serif text-[1.3rem] text-paper-ink">
+              {TITLE[panel]}
+              {subtitle && (
+                <span className="ml-2 font-sans text-[0.8rem] font-semibold text-paper-faint">{subtitle}</span>
+              )}
+            </h2>
           </>
         ) : (
-          /*
-            One line. The full title and subtitle wrapped to four lines on a
-            phone — a quarter of the screen spent naming the book you are
-            already reading, pushing two menu rows toward the fold.
-          */
-          <h2 className="flex-1 truncate px-2 font-serif text-lg text-paper-ink">
-            {hymnal.shortName}
-          </h2>
+          <h2 className="min-w-0 flex-1 px-2 font-serif text-[1.3rem] text-paper-ink">Menu</h2>
         )}
 
         {onClose && (
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="rounded-full p-2 text-paper-muted transition-colors hover:bg-paper-sunken"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-paper-muted transition-colors hover:bg-paper-sunken"
           >
             <X className="h-5 w-5" />
           </button>
@@ -104,43 +127,69 @@ export default function BrowsePanels({
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        {!active && (
-          <nav className="flex-1 overflow-y-auto overscroll-contain p-2">
+        {!panel && (
+          <nav className="flex-1 space-y-5 overflow-y-auto overscroll-contain p-3">
+            {/* The book you're in, what it is, and how to change it. */}
+            <button
+              type="button"
+              onClick={onChooseBook}
+              className="w-full rounded-2xl border border-paper-rule p-4 text-left transition-colors hover:bg-paper-sunken"
+            >
+              <span className="text-label block">Reading</span>
+              <span className="mt-1 flex items-baseline justify-between gap-2">
+                <span className="font-serif text-[1.3rem] leading-tight text-paper-ink">
+                  {bookName(hymnal)}
+                </span>
+                <span className="shrink-0 font-sans text-[0.85rem] font-semibold text-paper-accent">
+                  Change
+                </span>
+              </span>
+              <span className="mt-1 block font-sans text-[0.85rem] leading-snug text-paper-muted">
+                {bookBlurb(hymnal)}
+              </span>
+            </button>
+
             <ul className="space-y-1">
-              {PANELS.map(({ id, label, icon: Icon }) => (
-                <li key={id}>
-                  <button
-                    onClick={() => setPanel(id)}
-                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-3.5 text-left transition-colors hover:bg-paper-sunken"
-                  >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-paper-sunken text-paper-muted">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span className="min-w-0 flex-1 font-serif text-[1.05rem] text-paper-ink">
-                      {label}
-                    </span>
-                    {counts[id] !== null && (
-                      <span className="shrink-0 font-sans text-[0.7rem] tabular-nums text-paper-faint">
-                        {counts[id]}
-                      </span>
-                    )}
-                    <ChevronRight className="h-4 w-4 shrink-0 text-paper-faint" />
-                  </button>
-                </li>
-              ))}
+              <MenuRow icon={BookOpen} label="Contents" detail={countLabel(hymnal.hymns.length, hymnal)} onClick={() => setPanel("contents")} />
+              <MenuRow icon={Users} label="Authors" detail={`${authorCount} ${authorCount === 1 ? "author" : "authors"}`} onClick={() => setPanel("authors")} />
+              <MenuRow icon={Star} label="Favorites" detail={starred ? `${starred} saved` : "None yet"} onClick={() => setPanel("favorites")} />
+            </ul>
+
+            <section className="space-y-2 px-1">
+              <p className="text-label">Text size</p>
+              <Segmented<TextSize>
+                label="Text size"
+                value={textSize}
+                onChange={setTextSize}
+                options={[
+                  { id: "s", label: "A", ariaLabel: "Small", style: { fontSize: "0.8rem" } },
+                  { id: "m", label: "A", ariaLabel: "Medium", style: { fontSize: "0.98rem" } },
+                  { id: "l", label: "A", ariaLabel: "Large", style: { fontSize: "1.18rem" } },
+                  { id: "xl", label: "A", ariaLabel: "Extra large", style: { fontSize: "1.4rem" } },
+                ]}
+              />
+            </section>
+
+            <ul>
+              <MenuRow icon={Settings} label="Settings" onClick={() => setPanel("settings")} />
             </ul>
           </nav>
         )}
 
         {panel === "contents" && (
           <div className="flex-1 overflow-y-auto overscroll-contain px-1 py-2">
-            <TableOfContents hymnal={hymnal} openPath={openPath} onSelect={onSelect} />
+            <TableOfContents
+              hymnal={hymnal}
+              current={current}
+              openPath={openPath}
+              onSelect={(n) => onSelect(n, hymnal.id)}
+            />
           </div>
         )}
 
         {panel === "authors" && (
           <div className="flex-1 overflow-y-auto overscroll-contain px-1 py-2">
-            <AuthorIndex hymnal={hymnal} onSelect={onSelect} />
+            <AuthorIndex hymnal={hymnal} current={current} onSelect={(n) => onSelect(n, hymnal.id)} />
           </div>
         )}
 
@@ -150,45 +199,92 @@ export default function BrowsePanels({
           </div>
         )}
 
-        {panel === "tunes" && <TuneList addTo={currentMeter || undefined} />}
-
         {panel === "settings" && (
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <SettingsPanel />
+            <SettingsPanel onOpen={setPanel} />
           </div>
         )}
+
+        {panel === "sync" && (
+          <div className="flex-1 overflow-y-auto overscroll-contain">
+            <SyncPanel />
+          </div>
+        )}
+
+        {panel === "suggest" && (
+          <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-5">
+            <p className="font-sans text-[0.9rem] leading-relaxed text-paper-muted">
+              Know a song that isn&rsquo;t here? Suggestions go to the app maintainer. New songs may
+              be added to {bookName(expandableHymnal() ?? hymnal)}. The hymnbook is displayed as
+              published.
+            </p>
+            <SuggestSong query="" hymnalId={(expandableHymnal() ?? hymnal).id} compact startOpen />
+          </div>
+        )}
+
+        {panel === "tunes" && <TuneList />}
       </div>
     </>
   );
 }
 
+function MenuRow({
+  icon: Icon,
+  label,
+  detail,
+  onClick,
+}: {
+  icon: typeof BookOpen;
+  label: string;
+  detail?: string;
+  onClick: () => void;
+}) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex min-h-14 w-full items-center gap-3 rounded-2xl px-3 text-left transition-colors hover:bg-paper-sunken"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-paper-sunken text-paper-muted">
+          <Icon className="h-[1.1rem] w-[1.1rem]" />
+        </span>
+        <span className="min-w-0 flex-1 font-serif text-[1.12rem] text-paper-ink">{label}</span>
+        {detail && <span className="shrink-0 font-sans text-[0.82rem] text-paper-faint">{detail}</span>}
+        <ChevronRight className="h-4 w-4 shrink-0 text-paper-faint" />
+      </button>
+    </li>
+  );
+}
+
 /**
- * Every starred song, grouped by the book it belongs to.
+ * Every starred song, grouped by book, current book first.
  *
- * Showing only the current book's would hide half the list behind a tab, and
- * a star is a personal shortlist rather than a property of whichever book you
- * happen to have open. The book heading only appears when there is more than
- * one group, so the common case stays a plain list.
+ * Each row has its own star. Removing one used to mean opening the hymn
+ * (which closed the menu), finding the star at the top, and coming back. A
+ * row you unstar stays on screen until the panel closes, so a slip of the
+ * thumb is one tap to undo.
  */
 function Favorites({
   current,
   onSelect,
 }: {
   current: Hymnal;
-  onSelect: (n: number, hymnalId?: string) => void;
+  onSelect: (n: number, hymnalId: string) => void;
 }) {
   const favorites = useHymnalStore((s) => s.favorites);
+  const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
+  const [shown] = useState(() => favorites);
 
-  // Current book first — that is the one you are most likely reaching for.
   const groups = listHymnals()
-    .map((book) => ({ book, numbers: forBook(favorites, book.id) }))
+    .map((book) => ({ book, numbers: forBook(shown, book.id) }))
     .filter((g) => g.numbers.length > 0)
     .sort((a, b) => Number(b.book.id === current.id) - Number(a.book.id === current.id));
 
   if (groups.length === 0) {
     return (
-      <p className="px-4 py-10 text-center font-serif italic text-paper-faint">
-        Star a hymn to keep it here.
+      <p className="px-6 py-10 text-center font-serif italic leading-relaxed text-paper-faint">
+        Tap the star at the top of any hymn to keep it here.
       </p>
     );
   }
@@ -197,145 +293,91 @@ function Favorites({
     <>
       {groups.map(({ book, numbers }) => (
         <section key={book.id} className="mb-4 last:mb-0">
-          {groups.length > 1 && <p className="text-label mb-1 px-3">{book.shortName}</p>}
-          <HymnList hymnal={book} numbers={numbers} empty="" onSelect={onSelect} />
+          {/* Named whenever it isn't obviously your own book, so a list of the
+              other book's songs never passes for this one's. */}
+          {(groups.length > 1 || book.id !== current.id) && (
+            <p className="text-label mb-1 px-3">{bookName(book)}</p>
+          )}
+          <ul>
+            {numbers.map((n) => {
+              const hymn = getHymn(book, n);
+              if (!hymn) return null;
+              const on = forBook(favorites, book.id).includes(n);
+              return (
+                <HymnRow
+                  key={n}
+                  book={book}
+                  hymn={hymn}
+                  onSelect={() => onSelect(n, book.id)}
+                  trailing={
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(book.id, n)}
+                      aria-pressed={on}
+                      aria-label="Favorite"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors hover:bg-paper-sunken"
+                    >
+                      <Star
+                        className={`h-5 w-5 ${on ? "fill-paper-accent text-paper-accent" : "text-paper-faint"}`}
+                      />
+                    </button>
+                  }
+                />
+              );
+            })}
+          </ul>
         </section>
       ))}
     </>
   );
 }
 
-function HymnList({
-  hymnal,
-  numbers,
-  empty,
-  onSelect,
-}: {
-  hymnal: Hymnal;
-  numbers: number[];
-  empty: string;
-  onSelect: (n: number, hymnalId?: string) => void;
-}) {
-  if (numbers.length === 0) {
-    return <p className="px-4 py-10 text-center font-serif italic text-paper-faint">{empty}</p>;
-  }
-  return (
-    <ul>
-      {numbers.map((n) => {
-        const hymn = getHymn(hymnal, n);
-        if (!hymn) return null;
-        return (
-          <li key={n}>
-            <button
-              onClick={() => onSelect(n, hymnal.id)}
-              className="flex w-full items-baseline gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-paper-sunken"
-            >
-              {isNumbered(hymnal) && (
-                <span className="w-9 shrink-0 font-sans text-[0.7rem] tabular-nums text-paper-faint">
-                  {n}
-                </span>
-              )}
-              <span className="flex-1 font-serif text-[0.95rem] leading-snug text-paper-ink">
-                {hymnTitle(hymn)}
-              </span>
-              <ChevronRight className="h-4 w-4 shrink-0 text-paper-faint" />
-            </button>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-function SettingsPanel() {
-  const { theme, setTheme, textSize, setTextSize } = useHymnalStore();
+function SettingsPanel({ onOpen }: { onOpen: (panel: Panel) => void }) {
+  const theme = useHymnalStore((s) => s.theme);
+  const setTheme = useHymnalStore((s) => s.setTheme);
+  const tunes = useHymnalStore((s) => s.tunes);
   const suggestTo = expandableHymnal();
 
-  const themes: { id: Theme; label: string }[] = [
-    { id: "system", label: "System" },
-    { id: "light", label: "Light" },
-    { id: "dark", label: "Night" },
-  ];
-  const sizes: { id: TextSize; label: string }[] = [
-    { id: "s", label: "S" },
-    { id: "m", label: "M" },
-    { id: "l", label: "L" },
-    { id: "xl", label: "XL" },
-  ];
-
   return (
-    <div className="space-y-6 px-4 py-4">
-      <section>
-        <p className="text-label mb-2">Appearance</p>
-        <div className="flex gap-1 rounded-xl bg-paper-sunken p-1">
-          {themes.map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => setTheme(id)}
-              aria-pressed={theme === id}
-              className={`flex-1 rounded-lg py-2.5 font-sans text-xs font-semibold transition-colors ${
-                theme === id ? "bg-paper text-paper-ink shadow-sm" : "text-paper-muted"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+    <div className="space-y-6 px-3 py-4">
+      <section className="space-y-2 px-1">
+        <p className="text-label">Appearance</p>
+        <Segmented<Theme>
+          label="Appearance"
+          value={theme}
+          onChange={setTheme}
+          options={[
+            { id: "system", label: "Automatic" },
+            { id: "light", label: "Light" },
+            { id: "dark", label: "Night" },
+          ]}
+        />
       </section>
 
-      <section>
-        <p className="text-label mb-2">Text size</p>
-        <div className="flex gap-1 rounded-xl bg-paper-sunken p-1">
-          {sizes.map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => setTextSize(id)}
-              aria-pressed={textSize === id}
-              className={`flex-1 rounded-lg py-2.5 font-serif transition-colors ${
-                textSize === id ? "bg-paper text-paper-ink shadow-sm" : "text-paper-muted"
-              }`}
-              style={{ fontSize: `${{ s: 0.85, m: 1, l: 1.15, xl: 1.3 }[id]}rem` }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </section>
+      <ul className="space-y-1">
+        <MenuRow icon={Smartphone} label="Move to another device" onClick={() => onOpen("sync")} />
+        {suggestTo && <MenuRow icon={Lightbulb} label="Suggest a song" onClick={() => onOpen("suggest")} />}
+        <MenuRow
+          icon={Music}
+          label="Your tunes"
+          detail={tunes.length ? `${tunes.length} saved` : undefined}
+          onClick={() => onOpen("tunes")}
+        />
+      </ul>
 
-      {/*
-        The other way in. Asking from a failed search is the better moment —
-        you know exactly what is missing — but that only happens if you happen
-        to search for it first, and someone who simply wants to put a song
-        forward had nowhere to go.
-      */}
-      {suggestTo && (
-        <section className="border-t border-paper-rule pt-5">
-          <p className="text-label mb-2">Missing a song?</p>
-          <SuggestSong query="" hymnalId={suggestTo.id} label="Suggest a song" compact />
-          <p className="mt-2 font-sans text-[0.7rem] leading-relaxed text-paper-faint">
-            Suggestions go to the app maintainer. New songs may be added to {suggestTo.shortName}.
-            The hymnbook is displayed as published.
-          </p>
-        </section>
-      )}
+      <InstallRow />
 
-      <section className="border-t border-paper-rule pt-5">
-        <SyncPanel />
-      </section>
-
-      <section className="border-t border-paper-rule pt-4">
-        <p className="font-sans text-[0.7rem] leading-relaxed text-paper-faint">
+      <section className="space-y-2 border-t border-paper-rule px-1 pt-4">
+        <p className="font-sans text-[0.85rem] leading-relaxed text-paper-muted">
           The screen is kept awake while a hymn is open. Hymns from the 32nd edition of the Old
           German Baptist Brethren Church hymnbook.
         </p>
-        {/* The policy existed but nothing linked to it, which makes it a file
-            rather than a disclosure. */}
-        <a
+        <Link
           href="/privacy"
-          className="mt-3 inline-block font-sans text-[0.7rem] text-paper-muted underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-ink"
+          className="inline-flex min-h-11 items-center font-sans text-[0.9rem] font-semibold text-paper-ink underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
         >
           Privacy
-        </a>
+        </Link>
       </section>
     </div>
   );

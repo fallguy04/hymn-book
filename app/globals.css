@@ -171,13 +171,32 @@ select {
 /* Hymns open with a word or two in capitals ("THROUGH endless years"). Real
    small caps read as typography; full caps read as shouting. */
 @utility opening-caps {
-  font-variant-caps: small-caps;
-  letter-spacing: 0.02em;
+  /* all-small-caps, not small-caps: the opening word is already in capitals
+     in the data ("THROUGH"), and small-caps only shrinks lower-case letters,
+     so it changed nothing and the word kept shouting. */
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.04em;
+}
+
+/* The swipe that turns pages is a drag gesture, and the drag library sets
+   touch-action: pan-y and user-select: none on the hymn text. That quietly
+   took away pinch-to-zoom and copying a line, on the one surface where older
+   readers most need to zoom. A stylesheet !important outranks the inline
+   style it writes. Touch screens only: with a mouse, selecting text would
+   fight the drag. */
+@media (pointer: coarse) {
+  .hymn-swipe {
+    touch-action: pan-y pinch-zoom !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -webkit-touch-callout: default !important;
+  }
 }
 
 @utility text-label {
   font-family: var(--font-sans);
-  font-size: 0.625rem;
+  /* Was 10px. The audience reads these in dim rooms; 11px is the floor. */
+  font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -307,9 +326,36 @@ select {
     opacity 0.8s ease;
 }
 
-[data-standalone] #app-shell.app-veiled {
+/* Veiled from the very first paint until the curtain starts to lift, which
+   LaunchCurtain marks with data-lifted on <html>. Keyed on the document
+   rather than on React state, so the veil is right before hydration too. */
+[data-standalone]:not([data-lifted]) #app-shell {
   transform: scale(0.985) translateY(10px);
   opacity: 0.6;
+  animation: unveil-failsafe 0.4s 8s forwards;
+}
+
+/* If the app never finishes starting — corrupt saved data, storage blocked,
+   a script that failed to load — the curtain used to stay up forever, over
+   everything, with no way out. After eight seconds it goes regardless, so
+   whatever did load (or the error page) can be reached. */
+[data-standalone] #splash {
+  animation: curtain-failsafe 0.4s 8s forwards;
+}
+
+@keyframes curtain-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@keyframes unveil-failsafe {
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 @keyframes splash-rise {
@@ -348,7 +394,14 @@ select {
   #app-shell {
     transition: opacity 0.15s ease;
   }
-  #app-shell.app-veiled {
+  [data-standalone]:not([data-lifted]) #app-shell {
     transform: none;
   }
+}
+
+/* The search box draws its own clear button, 44px like every other control;
+   WebKit's is a 12px target that sits beside it and does the same thing. */
+.search-field::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
 }
