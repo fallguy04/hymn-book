@@ -1,8 +1,9 @@
 "use client";
 
-import { X } from "lucide-react";
+import { useState } from "react";
+import { useHymnalStore } from "@/store/useHymnalStore";
 import Overlay, { SheetGrip } from "./ui/Overlay";
-import TuneList from "./TuneList";
+import { MeterTunes, UndoBar, useTuneRemoval } from "./TuneList";
 
 interface TuneSheetProps {
   meter: string;
@@ -10,31 +11,40 @@ interface TuneSheetProps {
 }
 
 /**
- * Tapping a hymn's meter should answer one question straight away — what do we
- * sing this to? — so it opens here rather than sending you into the menu to
- * find the right page. Same store as the list under Settings, so a tune added
- * in either place shows up in both.
+ * The tunes you've noted for this hymn's meter, opened from the meter under
+ * its title. Same store as Settings → Your tunes, so a tune added in either
+ * place shows up in both, and on every hymn that shares the meter.
  */
 export default function TuneSheet({ meter, onClose }: TuneSheetProps) {
+  const count = useHymnalStore((s) => s.tunes.filter((t) => t.meter === meter).length);
+  const [editing, setEditing] = useState(false);
+  const { removed, remove, undo } = useTuneRemoval();
+
   return (
-    <Overlay label={`Tunes for ${meter}`} placement="bottom" onClose={onClose} className="max-h-[70dvh]">
+    <Overlay label={`Tunes for ${meter}`} placement="bottom" onClose={onClose} className="max-h-[75dvh]">
       <SheetGrip label="Close tunes" />
-      <div className="flex shrink-0 items-start justify-between gap-2 px-4 pb-2">
-        <div>
-          <p className="text-label">Tunes for this meter</p>
-          <h2 className="font-serif text-2xl leading-tight text-paper-ink">{meter}</h2>
+
+      <div className="flex shrink-0 items-end justify-between gap-3 pb-5 pl-6 pr-3">
+        <div className="min-w-0">
+          <p className="text-label">Tunes</p>
+          <h2 className="mt-1.5 truncate font-serif text-[2.1rem] leading-none text-paper-ink">{meter}</h2>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="flex h-11 w-11 items-center justify-center rounded-full text-paper-muted transition-colors hover:bg-paper-sunken"
-        >
-          <X className="h-5 w-5" />
-        </button>
+        {(count > 0 || editing) && (
+          <button
+            type="button"
+            onClick={() => setEditing((e) => !e)}
+            className="flex min-h-11 shrink-0 items-center rounded-full px-4 font-sans text-[0.9rem] font-semibold text-paper-accent transition-colors hover:bg-paper-sunken"
+          >
+            {editing ? "Done" : "Edit"}
+          </button>
+        )}
       </div>
 
-      <TuneList meter={meter} addTo={meter} />
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-8">
+        <MeterTunes meter={meter} editing={editing && count > 0} canAdd onRemove={remove} />
+      </div>
+
+      {removed && <UndoBar tune={removed} onUndo={undo} />}
     </Overlay>
   );
 }

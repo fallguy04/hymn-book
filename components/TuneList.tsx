@@ -1,103 +1,194 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
-import { useHymnalStore } from "@/store/useHymnalStore";
-
-interface TuneListProps {
-  /** Show only this meter's tunes. Omit to show every meter, grouped. */
-  meter?: string;
-  /** Meter a newly added tune belongs to; no add field when absent. */
-  addTo?: string;
-}
+import { useRef, useState } from "react";
+import { Plus, X } from "lucide-react";
+import { type SavedTune, useHymnalStore } from "@/store/useHymnalStore";
 
 /**
- * The tune repertoire, reading and writing the one store. Both the sheet that
- * opens from a hymn's meter and the drawer's master list render this, so
- * anything added in one shows up in the other with no syncing to do.
+ * Tunes, laid out as a palette rather than a form: every tune noted for a
+ * meter at a glance, so you can look across them and think "that one would
+ * suit this". The tray under a hymn's meter shows one meter; Settings shows
+ * them all. Both are built from the pieces here.
  */
-export default function TuneList({ meter, addTo }: TuneListProps) {
-  const tunes = useHymnalStore((s) => s.tunes);
+
+/** Remove a tune, with a moment to take it back. */
+export function useTuneRemoval() {
   const addTune = useHymnalStore((s) => s.addTune);
   const removeTune = useHymnalStore((s) => s.removeTune);
-  const [draft, setDraft] = useState("");
+  const [removed, setRemoved] = useState<SavedTune | null>(null);
 
-  const submit = () => {
+  return {
+    removed,
+    remove: (tune: SavedTune) => {
+      removeTune(tune.name, tune.meter);
+      setRemoved(tune);
+    },
+    undo: () => {
+      if (removed) addTune(removed);
+      setRemoved(null);
+    },
+    dismiss: () => setRemoved(null),
+  };
+}
+
+export function UndoBar({ tune, onUndo }: { tune: SavedTune; onUndo: () => void }) {
+  return (
+    <div
+      role="status"
+      className="mx-5 mb-4 flex items-center justify-between gap-2 rounded-full bg-paper-ink py-1 pl-5 pr-1 text-paper"
+    >
+      <span className="min-w-0 truncate font-sans text-[0.85rem]">Removed {tune.name}</span>
+      <button
+        type="button"
+        onClick={onUndo}
+        className="flex min-h-10 shrink-0 items-center rounded-full px-4 font-sans text-[0.85rem] font-semibold transition-opacity hover:opacity-80"
+      >
+        Undo
+      </button>
+    </div>
+  );
+}
+
+const CHIP =
+  "inline-flex min-h-11 max-w-full items-center rounded-full border font-serif text-[1.08rem] leading-none";
+
+/**
+ * One meter's tunes as chips, and a chip at the end for adding another.
+ * In edit mode each chip removes itself.
+ */
+export function MeterTunes({
+  meter,
+  editing,
+  canAdd = false,
+  onRemove,
+}: {
+  meter: string;
+  editing: boolean;
+  canAdd?: boolean;
+  onRemove: (tune: SavedTune) => void;
+}) {
+  const tunes = useHymnalStore((s) => s.tunes);
+  const addTune = useHymnalStore((s) => s.addTune);
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState("");
+  const field = useRef<HTMLInputElement>(null);
+
+  const mine = tunes.filter((t) => t.meter === meter).sort((a, b) => a.name.localeCompare(b.name));
+
+  const commit = () => {
     const name = draft.trim();
-    if (!name || !addTo) return;
-    addTune({ name, meter: addTo });
+    if (name && !mine.some((t) => t.name.toLowerCase() === name.toLowerCase())) {
+      addTune({ name, meter });
+    }
     setDraft("");
   };
 
-  const shown = meter ? tunes.filter((t) => t.meter === meter) : tunes;
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {mine.map((tune) => (
+        <li key={tune.name} className="max-w-full">
+          {editing ? (
+            <button
+              type="button"
+              onClick={() => onRemove(tune)}
+              aria-label={`Remove ${tune.name}`}
+              className={`${CHIP} gap-2 border-paper-faint/50 bg-paper py-2 pl-4 pr-3 text-paper-ink transition-colors hover:border-paper-ink`}
+            >
+              <span className="truncate">{tune.name}</span>
+              <X className="h-4 w-4 shrink-0 text-paper-faint" />
+            </button>
+          ) : (
+            <span className={`${CHIP} border-paper-rule bg-paper-raised px-4 py-2 text-paper-ink shadow-[0_1px_0_var(--rule)]`}>
+              <span className="truncate">{tune.name}</span>
+            </span>
+          )}
+        </li>
+      ))}
 
-  const groups = new Map<string, typeof tunes>();
-  for (const tune of shown) {
-    if (!groups.has(tune.meter)) groups.set(tune.meter, []);
-    groups.get(tune.meter)!.push(tune);
+      {canAdd && !editing && (
+        <li className="max-w-full">
+          {adding ? (
+            <input
+              ref={field}
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                // Enter keeps the field open, so a few tunes go in at once.
+                if (e.key === "Enter") commit();
+                if (e.key === "Escape") {
+                  e.stopPropagation();
+                  setDraft("");
+                  setAdding(false);
+                }
+              }}
+              onBlur={() => {
+                commit();
+                setAdding(false);
+              }}
+              placeholder="Tune name"
+              aria-label={`Add a ${meter} tune`}
+              enterKeyHint="done"
+              autoCapitalize="words"
+              autoComplete="off"
+              autoCorrect="off"
+              className={`${CHIP} w-44 border-paper-ink bg-paper px-4 py-2 text-paper-ink outline-none placeholder:text-paper-faint`}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAdding(true)}
+              className={`${CHIP} gap-1.5 border-dashed border-paper-faint/60 px-4 py-2 font-sans text-[0.9rem] font-semibold text-paper-muted transition-colors hover:border-paper-ink hover:text-paper-ink`}
+            >
+              <Plus className="h-4 w-4" />
+              {mine.length ? "Add" : "Add a tune"}
+            </button>
+          )}
+        </li>
+      )}
+    </ul>
+  );
+}
+
+/** Settings → Your tunes: every meter you've noted tunes for. */
+export default function TuneList() {
+  const tunes = useHymnalStore((s) => s.tunes);
+  const [editing, setEditing] = useState(false);
+  const { removed, remove, undo } = useTuneRemoval();
+
+  const meters = [...new Set(tunes.map((t) => t.meter))].sort((a, b) => a.localeCompare(b));
+
+  if (meters.length === 0 && !removed) {
+    return (
+      <p className="px-6 py-10 text-center font-serif italic leading-relaxed text-paper-faint">
+        Under each hymn&rsquo;s title is its meter, like C.M. Tap it to start a list of tunes that
+        fit, and they collect here.
+      </p>
+    );
   }
-  const ordered = [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-        {ordered.length === 0 ? (
-          <p className="px-4 py-10 text-center font-serif italic leading-relaxed text-paper-faint">
-            {meter
-              ? `No tunes noted for ${meter} yet. Add the ones your congregation sings it to.`
-              : "Under each hymn's title is its meter, like C.M. Tap it to note which tunes fit, and they collect here."}
-          </p>
-        ) : (
-          ordered.map(([groupMeter, list]) => (
-            <section key={groupMeter} className="mb-2">
-              {/* The heading is redundant when the list is already one meter. */}
-              {!meter && <p className="text-label px-4 pb-1 pt-3">{groupMeter}</p>}
-              <ul className="space-y-1 px-2">
-                {list.map((tune) => (
-                  <li
-                    key={`${tune.meter}:${tune.name}`}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-paper-sunken py-1 pl-4 pr-1"
-                  >
-                    <span className="min-w-0 truncate font-serif text-[1.05rem] text-paper-ink">
-                      {tune.name}
-                    </span>
-                    <button
-                      onClick={() => removeTune(tune.name, tune.meter)}
-                      aria-label={`Remove ${tune.name}`}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-paper-faint transition-colors hover:bg-paper-rule hover:text-paper-ink"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))
-        )}
-      </div>
-
-      {addTo && (
-        <div className="shrink-0 border-t border-paper-rule px-3 py-3">
-          <div className="flex gap-2">
-            <input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && submit()}
-              placeholder={`Add a ${addTo} tune`}
-              aria-label={`Add a ${addTo} tune`}
-              className="min-h-12 min-w-0 flex-1 rounded-xl border border-paper-rule bg-paper px-3 font-serif text-paper-ink outline-none placeholder:text-paper-faint"
-            />
+        <div className="flex justify-end px-3 pt-2">
+          {meters.length > 0 && (
             <button
-              onClick={submit}
-              disabled={!draft.trim()}
-              aria-label="Add tune"
-              className="flex min-h-12 shrink-0 items-center rounded-xl bg-paper-ink px-4 text-paper transition-transform active:scale-95 disabled:opacity-30"
+              type="button"
+              onClick={() => setEditing((e) => !e)}
+              className="flex min-h-11 items-center rounded-full px-4 font-sans text-[0.9rem] font-semibold text-paper-accent transition-colors hover:bg-paper-sunken"
             >
-              <Plus className="h-5 w-5" />
+              {editing ? "Done" : "Edit"}
             </button>
-          </div>
+          )}
         </div>
-      )}
+        {meters.map((meter) => (
+          <section key={meter} className="px-5 pb-6">
+            <h3 className="mb-3 font-serif text-[1.35rem] leading-none text-paper-ink">{meter}</h3>
+            <MeterTunes meter={meter} editing={editing} onRemove={remove} />
+          </section>
+        ))}
+      </div>
+      {removed && <UndoBar tune={removed} onUndo={undo} />}
     </div>
   );
 }
