@@ -10,7 +10,7 @@ import data from "@/data/pending-songs.json";
  * than a search that comes back empty and implies the song doesn't exist.
  *
  * These deliberately are NOT part of any hymnal. Folding fifty-odd wordless
- * entries into Other Songs would put them in the page-through and the contents
+ * entries into More Songs would put them in the page-through and the contents
  * list, so swiping through the book mid-service would keep landing on pages
  * with nothing to sing. They surface in search, where someone is asking a
  * question, and nowhere else.

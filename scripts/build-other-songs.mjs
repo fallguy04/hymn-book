@@ -137,9 +137,12 @@ for (const song of kept) {
 
 const hymnal = {
   id: "other-songs",
-  title: "Other Songs",
-  subtitle: "Songs the congregation sings, outside the collection",
-  shortName: "Other Songs",
+  // Named for what it is to the person holding it: more to sing. "Other
+  // Songs" read as leftovers, and "OTHER" on a tab explained nothing. The id
+  // stays "other-songs" — stars, places and sync codes are keyed on it.
+  title: "More Songs",
+  subtitle: "Songs we sing that aren't in the printed hymnal",
+  shortName: "More Songs",
   // The numbers here are alphabetical positions, not names anybody calls a song
   // by, so they order the book without being printed over it. See `isNumbered`.
   numbered: false,
@@ -148,7 +151,7 @@ const hymnal = {
   expandable: true,
   sections: [
     {
-      title: "OTHER SONGS",
+      title: "MORE SONGS",
       hymns: kept.map((entry) => ledger.ids[entry.slug]),
       subsections: [],
     },

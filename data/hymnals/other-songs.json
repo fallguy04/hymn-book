@@ -1,13 +1,13 @@
 {
   "id": "other-songs",
-  "title": "Other Songs",
-  "subtitle": "Songs the congregation sings, outside the collection",
-  "shortName": "Other Songs",
+  "title": "More Songs",
+  "subtitle": "Songs we sing that aren't in the printed hymnal",
+  "shortName": "More Songs",
   "numbered": false,
   "expandable": true,
   "sections": [
     {
-      "title": "OTHER SONGS",
+      "title": "MORE SONGS",
       "hymns": [
         1,
         20,
@@ -90,7 +90,7 @@
       "number": 20,
       "title": "A Mighty Fortress Is Our God",
       "meter": "8.7.8.7.5.5.5.6.7",
-      "author": "Martin Luther, 1529. Translation composite circa 1868 Pennsylvania Lutheran Church Book",
+      "author": "Martin Luther",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -143,7 +143,7 @@
       "number": 21,
       "title": "Abide with Me",
       "meter": "10s.",
-      "author": "Henry F. Lyte, 1847",
+      "author": "Henry F. Lyte",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -284,7 +284,7 @@
       "number": 22,
       "title": "Beautiful Savior",
       "meter": "5.5.8.5.5.8",
-      "author": "German Jesuits, published 1677. Translated by Joseph A. Seiss, 1873",
+      "author": "German Jesuits",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -325,7 +325,7 @@
       "number": 23,
       "title": "Beneath the Cross of Jesus",
       "meter": "7.6.8.6.8.6.8.6",
-      "author": "Elizabeth C. Clephane, 1868",
+      "author": "Elizabeth C. Clephane",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -384,7 +384,7 @@
       "number": 24,
       "title": "Blessed Assurance",
       "meter": "9.10.9.9 with refrain",
-      "author": "Fanny Crosby, 1873",
+      "author": "Fanny Crosby",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -420,7 +420,7 @@
       "number": 25,
       "title": "Blest Be the Tie That Binds",
       "meter": "S.M.",
-      "author": "John Fawcett, 1782",
+      "author": "John Fawcett",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -621,7 +621,7 @@
       "number": 26,
       "title": "For the Beauty of the Earth",
       "meter": "7s. with refrain",
-      "author": "Folliot S. Pierpoint, 1864",
+      "author": "Folliot S. Pierpoint",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -691,7 +691,7 @@
       "number": 27,
       "title": "Holy, Holy, Holy",
       "meter": "11.12.12.10",
-      "author": "Reginald Heber, 1826",
+      "author": "Reginald Heber",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -757,7 +757,7 @@
       "number": 28,
       "title": "I Need Thee Every Hour",
       "meter": "6.4.6.4 with refrain",
-      "author": "Annie Sherwood Hawks, 1872",
+      "author": "Annie Sherwood Hawks",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -886,7 +886,7 @@
       "number": 29,
       "title": "Immortal, Invisible",
       "meter": "11s.",
-      "author": "Walter Chalmers Smith, 1876",
+      "author": "Walter Chalmers Smith",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -925,7 +925,7 @@
       "number": 30,
       "title": "It Is Well with My Soul",
       "meter": "11.8.11.9 with refrain",
-      "author": "Horatio G. Spafford, 1873",
+      "author": "Horatio G. Spafford",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -971,7 +971,7 @@
       "number": 31,
       "title": "Jesus Loves Me",
       "meter": "7s. with refrain",
-      "author": "Anna B. Warner, 1860",
+      "author": "Anna B. Warner",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1126,7 +1126,7 @@
       "number": 32,
       "title": "More Love to Thee",
       "meter": "6.4.6.4.6.6.4.4",
-      "author": "Elizabeth Payson Prentis, 1856",
+      "author": "Elizabeth Payson Prentis",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1165,7 +1165,7 @@
       "number": 33,
       "title": "My Faith Looks Up to Thee",
       "meter": "6.6.4.6.6.6.4",
-      "author": "Ray Palmer, 1830",
+      "author": "Ray Palmer",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1210,7 +1210,7 @@
       "number": 34,
       "title": "Now Thank We All Our God",
       "meter": "6.7.6.7.6.6.6.6",
-      "author": "Martin Rinkart, c.1636. Translated Catherine Winkworth, 1856",
+      "author": "Martin Rinkart",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1249,7 +1249,7 @@
       "number": 35,
       "title": "O Sacred Head, Now Wounded",
       "meter": "7s. 6s. D.",
-      "author": "Bernard of Clairvaux, 1153. Translated by James W. Alexander, 1830",
+      "author": "Bernard of Clairvaux",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1346,7 +1346,7 @@
       "number": 36,
       "title": "Praise to the Lord, the Almighty",
       "meter": "14.14.4.7.8",
-      "author": "Joachim Neander, 1680. Translated by Catherine Winkworth, 1863",
+      "author": "Joachim Neander",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1390,7 +1390,7 @@
       "number": 37,
       "title": "Rock of Ages",
       "meter": "7s.",
-      "author": "Augustus Montague Toplady, 1776",
+      "author": "Augustus Montague Toplady",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1473,7 +1473,7 @@
       "number": 38,
       "title": "Take My Life and Let It Be",
       "meter": "7s.",
-      "author": "Frances R. Havergal, 1874",
+      "author": "Frances R. Havergal",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1512,7 +1512,7 @@
       "number": 39,
       "title": "The Church's One Foundation",
       "meter": "7s. 6s. D.",
-      "author": "Samuel John Stone, 1866",
+      "author": "Samuel John Stone",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1607,7 +1607,7 @@
       "number": 40,
       "title": "The Old Rugged Cross",
       "meter": "12.9.12.8 with refrain",
-      "author": "George Bennard, 1913",
+      "author": "George Bennard",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1649,7 +1649,7 @@
       "number": 41,
       "title": "To God Be the Glory",
       "meter": "11s. with refrain",
-      "author": "Fanny Crosby, 1875",
+      "author": "Fanny Crosby",
       "authorSource": "songs/",
       "stanzas": [
         [
@@ -1723,7 +1723,7 @@
       "number": 42,
       "title": "When I Survey the Wondrous Cross",
       "meter": "L.M.",
-      "author": "Isaac Watts, 1707",
+      "author": "Isaac Watts",
       "authorSource": "songs/",
       "stanzas": [
         [
