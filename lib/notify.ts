@@ -83,9 +83,14 @@ export async function emailSuggestion(suggestion: Suggestion): Promise<boolean> 
         subject: `Hymn suggestion: ${title}`,
         html,
       }),
+      // The person is waiting on this request. A mail service that hangs must
+      // not keep them watching a spinner over a suggestion already saved.
+      signal: AbortSignal.timeout(4000),
     });
+    if (!response.ok) console.error("[notify] Resend answered", response.status);
     return response.ok;
-  } catch {
+  } catch (error) {
+    console.error("[notify] send failed:", (error as Error).name);
     return false;
   }
 }

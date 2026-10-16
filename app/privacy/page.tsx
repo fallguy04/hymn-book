@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * suggestions. A privacy policy that describes an app you no longer run is
  * worse than none, because people believe it.
  */
-const UPDATED = "22 August 2026";
+const UPDATED = "15 October 2026";
 
 export default function PrivacyPolicy() {
   return (
@@ -57,22 +57,22 @@ export default function PrivacyPolicy() {
               create a sync code, described below. Clearing your browser data removes them.
             </p>
             <p className="mt-3">
-              The hymn text itself is stored on your device too, so the app works with no connection
-              at all.
+              The hymn text itself is stored on your device too. Once you have opened the app with a
+              connection, it works with none at all.
             </p>
           </section>
 
           <section>
             <h2 className="mb-2 font-serif text-xl text-paper-ink">Sync codes</h2>
             <p>
-              If you press <em>Get a code</em>, the app sends your starred hymns, saved tunes, theme
-              and text size to our database and returns a six-character code. Anyone who types that
-              code into the app within 24 hours receives that data. After 24 hours the record is
-              deleted.
+              If you press <em>Get a code</em>, the app sends your starred hymns and saved tunes to
+              our database and returns a six-character code. Anyone who types that code into the
+              app within 24 hours receives that data. After 24 hours the code stops working, and the
+              record is deleted the next time anyone makes a code.
             </p>
             <p className="mt-3">
-              A sync code holds hymn numbers, tune names and display settings. It carries no name,
-              no email address, and no device identifier. Nothing in it says who you are. It is
+              A sync code holds hymn numbers and tune names. It carries no name, no email address,
+              no display settings, and no device identifier. Nothing in it says who you are. It is
               created only when you press the button.
             </p>
           </section>
@@ -97,14 +97,26 @@ export default function PrivacyPolicy() {
               sets no cookies and does not follow you to other websites. It is run by the same
               person who maintains this app, not sold or shared with an advertising company.
             </p>
+            <p className="mt-3">
+              Vercel Web Analytics, from the company that hosts the app, also counts page views: the
+              address, the referring site, the country, and the kind of device and browser. It sets
+              no cookies, and the visitor count it keeps resets every day, so it cannot tell that
+              today&rsquo;s visit and tomorrow&rsquo;s were the same person.
+            </p>
+            <p className="mt-3">
+              Both count views by address, so opening a link someone shared to a hymn (like{" "}
+              <em>/hymn/245</em>) counts a view of that address. Turning pages inside the app is not
+              counted.
+            </p>
           </section>
 
           <section>
             <h2 className="mb-2 font-serif text-xl text-paper-ink">Services we rely on</h2>
             <ul className="ml-5 list-disc space-y-1.5">
               <li>
-                <strong className="text-paper-ink">Vercel</strong> hosts the app. Like any web host
-                it records ordinary server logs, which include IP addresses.
+                <strong className="text-paper-ink">Vercel</strong> hosts the app and runs the second
+                analytics count above. Like any web host it records ordinary server logs, which
+                include IP addresses.
               </li>
               <li>
                 <strong className="text-paper-ink">Neon</strong> is the database holding sync codes
@@ -126,7 +138,7 @@ export default function PrivacyPolicy() {
               <li>Sell or share your data with anyone</li>
               <li>Show advertising, or allow advertising trackers</li>
               <li>Ask for an account, a password, or a payment method</li>
-              <li>Track which hymns you look at, or when</li>
+              <li>Record which hymns you turn to within the app, or when</li>
             </ul>
           </section>
 

@@ -24,7 +24,8 @@ const MAX_ATTEMPTS = 5;
 const MAX_BODY = 400_000;
 
 export async function POST(request: Request) {
-  if (!rateLimit(clientKey(request, "sync-write"), { limit: 10, windowMs: 60 * 60 * 1000 })) {
+  // Per address, and a room of phones on the church Wi-Fi is one address.
+  if (!rateLimit(clientKey(request, "sync-write"), { limit: 30, windowMs: 60 * 60 * 1000 })) {
     return NextResponse.json({ error: "Too many codes at once. Try again later." }, { status: 429 });
   }
 
@@ -68,8 +69,10 @@ export async function POST(request: Request) {
         return NextResponse.json({ code, expiresInHours: CODE_TTL_HOURS }, { status: 201 });
       }
     }
+    console.error("[sync] no free code after", MAX_ATTEMPTS, "attempts");
     return NextResponse.json({ error: "Could not make a code. Try again." }, { status: 503 });
-  } catch {
+  } catch (error) {
+    console.error("[sync] write failed:", (error as Error).message);
     return NextResponse.json({ error: "Could not save that just now." }, { status: 500 });
   }
 }
@@ -103,7 +106,8 @@ export async function GET(request: Request) {
     // Re-sanitized on the way out too. It was clean going in, but this data
     // gets written straight into the store, and the check is nearly free.
     return NextResponse.json({ payload: sanitizePayload(rows[0].payload) });
-  } catch {
+  } catch (error) {
+    console.error("[sync] read failed:", (error as Error).message);
     return NextResponse.json({ error: "Could not read that just now." }, { status: 500 });
   }
 }

@@ -18,9 +18,10 @@ const MAX_NAME = 120;
  * typed when they asked.
  */
 export async function POST(request: Request) {
-  // A row and an email per call, against a 100/day email quota. Nobody in one
-  // congregation suggests five songs in an hour.
-  if (!rateLimit(clientKey(request, "suggest"), { limit: 5, windowMs: 60 * 60 * 1000 })) {
+  // A row and an email per call, against a 100/day email quota. Counted per
+  // address, and a whole congregation on the church Wi-Fi shares one — five
+  // an hour could shut out a room of people after the first few.
+  if (!rateLimit(clientKey(request, "suggest"), { limit: 15, windowMs: 60 * 60 * 1000 })) {
     return NextResponse.json(
       { error: "That's a few too many at once. Try again a bit later." },
       { status: 429 },
@@ -55,8 +56,10 @@ export async function POST(request: Request) {
       INSERT INTO song_suggestions (requester, title, note, query, hymnal_id)
       VALUES (${cleanName}, ${cleanTitle}, ${cleanNote}, ${cleanQuery}, ${cleanHymnal})
     `;
-  } catch {
+  } catch (error) {
     // The suggestion is a nicety; never surface a database error as a stack.
+    // Logged without the suggestion itself: a name may be in it.
+    console.error("[suggestions] save failed:", (error as Error).message);
     return NextResponse.json({ error: "Could not save that just now." }, { status: 500 });
   }
 
@@ -70,6 +73,7 @@ export async function POST(request: Request) {
     query: cleanQuery,
     hymnalId: cleanHymnal,
   });
+  if (!emailed) console.warn("[suggestions] saved, but the email was not sent");
 
   return NextResponse.json({ ok: true, emailed }, { status: 201 });
 }
