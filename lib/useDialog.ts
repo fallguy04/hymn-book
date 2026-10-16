@@ -3,31 +3,22 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Focus behaviour for a layer that covers the page.
+ * Focus behaviour for a layer that covers the page: focus moves in when it
+ * opens and Tab stays inside it.
  *
- * All four overlays — the keypad, search, the drawer and the tune sheet — used
- * to leave focus wherever it was. Tab then walked out of the open panel and
- * into the dimmed page behind it, which is unreachable by pointer and, for the
- * tune sheet, formally hidden by `aria-modal`. On a phone the keypad is the
- * *default* open state, so this was the first thing a keyboard or screen-reader
- * user met.
- *
- * Returns a ref to put on the panel. While it is mounted, focus moves in, stays
- * in, and returns to whatever opened it on the way out.
+ * Returning focus to whatever opened the layer is not done here. Recording the
+ * opener in an effect is too late — a search box that focuses itself runs its
+ * own effect first, so the "opener" became the search box. lib/layers.ts
+ * records it at the moment the layer is opened instead.
  */
-export function useDialog<T extends HTMLElement>(active = true) {
+export function useDialog<T extends HTMLElement>() {
   const panel = useRef<T>(null);
-  const opener = useRef<Element | null>(null);
 
   useEffect(() => {
-    if (!active) return;
     const node = panel.current;
     if (!node) return;
 
-    opener.current = document.activeElement;
-
-    // Anything disabled or hidden is not a stop. Missing that is what let Tab
-    // escape the drawer whenever its last control happened to be disabled.
+    // Anything disabled or hidden is not a stop.
     const focusable = () =>
       [
         ...node.querySelectorAll<HTMLElement>(
@@ -35,31 +26,35 @@ export function useDialog<T extends HTMLElement>(active = true) {
         ),
       ].filter((el) => el.offsetParent !== null || el === document.activeElement);
 
-    // The panel itself, not its first control. On a phone the keypad is the
-    // *default* open state, so focusing the first button drew a focus ring on
-    // the close grip before anyone had touched the app — it looked like it had
-    // already been used, and the one thing highlighted on arrival was the way
-    // out. The container carries the dialog's label, so a screen reader still
-    // announces what opened; Tab moves from here into the keys.
+    // The panel itself, not its first control. On a phone the keypad opens by
+    // itself at launch, and focusing its first button drew a ring around the
+    // way out before anyone had touched the app. The panel carries the
+    // dialog's label, so a screen reader still announces what opened.
     //
-    // Don't steal focus from a field that autofocused itself.
+    // Don't steal focus from a field that focused itself.
     if (!node.contains(document.activeElement)) {
       node.focus({ preventScroll: true });
     }
 
+    // Listening on the document, not the panel: when a panel swaps its own
+    // content the focused control can unmount, leaving focus on <body> where
+    // a panel-level listener never hears the next Tab.
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;
       const stops = focusable();
       if (stops.length === 0) {
         event.preventDefault();
+        node.focus({ preventScroll: true });
         return;
       }
       const first = stops[0];
       const last = stops[stops.length - 1];
-      // Tab forward off the container falls into the first control by itself.
-      // Shift-Tab off it would walk backwards out of the panel, so wrap.
+      const inside = node.contains(document.activeElement);
       const onPanel = document.activeElement === node;
-      if (event.shiftKey && (onPanel || document.activeElement === first)) {
+      if (!inside) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && (onPanel || document.activeElement === first)) {
         event.preventDefault();
         last.focus();
       } else if (!event.shiftKey && document.activeElement === last) {
@@ -68,17 +63,9 @@ export function useDialog<T extends HTMLElement>(active = true) {
       }
     };
 
-    node.addEventListener("keydown", onKeyDown);
-    return () => {
-      node.removeEventListener("keydown", onKeyDown);
-      // Back to the control that opened this, so the next Tab carries on from
-      // where the user was rather than restarting at the top of the document.
-      const back = opener.current;
-      if (back instanceof HTMLElement && document.body.contains(back)) {
-        back.focus({ preventScroll: true });
-      }
-    };
-  }, [active]);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return panel;
 }
