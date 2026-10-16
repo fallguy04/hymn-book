@@ -13,19 +13,25 @@ export interface SavedTune {
  * Hymn numbers grouped by the book they belong to.
  *
  * They used to be a bare list of numbers, which quietly assumed there was only
- * ever one book. Starring Amazing Grace — song 5 of Other Songs — also starred
- * hymn 5 of the collection, "Praise for God's Goodness", and the favorites list
- * resolved every saved number against whatever book you happened to be in. A
- * number on its own does not identify a song.
+ * ever one book. Starring Amazing Grace also starred hymn 2 of the collection.
+ * A number on its own does not identify a song.
  */
 export type ByBook = Record<string, number[]>;
 
+/** A sync code this device created, kept so closing the menu doesn't lose it. */
+export interface HeldCode {
+  code: string;
+  expiresAt: number;
+}
+
 interface HymnalState {
+  /** The book on screen. */
   hymnalId: string;
   /**
-   * Where you last were in each book, keyed by book id. The ribbon tab is a
-   * bookmark, so crossing to the other book and back should land you where you
-   * left off rather than at song one.
+   * Where you are in each book, keyed by book id. This *is* the current page:
+   * the hymn on screen is `positions[hymnalId]`, so there is one place that
+   * says where you are rather than a page-local number kept in step with the
+   * store by effects — which is how a launch once wiped everyone's place.
    */
   positions: Record<string, number>;
   favorites: ByBook;
@@ -34,26 +40,33 @@ interface HymnalState {
   theme: Theme;
   textSize: TextSize;
   installDismissed: boolean;
+  /** How many times the app has been opened here; gates the install invitation. */
+  launches: number;
+  heldCode: HeldCode | null;
 
+  /**
+   * Go somewhere. Book and number change in one write, so nothing can render
+   * the new number against the old book. `record` adds it to Recent — only for
+   * hymns someone went looking for, never for pages swiped past on the way.
+   */
+  navigate: (hymnalId: string, number: number, opts?: { record?: boolean }) => void;
   setHymnal: (id: string) => void;
-  setPosition: (hymnalId: string, number: number) => void;
   toggleFavorite: (hymnalId: string, number: number) => void;
-  visit: (hymnalId: string, number: number) => void;
   addTune: (tune: SavedTune) => void;
   removeTune: (name: string, meter: string) => void;
   setTheme: (theme: Theme) => void;
   setTextSize: (size: TextSize) => void;
   dismissInstall: () => void;
+  countLaunch: () => void;
+  holdCode: (code: HeldCode | null) => void;
   applySync: (incoming: SyncedState) => void;
 }
 
-/** The part of the store a sync code carries. Recents are left out — they're
- *  a trail through this device, not a preference worth moving. */
+/** What a sync code carries: stars and tunes. Recents are a trail through
+ *  this device, and display settings are each device's own. */
 export interface SyncedState {
   favorites: ByBook;
   tunes: SavedTune[];
-  theme: Theme;
-  textSize: TextSize;
 }
 
 const RECENTS_LIMIT = 8;
@@ -76,15 +89,26 @@ export const useHymnalStore = create<HymnalState>()(
       theme: "system",
       textSize: "m",
       installDismissed: false,
+      launches: 0,
+      heldCode: null,
 
-      setHymnal: (hymnalId) => set({ hymnalId }),
+      navigate: (hymnalId, number, opts) =>
+        set((s) => {
+          const own = forBook(s.recents, hymnalId);
+          const recents =
+            opts?.record && own[0] !== number
+              ? {
+                  ...s.recents,
+                  [hymnalId]: [number, ...own.filter((n) => n !== number)].slice(0, RECENTS_LIMIT),
+                }
+              : s.recents;
+          if (s.hymnalId === hymnalId && s.positions[hymnalId] === number && recents === s.recents) {
+            return s;
+          }
+          return { hymnalId, positions: { ...s.positions, [hymnalId]: number }, recents };
+        }),
 
-      setPosition: (hymnalId, number) =>
-        set((s) =>
-          s.positions[hymnalId] === number
-            ? s
-            : { positions: { ...s.positions, [hymnalId]: number } },
-        ),
+      setHymnal: (hymnalId) => set((s) => (s.hymnalId === hymnalId ? s : { hymnalId })),
 
       toggleFavorite: (hymnalId, number) =>
         set((s) => {
@@ -93,14 +117,6 @@ export const useHymnalStore = create<HymnalState>()(
             ? own.filter((n) => n !== number)
             : [...own, number].sort((a, b) => a - b);
           return { favorites: { ...s.favorites, [hymnalId]: next } };
-        }),
-
-      visit: (hymnalId, number) =>
-        set((s) => {
-          const own = forBook(s.recents, hymnalId);
-          if (own[0] === number) return s;
-          const next = [number, ...own.filter((n) => n !== number)].slice(0, RECENTS_LIMIT);
-          return { recents: { ...s.recents, [hymnalId]: next } };
         }),
 
       addTune: (tune) =>
@@ -116,13 +132,17 @@ export const useHymnalStore = create<HymnalState>()(
       setTheme: (theme) => set({ theme }),
       setTextSize: (textSize) => set({ textSize }),
       dismissInstall: () => set({ installDismissed: true }),
+      countLaunch: () => set((s) => ({ launches: s.launches + 1 })),
+      holdCode: (heldCode) => set({ heldCode }),
 
       /**
-       * Merge rather than replace. Someone restoring a code onto a device they
-       * have already been using should not silently lose the hymns they
-       * starred on it — a union can be pruned afterwards, a wipe cannot be
-       * undone. Appearance is taken from the incoming side, since that is the
-       * setting you were deliberately carrying over.
+       * Merge rather than replace, and leave this device's display alone.
+       *
+       * The screen promises a code "adds to what is here". It used to replace
+       * text size and theme with the other device's — so someone reading at XL
+       * dropped back to medium on redeeming a code, because the device that
+       * made it had never had its size changed. Stars and tunes are the point
+       * of a code; how this screen looks is this person's own choice.
        */
       applySync: (incoming) =>
         set((s) => {
@@ -140,40 +160,23 @@ export const useHymnalStore = create<HymnalState>()(
                 (t) => !s.tunes.some((own) => own.name === t.name && own.meter === t.meter),
               ),
             ],
-            theme: incoming.theme,
-            textSize: incoming.textSize,
           };
         }),
     }),
     {
       name: "hymnal",
       version: 3,
+      // New fields (launches, heldCode) need no migration: persist merges the
+      // stored state over these defaults, so an older save simply lacks them.
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Record<string, unknown>;
 
-        // v1 → v2: two pre-store localStorage keys the app used to write
-        // directly, so nobody loses their starred hymns or tune list.
-        if (version < 2 && typeof window !== "undefined") {
-          const read = <T,>(key: string, fallback: T): T => {
-            try {
-              const raw = window.localStorage.getItem(key);
-              return raw ? (JSON.parse(raw) as T) : fallback;
-            } catch {
-              return fallback;
-            }
-          };
-          if (!(state.favorites as number[])?.length) {
-            state.favorites = read<number[]>("hymn_favorites", []);
-          }
-          if (!(state.tunes as SavedTune[])?.length) {
-            state.tunes = read<SavedTune[]>("spark_tunes", []);
-          }
-        }
-
         // v2 → v3: favorites and recents grow a book. Everything saved before
-        // now belongs to the collection — Other Songs is new enough that no
-        // real star predates it, and guessing wrong here would move somebody's
-        // hymns to a book they never opened.
+        // then belongs to the collection.
+        //
+        // (A v1 → v2 import of two older localStorage keys used to sit here.
+        // It could never run — this key first shipped at version 2, and
+        // migrate is only called for a value that exists — so it is gone.)
         if (version < 3) {
           if (Array.isArray(state.favorites)) {
             state.favorites = state.favorites.length ? { brethren: state.favorites } : {};
