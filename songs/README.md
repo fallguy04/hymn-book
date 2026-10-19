@@ -1,13 +1,32 @@
 # Adding songs
 
+## The quick way
+
+Copy the words from anywhere (hymnary.org's "Representative Text", a songbook,
+a lyrics page) and run:
+
+```bash
+npm run add-song
+```
+
+It reads the clipboard, tidies the words into the format below (verse numbers
+and stray headings dropped, the refrain written once, lines capitalised and
+indented the way the hymnal sets them), asks for the title, author, meter and
+why the song is safe to include, suggesting an answer for each, then writes
+the file and rebuilds **More Songs**. The meter it suggests is counted from the
+syllables, so give it a glance.
+
+Then commit the new file and push, and it is live.
+
+## By hand
+
 Drop one plain-text file per song in this folder, then run:
 
 ```bash
 node scripts/build-other-songs.mjs
 ```
 
-They appear in **Other Songs**, alongside the hymns built from the Open Hymnal
-Project. `EXAMPLE.txt` is a working file to copy.
+`EXAMPLE.txt` is a working file to copy.
 
 ## The format
 

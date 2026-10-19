@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"tests/**/*.test.mjs\"",
+    "add-song": "node scripts/add-song.mjs",
     "check": "tsc --noEmit && eslint && npm test"
   },
   "dependencies": {
