@@ -9,9 +9,14 @@
  * songs/README.md describes, so adding a song is copy, paste, answer three
  * questions.
  *
- * Plain JavaScript with no imports, so the build script, the tests, and any
- * later in-app version can all use it.
+ * No imports, and only type annotations Node can strip, so the add-song
+ * script, the tests and the app's own "Add a song" form all use this one file.
  */
+
+export interface SongBlock {
+  refrain: boolean;
+  lines: string[];
+}
 
 /** Headings that come along when copying from hymn sites; not part of the song. */
 const NOISE = /^(representative text|full text|lyrics|text|words|hymnary\.org.*|public domain)\s*:?$/i;
@@ -25,16 +30,14 @@ const POINTER = /\s*[[(](?:refrain|chorus)[\])]\s*$/i;
 /** "1 O to be like Thee", "2. Full of…", "3) Lowly…" */
 const VERSE_NUMBER = /^\s*(\d{1,2})[.)]?\s+(\S.*)$/;
 
-const capitalise = (line) =>
+const capitalise = (line: string): string =>
   line.replace(/^([“"‘'(]*)(\p{Ll})/u, (_, lead, letter) => lead + letter.toUpperCase());
 
 /**
  * Pasted text → stanzas, in singing order, with the refrain written once
  * where it first appears.
- *
- * @returns {{ blocks: { refrain: boolean, lines: string[] }[] }}
  */
-export function parsePastedSong(text) {
+export function parsePastedSong(text: string): { blocks: SongBlock[] } {
   const lines = text
     .replace(/\r\n?/g, "\n")
     .replace(/ /g, " ")
@@ -45,18 +48,20 @@ export function parsePastedSong(text) {
   // to; without numbers, blank lines are the only way to tell.
   const numbered = lines.filter((l) => VERSE_NUMBER.test(l)).length >= 2;
 
-  const blocks = [];
-  let current = null;
+  const blocks: SongBlock[] = [];
+  let current: SongBlock | null = null;
   /** Verse numbers come in order, so "3 more lines" inside verse 1 isn't verse 3. */
   let nextVerse = 1;
   let seenRefrain = false;
   /** Inside a second copy of the refrain, which is dropped. */
   let skipping = false;
 
-  const open = (refrain) => {
-    current = { refrain, lines: [] };
-    blocks.push(current);
+  const open = (refrain: boolean): SongBlock => {
+    const block: SongBlock = { refrain, lines: [] };
+    blocks.push(block);
+    current = block;
     skipping = false;
+    return block;
   };
 
   for (const raw of lines) {
@@ -78,8 +83,8 @@ export function parsePastedSong(text) {
         skipping = true;
       } else {
         seenRefrain = true;
-        open(true);
-        if (label[1]) current.lines.push(label[1]);
+        const block = open(true);
+        if (label[1]) block.lines.push(label[1]);
       }
       continue;
     }
@@ -88,14 +93,13 @@ export function parsePastedSong(text) {
     const verse = numbered ? line.match(VERSE_NUMBER) : null;
     if (verse && Number(verse[1]) === nextVerse) {
       nextVerse++;
-      open(false);
-      current.lines.push(verse[2]);
+      open(false).lines.push(verse[2]);
       continue;
     }
 
     if (skipping) continue;
-    if (!current) open(false);
-    if (line) current.lines.push(line);
+    const into: SongBlock = current ?? open(false);
+    if (line) into.lines.push(line);
   }
 
   const kept = blocks.filter((b) => b.lines.length);
@@ -108,7 +112,7 @@ export function parsePastedSong(text) {
 /* ------------------------------------------------------------------------ */
 
 /** A rough syllable count: vowel groups, less a silent final e or -ed. */
-function syllables(word) {
+function syllables(word: string): number {
   let w = word.toLowerCase().replace(/[^a-z]/g, "");
   if (!w) return 0;
   if (w.length <= 3) return 1;
@@ -116,7 +120,7 @@ function syllables(word) {
   return Math.max(1, (w.match(/[aeiouy]{1,2}/g) ?? []).length);
 }
 
-const lineSyllables = (line) => line.split(/[\s—–-]+/).reduce((n, w) => n + syllables(w), 0);
+const lineSyllables = (line: string): number => line.split(/[\s—–-]+/).reduce((n, w) => n + syllables(w), 0);
 
 /**
  * A guess at the meter, from the verses: syllables per line, taking the most
@@ -124,7 +128,7 @@ const lineSyllables = (line) => line.split(/[\s—–-]+/).reduce((n, w) => n + 
  * decide it. A guess, to be checked: English spelling and hymn elisions defeat
  * any simple counter now and then.
  */
-export function guessMeter(blocks) {
+export function guessMeter(blocks: SongBlock[]): string {
   const verses = blocks.filter((b) => !b.refrain);
   if (verses.length === 0) return "";
   const length = verses[0].lines.length;
@@ -132,7 +136,7 @@ export function guessMeter(blocks) {
   const pattern = [];
   for (let i = 0; i < length; i++) {
     const counts = alike.map((v) => lineSyllables(v.lines[i]));
-    const tally = new Map();
+    const tally = new Map<number, number>();
     for (const c of counts) tally.set(c, (tally.get(c) ?? 0) + 1);
     pattern.push([...tally.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0][0]);
   }
@@ -147,7 +151,7 @@ export function guessMeter(blocks) {
 const SMALL = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "with"]);
 
 /** "O to be like Thee! Blessed Redeemer" → "O to Be Like Thee" */
-export function guessTitle(blocks) {
+export function guessTitle(blocks: SongBlock[]): string {
   const first = blocks[0]?.lines[0] ?? "";
   const phrase = first.split(/[!,;:.?]/)[0].trim();
   return phrase
@@ -157,7 +161,7 @@ export function guessTitle(blocks) {
 }
 
 /** "O to Be Like Thee" → "o-to-be-like-thee", the file name and the song's lasting key. */
-export const slugify = (title) =>
+export const slugify = (title: string): string =>
   title
     .toLowerCase()
     .normalize("NFKD")
@@ -171,18 +175,30 @@ export const slugify = (title) =>
  * way a hymnal sets them when a stanza has an even number of lines; pass
  * `indent: false` for a song that shouldn't.
  */
-export function formatSongFile({ title, author, meter, source }, blocks, { indent = true } = {}) {
+export function formatSongFile(
+  { title, author, meter, source }: { title: string; author?: string; meter?: string; source?: string },
+  blocks: SongBlock[],
+  { indent = true }: { indent?: boolean } = {},
+): string {
   const headers = [`Title: ${title}`];
   if (author) headers.push(`Author: ${author}`);
   if (meter) headers.push(`Meter: ${meter}`);
   if (source) headers.push(`Source: ${source}`);
 
-  const stanzas = blocks.map(({ refrain, lines }) => {
-    const set = lines.map((line, i) =>
-      indent && lines.length % 2 === 0 && lines.length >= 4 && i % 2 === 1 ? `\t${line}` : line,
-    );
-    return (refrain ? ["Refrain:", ...set] : set).join("\n");
-  });
+  const { stanzas: set } = toStanzas(blocks, { indent });
+  const stanzas = set.map((lines, i) => (blocks[i].refrain ? ["Refrain:", ...lines] : lines).join("\n"));
 
   return `${headers.join("\n")}\n\n${stanzas.join("\n\n")}\n`;
+}
+
+/**
+ * The same song as the reader stores it: stanzas with indents as leading tabs,
+ * and which of them are refrains. What the "Add a song" form saves.
+ */
+export function toStanzas(blocks: SongBlock[], { indent = true }: { indent?: boolean } = {}) {
+  const stanzas = blocks.map(({ lines }) =>
+    lines.map((line, i) => (indent && lines.length % 2 === 0 && lines.length >= 4 && i % 2 === 1 ? `\t${line}` : line)),
+  );
+  const refrains = blocks.flatMap((b, i) => (b.refrain ? [i] : []));
+  return { stanzas, refrains };
 }

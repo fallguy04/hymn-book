@@ -18,7 +18,7 @@
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
-import { formatSongFile, guessMeter, guessTitle, parsePastedSong, slugify } from "./song-text.mjs";
+import { formatSongFile, guessMeter, guessTitle, parsePastedSong, slugify } from "../lib/song-text.ts";
 
 const args = process.argv.slice(2);
 const flag = (name) => {

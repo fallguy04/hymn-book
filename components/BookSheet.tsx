@@ -2,7 +2,8 @@
 
 import { Check } from "lucide-react";
 import Overlay, { SheetGrip } from "@/components/ui/Overlay";
-import { type Hymnal, getHymn, isNumbered, listHymnals } from "@/lib/hymnals";
+import { type Hymnal, getHymn, isNumbered } from "@/lib/hymnals";
+import { useBooks } from "@/lib/useBooks";
 import { bookBlurb, bookName, countLabel, primaryName } from "@/lib/books";
 import { useHymnalStore } from "@/store/useHymnalStore";
 
@@ -23,6 +24,7 @@ interface BookSheetProps {
  */
 export default function BookSheet({ current, onChoose, onClose }: BookSheetProps) {
   const positions = useHymnalStore((s) => s.positions);
+  const books = useBooks();
 
   return (
     <Overlay label="Choose a book" placement="bottom" onClose={onClose}>
@@ -30,7 +32,7 @@ export default function BookSheet({ current, onChoose, onClose }: BookSheetProps
       <div className="px-5 pb-6">
         <h2 className="mb-4 text-center font-serif text-[1.4rem] text-paper-ink">Choose a book</h2>
         <ul className="space-y-3">
-          {listHymnals().map((book) => {
+          {books.map((book) => {
             const isCurrent = book.id === current.id;
             const at = positions[book.id];
             const place = at !== undefined ? getHymn(book, at) : undefined;

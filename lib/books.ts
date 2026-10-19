@@ -1,4 +1,5 @@
 import { type Hymn, type Hymnal, isNumbered, lineText } from "./hymnals";
+import { COMMUNITY_FROM } from "./community";
 
 /**
  * How books and hymns are named on screen — in one place.
@@ -80,7 +81,9 @@ export function hymnHeading(book: Hymnal, hymn: Hymn): string {
 export const ROUTES: Record<string, "hymn" | "song"> = { brethren: "hymn", "other-songs": "song" };
 
 export function hymnPath(book: Hymnal, number: number): string {
-  const segment = ROUTES[book.id];
+  // Songs added in the app have no page built for them, so they're linked by
+  // query, which the app reads once it has loaded them.
+  const segment = number < COMMUNITY_FROM ? ROUTES[book.id] : undefined;
   return segment ? `/${segment}/${number}` : `/?h=${number}&b=${encodeURIComponent(book.id)}`;
 }
 

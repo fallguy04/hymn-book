@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { formatSongFile, guessMeter, guessTitle, parsePastedSong, slugify } from "../scripts/song-text.mjs";
+import { formatSongFile, guessMeter, guessTitle, parsePastedSong, slugify } from "../lib/song-text.ts";
 
 // Shapes only, with placeholder words: what matters is the layout each source uses.
 const hymnary = `Representative Text

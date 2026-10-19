@@ -14,7 +14,9 @@ import ShareSheet from "@/components/ShareSheet";
 import ThemeSync from "@/components/ThemeSync";
 import LaunchCurtain from "@/components/LaunchCurtain";
 import { InstallCard } from "@/components/InstallPrompt";
-import { firstHymn, getDefaultHymnal, getHymn, getHymnal, isNumbered } from "@/lib/hymnals";
+import { firstHymn, getDefaultHymnal, getHymn, getHymnal, isExpandable, isNumbered, setAddedSongs } from "@/lib/hymnals";
+import { isCommunityNumber } from "@/lib/community";
+import { useBooks } from "@/lib/useBooks";
 import { hymnHeading, parseHymnPath, primaryName } from "@/lib/books";
 import { type Layer, useLayers } from "@/lib/layers";
 import { useHydrated } from "@/lib/useHydrated";
@@ -36,8 +38,20 @@ function readLink(): HymnAddress | null {
       : null);
   if (!found) return null;
   const book = getHymnal(found.hymnalId);
-  return book && Number.isInteger(found.number) && getHymn(book, found.number) ? found : null;
+  if (!book || !Number.isInteger(found.number)) return null;
+  // A song added in the app may not have reached this phone yet; it's opened
+  // once the list arrives.
+  const later = isExpandable(book) && isCommunityNumber(found.number);
+  return getHymn(book, found.number) || later ? found : null;
 }
+
+type Store = ReturnType<typeof useHymnalStore.getState>;
+
+/** Approved songs plus this phone's own, into More Songs. */
+const registerAdded = (state: Store) => {
+  const approved = new Set(state.approvedSongs.map((s) => s.number));
+  setAddedSongs([...state.approvedSongs, ...state.mySongs.filter((s) => !approved.has(s.number))]);
+};
 
 /**
  * Where this page load starts, decided once, when this module first runs.
@@ -55,6 +69,11 @@ function readLink(): HymnAddress | null {
 const arrival: HymnAddress | null = (() => {
   if (typeof window === "undefined") return null;
   const store = useHymnalStore.getState();
+  // Songs added in the app go into the book before anything reads it.
+  registerAdded(store);
+  useHymnalStore.subscribe((now, before) => {
+    if (now.mySongs !== before.mySongs || now.approvedSongs !== before.approvedSongs) registerAdded(now);
+  });
   const link = readLink();
   if (link) store.navigate(link.hymnalId, link.number, { record: true });
   else store.setHymnal(getDefaultHymnal().id);
@@ -80,6 +99,8 @@ interface AppProps {
 export default function App({ initial }: AppProps) {
   const hydrated = useHydrated();
   const isDesktop = useIsDesktop();
+  // Redraw when songs added in the app arrive in More Songs.
+  useBooks();
   const { layer, open, close } = useLayers();
 
   const storeBook = useHymnalStore((s) => s.hymnalId);
@@ -87,6 +108,7 @@ export default function App({ initial }: AppProps) {
   const favorites = useHymnalStore((s) => s.favorites);
   const recents = useHymnalStore((s) => s.recents);
   const launches = useHymnalStore((s) => s.launches);
+  const songStatuses = useHymnalStore((s) => s.songStatuses);
   const navigate = useHymnalStore((s) => s.navigate);
   const setHymnal = useHymnalStore((s) => s.setHymnal);
   const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
@@ -138,6 +160,18 @@ export default function App({ initial }: AppProps) {
     setHymnal(id);
     close();
   };
+
+  // Songs added in the app and approved since this phone last looked, and
+  // where this phone's own additions stand. Offline, the kept list serves.
+  useEffect(() => {
+    const mine = useHymnalStore.getState().mySongs.map((s) => s.number);
+    fetch(`/api/songs${mine.length ? `?mine=${mine.join(",")}` : ""}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.songs)) useHymnalStore.getState().setApprovedSongs(data.songs, data.statuses ?? {});
+      })
+      .catch(() => {});
+  }, []);
 
   // A link has done its job once the hymn is open. Left in the address bar, a
   // reload or an install would keep jumping back to it.
@@ -202,6 +236,15 @@ export default function App({ initial }: AppProps) {
     return () => window.removeEventListener("keydown", onKeyDown);
   });
 
+  // A song added on this phone says who can see it until it's approved.
+  const own = isExpandable(hymnal) && isCommunityNumber(hymn.number) ? songStatuses[hymn.number] : undefined;
+  const note =
+    own === "pending"
+      ? "Only on your phone until it\u2019s approved"
+      : own === "rejected"
+        ? "Only on your phone"
+        : undefined;
+
   const shortcut =
     isDesktop === true ? (/Mac|iPhone|iPad/.test(navigator.userAgent) ? "⌘K" : "Ctrl K") : null;
 
@@ -252,6 +295,7 @@ export default function App({ initial }: AppProps) {
               hymnal={hymnal}
               hymn={hymn}
               direction={direction}
+              note={note}
               onNext={() => paginate(1)}
               onPrev={() => paginate(-1)}
               onOpenTunes={() => hymn.meter && open({ id: "tunes" })}

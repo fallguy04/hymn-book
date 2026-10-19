@@ -70,6 +70,13 @@ export async function emailSuggestion(suggestion: Suggestion): Promise<boolean> 
       </p>
     </div>`;
 
+  return send(`Hymn suggestion: ${title}`, html);
+}
+
+/** Mail the maintainer. Best-effort: false when there's no key or Resend fails. */
+async function send(subject: string, html: string): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return false;
   try {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -77,14 +84,9 @@ export async function emailSuggestion(suggestion: Suggestion): Promise<boolean> 
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from: SENDER,
-        to: [RECIPIENT],
-        subject: `Hymn suggestion: ${title}`,
-        html,
-      }),
+      body: JSON.stringify({ from: SENDER, to: [RECIPIENT], subject, html }),
       // The person is waiting on this request. A mail service that hangs must
-      // not keep them watching a spinner over a suggestion already saved.
+      // not keep them watching a spinner over something already saved.
       signal: AbortSignal.timeout(4000),
     });
     if (!response.ok) console.error("[notify] Resend answered", response.status);
@@ -93,4 +95,49 @@ export async function emailSuggestion(suggestion: Suggestion): Promise<boolean> 
     console.error("[notify] send failed:", (error as Error).name);
     return false;
   }
+}
+
+/**
+ * A song added in the app, for the maintainer to look over. The words are in
+ * the email so it can be judged from the inbox; approving happens on the
+ * review page, never from the link itself — mail scanners open every link in
+ * a message, and one that approved on opening would approve everything.
+ */
+export async function emailSongForReview(
+  song: { title: string; author: string | null; meter: string; stanzas: string[][]; refrains: number[] },
+  requester: string | null,
+  reviewUrl: string,
+): Promise<boolean> {
+  const who = requester?.trim() || "Someone";
+  const stanzas = song.stanzas
+    .map((lines, i) => {
+      const refrain = song.refrains.includes(i);
+      const body = lines
+        .map((line) => {
+          const indent = line.match(/^\t*/)![0].length;
+          return `<div style="padding-left:${indent * 1.25}em">${escapeHtml(line.replace(/^\t+/, ""))}</div>`;
+        })
+        .join("");
+      return `<div style="margin:0 0 14px;${refrain ? "font-style:italic" : ""}">${
+        refrain ? '<div style="color:#8b8375;font-size:12px;letter-spacing:.08em">REFRAIN</div>' : ""
+      }${body}</div>`;
+    })
+    .join("");
+
+  const html = `
+    <div style="font-family:system-ui,sans-serif;line-height:1.5;color:#241f1a;max-width:560px">
+      <p style="margin:0 0 4px"><strong>${escapeHtml(who)}</strong> added a song to More Songs.</p>
+      <p style="margin:0 0 20px;color:#8b8375;font-size:13px">It shows on their phone now, and for everyone once you approve it.</p>
+      <h2 style="font-family:Georgia,serif;font-weight:normal;margin:0 0 2px">${escapeHtml(song.title)}</h2>
+      <p style="margin:0 0 16px;color:#8b8375;font-size:13px">${[song.author, song.meter].filter(Boolean).map((v) => escapeHtml(v!)).join(" · ") || "No author given"}</p>
+      <div style="font-family:Georgia,serif;font-size:16px">${stanzas}</div>
+      <p style="margin:24px 0 8px">
+        <a href="${reviewUrl}" style="display:inline-block;background:#241f1a;color:#fdfbf7;padding:10px 20px;border-radius:999px;text-decoration:none;font-weight:600">Review this song</a>
+      </p>
+      <p style="margin:12px 0 0;color:#8b8375;font-size:13px">
+        Approve only songs in the public domain (as a rough guide, first published before 1930) or that you have permission to show.
+      </p>
+    </div>`;
+
+  return send(`Song to review: ${song.title}`, html);
 }

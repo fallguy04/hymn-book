@@ -1,5 +1,6 @@
 import brethren from "@/data/hymnals/brethren.json";
 import otherSongs from "@/data/hymnals/other-songs.json";
+import type { CommunitySong } from "./community";
 
 /**
  * A line of a stanza. Leading tab characters carry the indentation the printed
@@ -93,7 +94,10 @@ export const hasSections = (hymnal: Hymnal): boolean =>
  * by scripts/build-other-songs.mjs. It is deliberately not a copy of any
  * copyrighted hymnal: songs still in copyright are not reproduced here.
  */
-const HYMNALS: Hymnal[] = [brethren as Hymnal, otherSongs as Hymnal];
+/** The books as built from data/, before anyone has added a song in the app. */
+const BUILT: Hymnal[] = [brethren as Hymnal, otherSongs as Hymnal];
+
+let HYMNALS: Hymnal[] = BUILT;
 
 const byId = new Map(HYMNALS.map((h) => [h.id, h]));
 
@@ -102,21 +106,79 @@ const indexes = new Map(
   HYMNALS.map((hymnal) => [hymnal.id, new Map(hymnal.hymns.map((h) => [h.number, h]))]),
 );
 
+const pathsOf = (hymnal: Hymnal) => {
+  const paths = new Map<number, string[]>();
+  const walk = (sections: Section[], trail: string[]) => {
+    for (const section of sections) {
+      const here = [...trail, section.title];
+      for (const n of section.hymns) paths.set(n, here);
+      walk(section.subsections ?? [], here);
+    }
+  };
+  walk(hymnal.sections, []);
+  return paths;
+};
+
 /** Per-hymnal number → the section path it sits under, for the topical eyebrow. */
-const sectionPaths = new Map(
-  HYMNALS.map((hymnal) => {
-    const paths = new Map<number, string[]>();
-    const walk = (sections: Section[], trail: string[]) => {
-      for (const section of sections) {
-        const here = [...trail, section.title];
-        for (const n of section.hymns) paths.set(n, here);
-        walk(section.subsections ?? [], here);
-      }
-    };
-    walk(hymnal.sections, []);
-    return [hymnal.id, paths];
-  }),
-);
+const sectionPaths = new Map(HYMNALS.map((hymnal) => [hymnal.id, pathsOf(hymnal)]));
+
+/* Songs added in the app ---------------------------------------------------- */
+
+let booksVersion = 0;
+const bookListeners = new Set<() => void>();
+let addedSignature = "";
+
+/**
+ * Put songs added in the app into the book that grows, alongside the ones
+ * built from songs/. Only ever on a phone: the server renders the built books.
+ *
+ * The book is replaced rather than changed in place, so anything holding the
+ * old one (the search index, a component's props) sees a new book and
+ * rebuilds, instead of quietly reading a stale list.
+ */
+export function setAddedSongs(songs: CommunitySong[]): void {
+  const built = BUILT.find(isExpandable);
+  if (!built) return;
+  const known = new Set(built.hymns.map((h) => h.number));
+  const extra: Hymn[] = songs
+    .filter((s) => !known.has(s.number) && s.stanzas.length > 0)
+    .map((s) => ({
+      number: s.number,
+      title: s.title,
+      meter: s.meter,
+      author: s.author,
+      authorSource: "added in the app",
+      stanzas: s.stanzas,
+      ...(s.refrains.length ? { refrains: s.refrains } : {}),
+    }));
+
+  const signature = JSON.stringify(extra.map((h) => [h.number, h.title, h.stanzas.length, h.meter]));
+  if (signature === addedSignature) return;
+  addedSignature = signature;
+
+  const hymns = [...built.hymns, ...extra].sort((a, b) => a.title.localeCompare(b.title));
+  const book: Hymnal = {
+    ...built,
+    hymns,
+    sections: built.sections.length === 1
+      ? [{ ...built.sections[0], hymns: hymns.map((h) => h.number) }]
+      : built.sections,
+  };
+
+  HYMNALS = HYMNALS.map((h) => (h.id === book.id ? book : h));
+  byId.set(book.id, book);
+  indexes.set(book.id, new Map(hymns.map((h) => [h.number, h])));
+  sectionPaths.set(book.id, pathsOf(book));
+  booksVersion++;
+  for (const listener of bookListeners) listener();
+}
+
+/** For useSyncExternalStore: re-render when songs are added to a book. */
+export const subscribeBooks = (listener: () => void) => {
+  bookListeners.add(listener);
+  return () => bookListeners.delete(listener);
+};
+export const getBooksVersion = () => booksVersion;
 
 export const listHymnals = (): Hymnal[] => HYMNALS;
 

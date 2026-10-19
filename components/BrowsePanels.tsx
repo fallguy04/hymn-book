@@ -14,7 +14,8 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { type Hymnal, authorIndex, expandableHymnal, getHymn, listHymnals } from "@/lib/hymnals";
+import { type Hymnal, authorIndex, expandableHymnal, getHymn } from "@/lib/hymnals";
+import { useBooks } from "@/lib/useBooks";
 import { bookBlurb, bookName, countLabel } from "@/lib/books";
 import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
@@ -45,7 +46,7 @@ const TITLE: Record<Panel, string> = {
   favorites: "Favorites",
   settings: "Settings",
   sync: "Move to another device",
-  suggest: "Suggest a song",
+  suggest: "Add a song",
   tunes: "Your tunes",
 };
 
@@ -214,11 +215,17 @@ export default function BrowsePanels({
         {panel === "suggest" && (
           <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-5">
             <p className="font-sans text-[0.9rem] leading-relaxed text-paper-muted">
-              Know a song that isn&rsquo;t here? Suggestions go to the app maintainer. New songs may
-              be added to {bookName(expandableHymnal() ?? hymnal)}. The hymnbook is displayed as
-              published.
+              Know a song that isn&rsquo;t here? Paste its words and it&rsquo;s added to{" "}
+              {bookName(expandableHymnal() ?? hymnal)} on your phone, and for everyone once the app
+              maintainer approves it. The hymnbook is displayed as published.
             </p>
-            <SuggestSong query="" hymnalId={(expandableHymnal() ?? hymnal).id} compact startOpen />
+            <SuggestSong
+              query=""
+              hymnalId={(expandableHymnal() ?? hymnal).id}
+              compact
+              startOpen
+              onOpen={onSelect}
+            />
           </div>
         )}
 
@@ -275,8 +282,9 @@ function Favorites({
   const favorites = useHymnalStore((s) => s.favorites);
   const toggleFavorite = useHymnalStore((s) => s.toggleFavorite);
   const [shown] = useState(() => favorites);
+  const books = useBooks();
 
-  const groups = listHymnals()
+  const groups = books
     .map((book) => ({ book, numbers: forBook(shown, book.id) }))
     .filter((g) => g.numbers.length > 0)
     .sort((a, b) => Number(b.book.id === current.id) - Number(a.book.id === current.id));
@@ -356,7 +364,7 @@ function SettingsPanel({ onOpen }: { onOpen: (panel: Panel) => void }) {
 
       <ul className="space-y-1">
         <MenuRow icon={Smartphone} label="Move to another device" onClick={() => onOpen("sync")} />
-        {suggestTo && <MenuRow icon={Lightbulb} label="Suggest a song" onClick={() => onOpen("suggest")} />}
+        {suggestTo && <MenuRow icon={Lightbulb} label="Add a song" onClick={() => onOpen("suggest")} />}
         <MenuRow
           icon={Music}
           label="Your tunes"

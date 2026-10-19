@@ -15,7 +15,7 @@ export const metadata: Metadata = {
  * suggestions. A privacy policy that describes an app you no longer run is
  * worse than none, because people believe it.
  */
-const UPDATED = "15 October 2026";
+const UPDATED = "19 October 2026";
 
 export default function PrivacyPolicy() {
   return (
@@ -78,11 +78,17 @@ export default function PrivacyPolicy() {
           </section>
 
           <section>
-            <h2 className="mb-2 font-serif text-xl text-paper-ink">Song suggestions</h2>
+            <h2 className="mb-2 font-serif text-xl text-paper-ink">Suggesting or adding a song</h2>
             <p>
               If you suggest a song, the app sends and stores what you typed: the name you gave, the
               song title, any note, and the search term that found nothing. That is emailed to the
               person who maintains the app so somebody actually reads it.
+            </p>
+            <p className="mt-3">
+              If you add a song by pasting its words, the app sends and stores the title, the words,
+              the author you give and your name if you give one, and emails them to the maintainer
+              to review. Until it is approved, the song shows only on your phone. Once approved, the
+              song (but not your name) is shown in the app to everyone.
             </p>
             <p className="mt-3">
               The name field is optional and exists so we know who to go and talk to. It is not
@@ -119,16 +125,16 @@ export default function PrivacyPolicy() {
                 include IP addresses.
               </li>
               <li>
-                <strong className="text-paper-ink">Neon</strong> is the database holding sync codes
-                and song suggestions.
+                <strong className="text-paper-ink">Neon</strong> is the database holding sync codes,
+                song suggestions and songs added in the app.
               </li>
               <li>
                 <strong className="text-paper-ink">Resend</strong> delivers the suggestion emails.
               </li>
             </ul>
             <p className="mt-3">
-              If you never suggest a song and never create a sync code, nothing of yours reaches the
-              database or the email service.
+              If you never suggest or add a song and never create a sync code, nothing of yours
+              reaches the database or the email service.
             </p>
           </section>
 
@@ -153,7 +159,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="mb-2 font-serif text-xl text-paper-ink">Removing something</h2>
             <p>
-              Ask, and any suggestion you sent will be deleted. Sync codes delete themselves within
+              Ask, and any suggestion or song you sent will be deleted. Sync codes delete themselves within
               a day; to remove one sooner, ask. Everything held on your own device you can clear
               yourself through your browser.
             </p>

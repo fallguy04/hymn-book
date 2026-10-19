@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CommunitySong, SongStatus } from "@/lib/community";
 
 export type Theme = "system" | "light" | "dark";
 export type TextSize = "s" | "m" | "l" | "xl";
@@ -39,6 +40,12 @@ interface HymnalState {
   tunes: SavedTune[];
   theme: Theme;
   textSize: TextSize;
+  /** Songs added from this phone, shown here at once, whatever their review. */
+  mySongs: CommunitySong[];
+  /** Songs added in the app and approved for everyone; kept for offline. */
+  approvedSongs: CommunitySong[];
+  /** Where this phone's own songs stand, by number. */
+  songStatuses: Record<number, SongStatus>;
   installDismissed: boolean;
   /** How many times the app has been opened here; gates the install invitation. */
   launches: number;
@@ -56,6 +63,8 @@ interface HymnalState {
   removeTune: (name: string, meter: string) => void;
   setTheme: (theme: Theme) => void;
   setTextSize: (size: TextSize) => void;
+  addMySong: (song: CommunitySong) => void;
+  setApprovedSongs: (songs: CommunitySong[], statuses: Record<number, SongStatus>) => void;
   dismissInstall: () => void;
   countLaunch: () => void;
   holdCode: (code: HeldCode | null) => void;
@@ -88,6 +97,9 @@ export const useHymnalStore = create<HymnalState>()(
       tunes: [],
       theme: "system",
       textSize: "m",
+      mySongs: [],
+      approvedSongs: [],
+      songStatuses: {},
       installDismissed: false,
       launches: 0,
       heldCode: null,
@@ -131,6 +143,13 @@ export const useHymnalStore = create<HymnalState>()(
 
       setTheme: (theme) => set({ theme }),
       setTextSize: (textSize) => set({ textSize }),
+      addMySong: (song) =>
+        set((s) => ({
+          mySongs: [...s.mySongs.filter((m) => m.number !== song.number), song],
+          songStatuses: { ...s.songStatuses, [song.number]: "pending" },
+        })),
+      setApprovedSongs: (approvedSongs, statuses) =>
+        set((s) => ({ approvedSongs, songStatuses: { ...s.songStatuses, ...statuses } })),
       dismissInstall: () => set({ installDismissed: true }),
       countLaunch: () => set((s) => ({ launches: s.launches + 1 })),
       holdCode: (heldCode) => set({ heldCode }),
@@ -166,7 +185,7 @@ export const useHymnalStore = create<HymnalState>()(
     {
       name: "hymnal",
       version: 3,
-      // New fields (launches, heldCode) need no migration: persist merges the
+      // New fields (launches, heldCode, the added songs) need no migration: persist merges the
       // stored state over these defaults, so an older save simply lacks them.
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Record<string, unknown>;

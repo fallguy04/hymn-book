@@ -8,13 +8,13 @@ import {
   expandableHymnal,
   highlightRanges,
   isNumbered,
-  listHymnals,
   searchBooks,
 } from "@/lib/hymnals";
 import { bookName, primaryName, secondaryName } from "@/lib/books";
 import { pendingReason, searchPending } from "@/lib/pending";
 import Overlay from "./ui/Overlay";
 import Segmented from "./ui/Segmented";
+import { useBooks } from "@/lib/useBooks";
 import SuggestSong from "./SuggestSong";
 
 interface TextSearchProps {
@@ -69,7 +69,7 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
   const [query, setQuery] = useState(lastQuery);
   const [scope, setScope] = useState<Scope>(lastScope);
   const input = useRef<HTMLInputElement>(null);
-  const books = listHymnals();
+  const books = useBooks();
 
   useEffect(() => {
     const field = input.current;
@@ -85,8 +85,9 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
   }, [query, scope]);
 
   const { results, total } = useMemo(
-    () => searchBooks(query, { bookIds: scope === "all" ? undefined : [scope], limit: 40 }),
-    [query, scope],
+    // `books` changes when songs added in the app arrive, so they're searched too.
+    () => searchBooks(query, { bookIds: scope === "all" ? books.map((b) => b.id) : [scope], limit: 40 }),
+    [query, scope, books],
   );
 
   // Songs known to be sung here whose words can't be printed yet. Listed under
@@ -213,7 +214,7 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
                 </button>
               </div>
             )}
-            {canSuggest && suggestTo && <SuggestSong query={term} hymnalId={suggestTo.id} />}
+            {canSuggest && suggestTo && <SuggestSong query={term} hymnalId={suggestTo.id} onOpen={onSelect} />}
           </div>
         )}
 
