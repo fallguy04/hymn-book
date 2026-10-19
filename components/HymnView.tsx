@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight, Music } from "lucide-react";
 import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
@@ -9,6 +9,8 @@ interface HymnViewProps {
   hymnal: Hymnal;
   hymn: Hymn;
   direction: number;
+  /** A line under the title: for a song added on this phone, who can see it. */
+  note?: string;
   onNext: () => void;
   onPrev: () => void;
   onOpenTunes: () => void;
@@ -48,13 +50,84 @@ export default function HymnView({
   hymnal,
   hymn,
   direction,
+  note,
   onNext,
   onPrev,
   onOpenTunes,
   onOpenSection,
 }: HymnViewProps) {
   const scroller = useRef<HTMLDivElement>(null);
+  const block = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const here = `${hymnal.id}:${hymn.number}`;
+
+  /**
+   * A verse you've tapped, underlined in dots — a finger on the page, the way
+   * you'd keep your place in a printed book. Belongs to one hymn: turning the
+   * page clears it.
+   */
+  const [mark, setMark] = useState<{ at: string; stanza: number } | null>(null);
+  const marked = mark?.at === here ? mark.stanza : null;
+  const pressed = useRef<{ x: number; y: number } | null>(null);
+
+  const tapVerse = (stanza: number, e: React.MouseEvent) => {
+    const from = pressed.current;
+    pressed.current = null;
+    // A swipe to turn the page, or a long press to select words, is not a tap.
+    if (from && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 8) return;
+    if (window.getSelection()?.toString()) return;
+    navigator.vibrate?.(6);
+    setMark(marked === stanza ? null : { at: here, stanza });
+  };
+
+  /**
+   * Centre the verses on their typical line, not their longest.
+   *
+   * The block used to be centred on its widest line, and most lines are
+   * shorter than that, so the text sat left of centre: on a phone the usual
+   * line had three or four times as much space on its right as on its left.
+   * Now the block is placed so the average line is centred, as far as the
+   * longest line allows without wrapping. Lines stay flush with each other on
+   * the left, so the indents that carry the meter still read.
+   */
+  useLayoutEffect(() => {
+    const el = block.current;
+    const frame = el?.parentElement;
+    if (!el || !frame) return;
+
+    const balance = () => {
+      el.style.marginLeft = "";
+      el.style.marginRight = "";
+      const pad = getComputedStyle(frame);
+      const room = frame.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight);
+      // Each line at its natural, unwrapped width, measured in one pass.
+      const lines = [...el.querySelectorAll<HTMLElement>(".stanza-line")];
+      for (const line of lines) {
+        line.style.whiteSpace = "nowrap";
+        line.style.width = "max-content";
+      }
+      const origin = el.getBoundingClientRect().left;
+      const reach = lines.map((line) => line.getBoundingClientRect().right - origin);
+      for (const line of lines) {
+        line.style.whiteSpace = "";
+        line.style.width = "";
+      }
+      if (reach.length === 0) return;
+      const typical = reach.reduce((a, b) => a + b, 0) / reach.length;
+      const longest = Math.max(...reach);
+      const inset = Math.max(0, Math.min((room - typical) / 2, room - longest));
+      el.style.marginLeft = `${inset}px`;
+      el.style.marginRight = "0";
+    };
+
+    balance();
+    // Again once the serif face has loaded, and whenever the column or the
+    // text size changes.
+    document.fonts?.ready.then(balance).catch(() => {});
+    const observer = new ResizeObserver(() => balance());
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, [here]);
   const path = useMemo(() => sectionPath(hymnal, hymn.number), [hymnal, hymn.number]);
 
   /**
@@ -208,6 +281,14 @@ export default function HymnView({
                 {hymn.author && <span>{hymn.author}</span>}
               </p>
             )}
+            {note && (
+              <p
+                className="mt-3 font-sans text-paper-faint"
+                style={{ fontSize: "calc(0.75rem * var(--type-scale))" }}
+              >
+                {note}
+              </p>
+            )}
           </header>
 
           {/*
@@ -217,12 +298,19 @@ export default function HymnView({
             and leaving the block flush left reads as off-centre under a
             centred title.
           */}
-          <div className="mx-auto w-fit max-w-full space-y-7">
+          <div ref={block} className="mx-auto w-fit max-w-full space-y-7">
             {hymn.stanzas.map((stanza, s) => {
               const verse = verseNumbers[s];
               const isRefrain = verse === null;
               return (
-                <section key={s} className={`relative ${isRefrain ? "italic" : ""}`}>
+                <section
+                  key={s}
+                  onPointerDown={(e) => {
+                    pressed.current = { x: e.clientX, y: e.clientY };
+                  }}
+                  onClick={(e) => tapVerse(s, e)}
+                  className={`relative ${isRefrain ? "italic" : ""} ${marked === s ? "verse-marked" : ""}`}
+                >
                   {isRefrain ? (
                     <span className="text-label mb-1.5 block">Refrain</span>
                   ) : (
@@ -245,6 +333,8 @@ export default function HymnView({
                       <p
                         key={l}
                         className={`stanza-line ${INDENT_CLASS[lineIndent(line)]}`}
+                        // The underline runs down the verse a line at a time.
+                        style={marked === s ? { transitionDelay: `${l * 45}ms` } : undefined}
                       >
                         {opening && <span className="opening-caps">{opening}</span>}
                         {rest}

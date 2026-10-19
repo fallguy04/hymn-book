@@ -158,6 +158,27 @@ select {
 }
 
 /* The book insets alternating lines; one step per tab in the source data. */
+/* A tapped verse: a dotted underline that fades in down the verse, line by
+   line (each line's delay is set inline). Every line carries the underline
+   from the start in a transparent colour, so marking only changes its colour
+   and nothing moves. */
+.stanza-line {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.3em;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.28s ease;
+}
+.verse-marked .stanza-line {
+  text-decoration-color: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .stanza-line {
+    transition: none;
+  }
+}
+
 @utility stanza-indent-1 {
   margin-left: 1.25em;
 }
