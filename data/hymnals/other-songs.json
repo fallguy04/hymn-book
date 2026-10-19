@@ -39,6 +39,7 @@
         33,
         34,
         35,
+        43,
         15,
         36,
         37,
@@ -1302,6 +1303,54 @@
           "Have mercy, I implore Thee;",
           "\tRedeemer, spurn me not!"
         ]
+      ]
+    },
+    {
+      "number": 43,
+      "title": "O to Be Like Thee",
+      "meter": "10.9.10.9 with refrain",
+      "author": "Thomas O. Chisholm",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "O to be like Thee! Blessed Redeemer,",
+          "\tThis is my constant longing and prayer;",
+          "Gladly I’ll forfeit all of earth’s treasures,",
+          "\tJesus Thy perfect likeness to wear."
+        ],
+        [
+          "Oh! to be like Thee! O to be like Thee,",
+          "\tBlessed Redeemer, pure as Thou art!",
+          "Come in Thy sweetness, come in Thy fullness;",
+          "\tStamp Thine own image deep on my heart."
+        ],
+        [
+          "O to be like Thee! Full of compassion,",
+          "\tLoving, forgiving, tender, and kind;",
+          "Helping the helpless, cheering the fainting,",
+          "\tSeeking the wand’ring sinner to find."
+        ],
+        [
+          "O to be like Thee! Lowly in spirit,",
+          "\tHoly and harmless, patient, and brave;",
+          "Meekly enduring cruel reproaches,",
+          "\tWilling to suffer, others to save."
+        ],
+        [
+          "O to be like Thee! Lord, I am coming",
+          "\tNow to receive th’anointing divine;",
+          "All that I am and have I am bringing,",
+          "\tLord, from this moment all shall be Thine."
+        ],
+        [
+          "O to be like Thee! While I am pleading,",
+          "\tPour out Thy Spirit, fill with Thy love;",
+          "Make me a temple meet for Thy dwelling,",
+          "\tFit me for life and heaven above."
+        ]
+      ],
+      "refrains": [
+        1
       ]
     },
     {
