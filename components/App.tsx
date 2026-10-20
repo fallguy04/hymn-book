@@ -328,8 +328,9 @@ export default function App({ initial }: AppProps) {
             <InstallCard eligible={hydrated && shown === null && (launches >= 2 || arrival !== null)} />
           </main>
 
+          {/* The capsule stays put: tucking it away and bringing it back as you
+              read was more movement than it was worth. */}
           <BottomBar
-            away={away}
             hymnal={hymnal}
             prev={prev}
             next={next}
