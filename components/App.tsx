@@ -18,7 +18,7 @@ import { firstHymn, getDefaultHymnal, getHymn, getHymnal, isExpandable, isNumber
 import { isCommunityNumber } from "@/lib/community";
 import { useBooks } from "@/lib/useBooks";
 import { hymnHeading, parseHymnPath, primaryName } from "@/lib/books";
-import { type Layer, useLayers } from "@/lib/layers";
+import { type Layer, LayerMotion, useLayers } from "@/lib/layers";
 import { useHydrated } from "@/lib/useHydrated";
 import { useIsDesktop } from "@/lib/useIsDesktop";
 import { forBook, useHymnalStore } from "@/store/useHymnalStore";
@@ -101,7 +101,7 @@ export default function App({ initial }: AppProps) {
   const isDesktop = useIsDesktop();
   // Redraw when songs added in the app arrive in More Songs.
   useBooks();
-  const { layer, open, close } = useLayers();
+  const { layer, leaving, open, close, gone } = useLayers();
 
   const storeBook = useHymnalStore((s) => s.hymnalId);
   const positions = useHymnalStore((s) => s.positions);
@@ -236,8 +236,9 @@ export default function App({ initial }: AppProps) {
         e.target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName);
       if (typing || e.metaKey || e.ctrlKey || e.altKey) return;
       // Whatever is over the page owns the keyboard (the keypad reads its own
-      // digits), so nothing here pages a hymn nobody can see.
-      if (shown) return;
+      // digits), so nothing here pages a hymn nobody can see. A layer on its
+      // way out has let go of it.
+      if (shown && !leaving) return;
 
       if (e.key === "ArrowRight") paginate(1);
       else if (e.key === "ArrowLeft") paginate(-1);
@@ -340,50 +341,53 @@ export default function App({ initial }: AppProps) {
         </div>
       </div>
 
-      {/* Mounted only while open, never through AnimatePresence: with the
-          React Compiler on it left closed layers invisible over the page,
-          swallowing every tap. */}
-      {shown?.id === "keypad" && (
-        <NumberPad
-          seed={shown.seed}
-          recents={keypadRecents}
-          onGo={(n) => goTo(n, collection.id)}
-          onWordSearch={() => open({ id: "search" })}
-          onClose={close}
-        />
-      )}
+      {/* Mounted until the layer has finished leaving, never through
+          AnimatePresence: with the React Compiler on it left closed layers
+          invisible over the page, swallowing every tap. Each layer's Overlay
+          animates out when `leaving` and reports `gone`, which unmounts it. */}
+      <LayerMotion.Provider value={{ leaving, gone }}>
+        {shown?.id === "keypad" && (
+          <NumberPad
+            seed={shown.seed}
+            recents={keypadRecents}
+            onGo={(n) => goTo(n, collection.id)}
+            onWordSearch={() => open({ id: "search" })}
+            onClose={close}
+          />
+        )}
 
-      {shown?.id === "search" && (
-        <TextSearch
-          current={hymnal}
-          onSelect={(n, id) => goTo(n, id)}
-          onNumberPad={() => open({ id: "keypad" })}
-          onClose={close}
-        />
-      )}
+        {shown?.id === "search" && (
+          <TextSearch
+            current={hymnal}
+            onSelect={(n, id) => goTo(n, id)}
+            onNumberPad={() => open({ id: "keypad" })}
+            onClose={close}
+          />
+        )}
 
-      {shown?.id === "menu" && (
-        <NavDrawer
-          hymnal={hymnal}
-          current={hymn.number}
-          openPath={shown.menuPath}
-          onClose={close}
-          onSelect={(n, id) => goTo(n, id)}
-          onChooseBook={() => open({ id: "book" })}
-        />
-      )}
+        {shown?.id === "menu" && (
+          <NavDrawer
+            hymnal={hymnal}
+            current={hymn.number}
+            openPath={shown.menuPath}
+            onClose={close}
+            onSelect={(n, id) => goTo(n, id)}
+            onChooseBook={() => open({ id: "book" })}
+          />
+        )}
 
-      {shown?.id === "book" && (
-        <BookSheet
-          current={hymnal}
-          onChoose={(id) => (id === hymnal.id ? close() : chooseBook(id))}
-          onClose={close}
-        />
-      )}
+        {shown?.id === "book" && (
+          <BookSheet
+            current={hymnal}
+            onChoose={(id) => (id === hymnal.id ? close() : chooseBook(id))}
+            onClose={close}
+          />
+        )}
 
-      {shown?.id === "tunes" && hymn.meter && <TuneSheet meter={hymn.meter} onClose={close} />}
+        {shown?.id === "tunes" && hymn.meter && <TuneSheet meter={hymn.meter} onClose={close} />}
 
-      {shown?.id === "share" && <ShareSheet hymnal={hymnal} hymn={hymn} onClose={close} />}
+        {shown?.id === "share" && <ShareSheet hymnal={hymnal} hymn={hymn} onClose={close} />}
+      </LayerMotion.Provider>
     </>
   );
 }
