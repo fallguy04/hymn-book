@@ -19,7 +19,7 @@ export default function NotFound() {
         <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/"
-            className="flex min-h-12 items-center justify-center rounded-xl bg-paper-ink px-6 py-3 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
+            className="flex min-h-12 items-center justify-center rounded-xl bg-paper-accent px-6 py-3 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
           >
             Back to the hymnal
           </Link>

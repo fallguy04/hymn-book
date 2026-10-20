@@ -1,10 +1,9 @@
 "use client";
 
-import { Check } from "lucide-react";
 import Overlay, { SheetGrip } from "@/components/ui/Overlay";
 import { type Hymnal, getHymn, isNumbered } from "@/lib/hymnals";
 import { useBooks } from "@/lib/useBooks";
-import { bookBlurb, bookName, countLabel, primaryName } from "@/lib/books";
+import { bookBlurb, bookName, primaryName } from "@/lib/books";
 import { useHymnalStore } from "@/store/useHymnalStore";
 
 interface BookSheetProps {
@@ -29,9 +28,8 @@ export default function BookSheet({ current, onChoose, onClose }: BookSheetProps
   return (
     <Overlay label="Choose a book" placement="bottom" onClose={onClose}>
       <SheetGrip />
-      <div className="px-5 pb-6">
-        <h2 className="mb-4 text-center font-serif text-[1.4rem] text-paper-ink">Choose a book</h2>
-        <ul className="space-y-3">
+      <div className="px-3 pb-6 pt-1">
+        <ul className="space-y-1">
           {books.map((book) => {
             const isCurrent = book.id === current.id;
             const at = positions[book.id];
@@ -47,31 +45,19 @@ export default function BookSheet({ current, onChoose, onClose }: BookSheetProps
                   type="button"
                   onClick={() => (isCurrent ? onClose() : onChoose(book.id))}
                   aria-current={isCurrent ? "true" : undefined}
-                  className={`flex w-full items-start gap-3 rounded-2xl border p-4 text-left transition-colors ${
-                    isCurrent
-                      ? "border-paper-accent bg-paper-sunken"
-                      : "border-paper-rule hover:bg-paper-sunken"
+                  className={`w-full rounded-2xl px-4 py-4 text-left transition-colors ${
+                    isCurrent ? "bg-paper-accent-wash" : "hover:bg-paper-sunken"
                   }`}
                 >
-                  <span className="min-w-0 flex-1">
-                    <span className="flex items-baseline justify-between gap-2">
-                      <span className="font-serif text-[1.3rem] leading-tight text-paper-ink">
-                        {bookName(book)}
-                      </span>
-                      <span className="shrink-0 font-sans text-[0.78rem] tabular-nums text-paper-faint">
-                        {countLabel(book.hymns.length, book)}
-                      </span>
-                    </span>
-                    <span className="mt-1 block font-sans text-[0.88rem] leading-snug text-paper-muted">
-                      {bookBlurb(book)}
-                    </span>
-                    {where && (
-                      <span className="mt-2 block truncate font-sans text-[0.8rem] font-semibold text-paper-accent">
-                        {isCurrent ? "Reading now" : where}
-                      </span>
-                    )}
+                  <span className="block font-serif text-[1.55rem] leading-tight text-paper-ink">{bookName(book)}</span>
+                  <span className="mt-1 block font-serif text-[0.98rem] italic leading-snug text-paper-muted">
+                    {bookBlurb(book)}
                   </span>
-                  {isCurrent && <Check className="mt-1 h-5 w-5 shrink-0 text-paper-accent" />}
+                  {where && !isCurrent && (
+                    <span className="mt-2 block truncate font-sans text-[0.8rem] font-semibold text-paper-accent">
+                      {where}
+                    </span>
+                  )}
                 </button>
               </li>
             );

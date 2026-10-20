@@ -14,10 +14,10 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { type Hymnal, authorIndex, expandableHymnal, getHymn } from "@/lib/hymnals";
+import { type Hymnal, expandableHymnal, getHymn } from "@/lib/hymnals";
 import { useBooks } from "@/lib/useBooks";
-import { bookBlurb, bookName, countLabel } from "@/lib/books";
-import { countAll, forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
+import { bookName } from "@/lib/books";
+import { forBook, useHymnalStore, type TextSize, type Theme } from "@/store/useHymnalStore";
 import TableOfContents from "./TableOfContents";
 import AuthorIndex from "./AuthorIndex";
 import TuneList from "./TuneList";
@@ -82,12 +82,8 @@ export default function BrowsePanels({
   onClose,
 }: BrowsePanelsProps) {
   const [panel, setPanel] = useState<Panel | null>(openPath ? "contents" : null);
-  const favorites = useHymnalStore((s) => s.favorites);
   const textSize = useHymnalStore((s) => s.textSize);
   const setTextSize = useHymnalStore((s) => s.setTextSize);
-
-  const starred = countAll(favorites);
-  const authorCount = authorIndex(hymnal).length;
 
   const subtitle = panel === "contents" || panel === "authors" ? bookName(hymnal) : null;
 
@@ -130,30 +126,24 @@ export default function BrowsePanels({
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         {!panel && (
           <nav className="flex-1 space-y-5 overflow-y-auto overscroll-contain p-3">
-            {/* The book you're in, what it is, and how to change it. */}
+            {/* The book you're in, large in the serif, and the way to change it.
+                What each book is, the book chooser says. */}
             <button
               type="button"
               onClick={onChooseBook}
-              className="w-full rounded-2xl border border-paper-rule p-4 text-left transition-colors hover:bg-paper-sunken"
+              className="w-full rounded-2xl px-3 pb-3 pt-2 text-left transition-colors hover:bg-paper-sunken"
             >
               <span className="text-label block">Reading</span>
-              <span className="mt-1 flex items-baseline justify-between gap-2">
-                <span className="font-serif text-[1.3rem] leading-tight text-paper-ink">
-                  {bookName(hymnal)}
-                </span>
-                <span className="shrink-0 font-sans text-[0.85rem] font-semibold text-paper-accent">
-                  Change
-                </span>
-              </span>
-              <span className="mt-1 block font-sans text-[0.85rem] leading-snug text-paper-muted">
-                {bookBlurb(hymnal)}
+              <span className="mt-1.5 flex items-baseline justify-between gap-2">
+                <span className="font-serif text-[1.85rem] leading-none text-paper-ink">{bookName(hymnal)}</span>
+                <span className="shrink-0 font-sans text-[0.85rem] font-semibold text-paper-accent">Change</span>
               </span>
             </button>
 
-            <ul className="space-y-1">
-              <MenuRow icon={BookOpen} label="Contents" detail={countLabel(hymnal.hymns.length, hymnal)} onClick={() => setPanel("contents")} />
-              <MenuRow icon={Users} label="Authors" detail={`${authorCount} ${authorCount === 1 ? "author" : "authors"}`} onClick={() => setPanel("authors")} />
-              <MenuRow icon={Star} label="Favorites" detail={starred ? `${starred} saved` : "None yet"} onClick={() => setPanel("favorites")} />
+            <ul className="border-t border-paper-rule/70 pt-2">
+              <MenuRow icon={BookOpen} label="Contents" onClick={() => setPanel("contents")} />
+              <MenuRow icon={Users} label="Authors" onClick={() => setPanel("authors")} />
+              <MenuRow icon={Star} label="Favorites" onClick={() => setPanel("favorites")} />
             </ul>
 
             <section className="space-y-2 px-1">
@@ -214,11 +204,6 @@ export default function BrowsePanels({
 
         {panel === "suggest" && (
           <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-5">
-            <p className="font-sans text-[0.9rem] leading-relaxed text-paper-muted">
-              Know a song that isn&rsquo;t here? Paste its words and it&rsquo;s added to{" "}
-              {bookName(expandableHymnal() ?? hymnal)} on your phone, and for everyone once the app
-              maintainer approves it. The hymnbook is displayed as published.
-            </p>
             <SuggestSong
               query=""
               hymnalId={(expandableHymnal() ?? hymnal).id}
@@ -251,12 +236,10 @@ function MenuRow({
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-14 w-full items-center gap-3 rounded-2xl px-3 text-left transition-colors hover:bg-paper-sunken"
+        className="flex min-h-13 w-full items-center gap-3.5 rounded-2xl px-3 text-left transition-colors hover:bg-paper-sunken"
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-paper-sunken text-paper-muted">
-          <Icon className="h-[1.1rem] w-[1.1rem]" />
-        </span>
-        <span className="min-w-0 flex-1 font-serif text-[1.12rem] text-paper-ink">{label}</span>
+        <Icon className="h-[1.15rem] w-[1.15rem] shrink-0 text-paper-faint" strokeWidth={1.75} />
+        <span className="min-w-0 flex-1 truncate font-serif text-[1.18rem] text-paper-ink">{label}</span>
         {detail && <span className="shrink-0 font-sans text-[0.82rem] text-paper-faint">{detail}</span>}
         <ChevronRight className="h-4 w-4 shrink-0 text-paper-faint" />
       </button>
@@ -375,14 +358,14 @@ function SettingsPanel({ onOpen }: { onOpen: (panel: Panel) => void }) {
 
       <InstallRow />
 
-      <section className="space-y-2 border-t border-paper-rule px-1 pt-4">
-        <p className="font-sans text-[0.85rem] leading-relaxed text-paper-muted">
-          The screen is kept awake while a hymn is open. Hymns from the 32nd edition of the Old
-          German Baptist Brethren Church hymnbook.
-        </p>
+      {/* A colophon closes the page, the way a printed book's does. */}
+      <section className="border-t border-paper-rule/70 px-1 pt-6 text-center">
+        <p className="font-serif text-[1.05rem] italic text-paper-muted">A Collection of Hymns and Sacred Songs</p>
+        <p className="text-label mt-1.5">Old German Baptist Brethren Church</p>
+        <p className="text-label mt-0.5">32nd edition</p>
         <Link
           href="/privacy"
-          className="inline-flex min-h-11 items-center font-sans text-[0.9rem] font-semibold text-paper-ink underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
+          className="mt-3 inline-flex min-h-11 items-center font-sans text-[0.85rem] text-paper-muted underline decoration-paper-rule underline-offset-4 transition-colors hover:text-paper-accent"
         >
           Privacy
         </Link>

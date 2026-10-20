@@ -138,7 +138,7 @@ export default function ShareSheet({ hymnal, hymn, onClose }: ShareSheetProps) {
           <button
             type="button"
             onClick={send}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-paper-ink font-sans text-[0.95rem] font-semibold text-paper transition-transform active:scale-[0.98]"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-paper-accent font-sans text-[0.95rem] font-semibold text-paper transition-transform active:scale-[0.98]"
           >
             <Send className="h-4 w-4" />
             Send link
@@ -150,7 +150,7 @@ export default function ShareSheet({ hymnal, hymn, onClose }: ShareSheetProps) {
           className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl font-sans text-[0.95rem] font-semibold transition-colors ${
             canShare
               ? "text-paper-muted hover:bg-paper-sunken hover:text-paper-ink"
-              : "bg-paper-ink text-paper"
+              : "bg-paper-accent text-paper"
           }`}
         >
           {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}

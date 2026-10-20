@@ -13,6 +13,8 @@ interface BottomBarProps {
   onPrev: () => void;
   onNext: () => void;
   onFind: () => void;
+  /** Tucked away while reading down a long hymn. */
+  away?: boolean;
 }
 
 /**
@@ -31,19 +33,23 @@ export default function BottomBar({
   onPrev,
   onNext,
   onFind,
+  away = false,
 }: BottomBarProps) {
   const numbered = isNumbered(hymnal);
   const noun = numbered ? "hymn" : "song";
   const describe = (hymn: Hymn) => (numbered ? String(hymn.number) : primaryName(hymnal, hymn));
 
   return (
-    // Safe-area padding outside the 56px row, so the row keeps its height on
-    // a phone with a home indicator.
+    // A capsule floating above the home indicator, the hymn passing beneath
+    // it, rather than a bar ruled off across the bottom of the screen.
     <nav
-      className="shrink-0 border-t border-paper-rule/60 bg-paper/85 backdrop-blur-md"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      inert={away || undefined}
+      className={`chrome pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center px-3 ${
+        away ? "chrome-bottom-away" : ""
+      }`}
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 0.625rem)" }}
     >
-      <div className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-1.5">
+      <div className="pointer-events-auto grid h-14 w-full max-w-[26rem] grid-cols-[1fr_auto_1fr] items-center rounded-full bg-paper/80 px-1.5 shadow-[0_14px_36px_-14px_rgba(36,31,26,0.4)] ring-1 ring-paper-rule/80 backdrop-blur-xl backdrop-saturate-150">
         <button
           type="button"
           onClick={onPrev}
@@ -55,11 +61,11 @@ export default function BottomBar({
           {numbered ? prev?.number : "Previous"}
         </button>
 
-        {/* The primary action on a surface is the filled dark pill. */}
+        {/* The one act on the page, in gold. */}
         <button
           type="button"
           onClick={onFind}
-          className="flex min-h-11 items-center gap-2 justify-self-center rounded-full bg-paper-ink px-5 font-sans text-sm font-medium text-paper shadow-sm transition-all hover:opacity-90 active:scale-95"
+          className="press flex min-h-11 items-center gap-2 justify-self-center rounded-full bg-paper-accent px-5 font-sans text-sm font-semibold text-paper"
         >
           <Search className="h-4 w-4 text-paper/70" />
           Find a hymn

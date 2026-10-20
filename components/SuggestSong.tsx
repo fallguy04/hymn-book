@@ -119,7 +119,7 @@ export default function SuggestSong({
               <button
                 type="button"
                 onClick={() => onOpen(done.added!.number, hymnalId)}
-                className="inline-flex min-h-11 items-center rounded-full bg-paper-ink px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
+                className="inline-flex min-h-11 items-center rounded-full bg-paper-accent px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
               >
                 Open it
               </button>
@@ -166,38 +166,34 @@ export default function SuggestSong({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         enterKeyHint="next"
-        placeholder="Title of the song"
         className={field}
       />
 
       <label className="text-label block pt-1" htmlFor={`${uid}-words`}>
-        Words <span className="normal-case tracking-normal">(if you have them)</span>
+        Words
       </label>
       <textarea
         id={`${uid}-words`}
         value={words}
         onChange={(e) => setWords(e.target.value)}
         rows={5}
-        placeholder="Paste the words here, and the song is added to More Songs"
         className={`${field} resize-y leading-snug`}
       />
       {found && <p className="px-1 font-sans text-[0.8rem] text-paper-muted">{found}</p>}
 
       <label className="text-label block pt-1" htmlFor={`${uid}-extra`}>
-        {adding ? "Written by" : "Anything else"}{" "}
-        <span className="normal-case tracking-normal">(optional)</span>
+        {adding ? "Written by" : "Anything else"}
       </label>
       <input
         id={`${uid}-extra`}
         value={extra}
         onChange={(e) => setExtra(e.target.value)}
         enterKeyHint="next"
-        placeholder={adding ? "Author" : "Where it's from, who sings it…"}
         className={field}
       />
 
       <label className="text-label block pt-1" htmlFor={`${uid}-name`}>
-        Your name <span className="normal-case tracking-normal">(optional)</span>
+        Your name
       </label>
       <input
         id={`${uid}-name`}
@@ -205,7 +201,6 @@ export default function SuggestSong({
         onChange={(e) => setRequester(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
         enterKeyHint="send"
-        placeholder="Who's asking"
         autoComplete="name"
         className={field}
       />
@@ -222,7 +217,7 @@ export default function SuggestSong({
           type="button"
           onClick={submit}
           disabled={!title.trim() || state === "sending"}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-paper-ink px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95 disabled:opacity-40"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-paper-accent px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95 disabled:opacity-40"
         >
           {adding ? <Plus className="h-4 w-4" /> : <Send className="h-3.5 w-3.5" />}
           {state === "sending" ? "Sending…" : adding ? "Add song" : "Send suggestion"}

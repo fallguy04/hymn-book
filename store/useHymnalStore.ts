@@ -46,6 +46,8 @@ interface HymnalState {
   approvedSongs: CommunitySong[];
   /** Where this phone's own songs stand, by number. */
   songStatuses: Record<number, SongStatus>;
+  /** Word searches that led somewhere, newest first. */
+  searches: string[];
   installDismissed: boolean;
   /** How many times the app has been opened here; gates the install invitation. */
   launches: number;
@@ -65,6 +67,9 @@ interface HymnalState {
   setTextSize: (size: TextSize) => void;
   addMySong: (song: CommunitySong) => void;
   setApprovedSongs: (songs: CommunitySong[], statuses: Record<number, SongStatus>) => void;
+  rememberSearch: (query: string) => void;
+  forgetSearch: (query: string) => void;
+  clearSearches: () => void;
   dismissInstall: () => void;
   countLaunch: () => void;
   holdCode: (code: HeldCode | null) => void;
@@ -100,6 +105,7 @@ export const useHymnalStore = create<HymnalState>()(
       mySongs: [],
       approvedSongs: [],
       songStatuses: {},
+      searches: [],
       installDismissed: false,
       launches: 0,
       heldCode: null,
@@ -150,6 +156,15 @@ export const useHymnalStore = create<HymnalState>()(
         })),
       setApprovedSongs: (approvedSongs, statuses) =>
         set((s) => ({ approvedSongs, songStatuses: { ...s.songStatuses, ...statuses } })),
+      rememberSearch: (query) =>
+        set((s) => {
+          const q = query.trim();
+          if (!q) return s;
+          const rest = s.searches.filter((x) => x.toLowerCase() !== q.toLowerCase());
+          return { searches: [q, ...rest].slice(0, 8) };
+        }),
+      forgetSearch: (query) => set((s) => ({ searches: s.searches.filter((x) => x !== query) })),
+      clearSearches: () => set({ searches: [] }),
       dismissInstall: () => set({ installDismissed: true }),
       countLaunch: () => set((s) => ({ launches: s.launches + 1 })),
       holdCode: (heldCode) => set({ heldCode }),

@@ -49,7 +49,10 @@ export function InstallCard({ eligible }: { eligible: boolean }) {
   if (!ready || !offerable) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex justify-center px-3">
+    <div
+      className="pointer-events-none absolute inset-x-0 z-30 flex justify-center px-3"
+      style={{ bottom: "calc(var(--chrome-bottom) + 0.5rem)" }}
+    >
       <div
         role="region"
         aria-label="Install the hymnal"
@@ -76,7 +79,7 @@ export function InstallCard({ eligible }: { eligible: boolean }) {
                 const outcome = await promptInstall();
                 if (outcome !== "unavailable") dismiss();
               }}
-              className="min-h-11 rounded-full bg-paper-ink px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
+              className="min-h-11 rounded-full bg-paper-accent px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
             >
               {platform === "ios" ? "Show me how" : "Install"}
             </button>
@@ -115,7 +118,7 @@ export function InstallRow() {
           <button
             type="button"
             onClick={() => (platform === "ios" ? setShowSteps(true) : void promptInstall())}
-            className="min-h-11 rounded-full bg-paper-ink px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
+            className="min-h-11 rounded-full bg-paper-accent px-5 font-sans text-sm font-semibold text-paper transition-transform active:scale-95"
           >
             {platform === "ios" ? "Show me how" : "Install"}
           </button>

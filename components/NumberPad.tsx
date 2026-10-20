@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Delete, Search } from "lucide-react";
 import Overlay, { SheetGrip } from "@/components/ui/Overlay";
 import { type Hymn, getDefaultHymnal, getHymn, reachableDigits } from "@/lib/hymnals";
-import { MAX_DIGITS, primaryName, secondaryName } from "@/lib/books";
+import { MAX_DIGITS, primaryName } from "@/lib/books";
 
 interface NumberPadProps {
   /** A digit typed on a keyboard before the pad was open. */
@@ -38,6 +38,7 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
 
   const target: Hymn | undefined = digits ? getHymn(book, Number(digits)) : undefined;
   const reachable = reachableDigits(book, digits);
+  const canGrow = digits.length < MAX_DIGITS && reachable.size > 0;
   const isDead = (key: string) => digits.length >= MAX_DIGITS || !reachable.has(key);
 
   // Pure updates, so a key and the keyboard can share them. The keyboard used
@@ -72,10 +73,8 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
   });
 
   const keyClass = (dead: boolean) =>
-    `flex h-14 select-none items-center justify-center rounded-2xl font-serif text-[1.65rem] touch-manipulation transition-transform ${
-      dead
-        ? "bg-paper-sunken/40 text-paper-muted"
-        : "bg-paper-sunken text-paper-ink hover:bg-paper-rule active:scale-95"
+    `press flex h-16 select-none items-center justify-center rounded-[20px] font-serif text-[1.75rem] tabular-nums touch-manipulation ${
+      dead ? "bg-paper-sunken/40 text-paper-faint/60" : "bg-paper-sunken text-paper-ink"
     }`;
 
   const shownRecents = recents.slice(0, 3).flatMap((n) => {
@@ -88,44 +87,39 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
       <SheetGrip label="Close keypad" />
 
       <div className="px-5 pb-5">
-        {/* What you're about to open, before you open it. Announced as it
-            changes, so a screen-reader user hears the number and the hymn. */}
-        <div role="status" aria-live="polite" className="mb-3 flex min-h-[4.25rem] items-center gap-3">
+        {/* What you're about to open: the number large in gold, the hymn's
+            first line under it. Announced as it changes. */}
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label={digits ? undefined : "Type a hymn number"}
+          className="mb-4 flex h-[6.75rem] flex-col items-center justify-center text-center"
+        >
           {digits ? (
             <>
-              <span className="w-[4.5rem] shrink-0 font-serif text-[2.5rem] leading-none tabular-nums text-paper-ink">
+              <span className="font-serif text-[3.1rem] font-semibold leading-none tracking-[-0.02em] tabular-nums text-paper-accent">
                 {digits}
+                {canGrow && <i aria-hidden className="digit-wait" />}
               </span>
-              {target ? (
-                <span className="min-w-0 flex-1">
-                  <span className="line-clamp-2 font-serif text-[1.05rem] leading-snug text-paper-ink">
-                    {primaryName(book, target)}
-                  </span>
-                  {secondaryName(book, target) && (
-                    <span className="mt-0.5 block truncate font-sans text-[0.75rem] text-paper-faint">
-                      {secondaryName(book, target)}
-                    </span>
-                  )}
-                </span>
-              ) : (
-                <span className="font-serif italic text-paper-faint">No hymn {digits}</span>
-              )}
+              <span className="mt-2.5 line-clamp-1 max-w-full px-2 font-serif text-[1.05rem] italic text-paper-muted">
+                {target ? primaryName(book, target) : "\u00a0"}
+              </span>
             </>
           ) : shownRecents.length > 0 ? (
-            <div className="flex w-full min-w-0 flex-col gap-1.5">
+            <div className="flex w-full min-w-0 flex-col items-center gap-2">
               <span className="text-label">Recent</span>
-              <div className="flex gap-2">
+              <div className="flex w-full gap-2">
                 {shownRecents.map((hymn) => (
                   <button
                     key={hymn.number}
                     type="button"
                     onClick={() => onGo(hymn.number)}
-                    className="flex min-h-11 min-w-0 flex-1 items-baseline gap-1.5 rounded-xl bg-paper-sunken px-2.5 py-2 text-left transition-colors hover:bg-paper-rule"
+                    className="press flex min-h-12 min-w-0 flex-1 items-baseline gap-1.5 rounded-2xl bg-paper-sunken px-3 py-2.5 text-left"
                   >
-                    <span className="shrink-0 font-sans text-[0.85rem] font-semibold tabular-nums text-paper-ink">
+                    <span className="shrink-0 font-serif text-[1rem] font-semibold tabular-nums text-paper-accent">
                       {hymn.number}
                     </span>
-                    <span className="truncate font-serif text-[0.85rem] text-paper-muted">
+                    <span className="truncate font-serif text-[0.9rem] italic text-paper-muted">
                       {primaryName(book, hymn)}
                     </span>
                   </button>
@@ -133,11 +127,13 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
               </div>
             </div>
           ) : (
-            <span className="font-serif text-[1.15rem] italic text-paper-faint">Type a hymn number</span>
+            <span aria-hidden className="font-serif text-[3.1rem] leading-none">
+              <i className="digit-wait" />
+            </span>
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-3 gap-2">
           {["1", "2", "3", "4", "5", "6", "7", "8", "9"].map((key) => (
             <button
               key={key}
@@ -161,7 +157,7 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
             }}
             disabled={!digits}
             aria-label="Delete"
-            className="flex h-14 select-none items-center justify-center rounded-2xl bg-paper-sunken text-paper-muted touch-manipulation transition-transform hover:bg-paper-rule active:scale-95 disabled:opacity-30"
+            className="press flex h-16 select-none items-center justify-center rounded-[20px] bg-paper-sunken text-paper-muted touch-manipulation disabled:opacity-30"
           >
             <Delete className="h-6 w-6" />
           </button>
@@ -186,10 +182,9 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
             }}
             disabled={!target}
             aria-label={target ? `Go to hymn ${target.number}` : "Type a hymn number first"}
-            className="flex h-14 select-none items-center justify-center gap-1.5 rounded-2xl bg-paper-ink font-sans text-base font-semibold text-paper touch-manipulation transition-transform active:scale-95 disabled:bg-paper-sunken disabled:text-paper-faint/60"
+            className="press flex h-16 select-none items-center justify-center rounded-[20px] bg-paper-accent text-paper touch-manipulation disabled:bg-paper-sunken disabled:text-paper-faint/50"
           >
-            Go
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-6 w-6" strokeWidth={2.25} />
           </button>
         </div>
 
@@ -198,7 +193,7 @@ export default function NumberPad({ seed = "", recents, onGo, onWordSearch, onCl
         <button
           type="button"
           onClick={onWordSearch}
-          className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-paper-rule font-sans text-[0.95rem] font-semibold text-paper-ink transition-colors hover:bg-paper-sunken"
+          className="press mt-2.5 flex min-h-12 w-full items-center justify-center gap-2 rounded-[20px] border border-paper-rule font-sans text-[0.95rem] font-semibold text-paper-ink"
         >
           <Search className="h-4 w-4 text-paper-muted" />
           Word search

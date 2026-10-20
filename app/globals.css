@@ -16,6 +16,7 @@
   --color-paper-faint: var(--ink-faint);
   --color-paper-rule: var(--rule);
   --color-paper-accent: var(--accent);
+  --color-paper-accent-wash: var(--accent-wash);
 
   --font-serif: var(--font-crimson-pro), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
@@ -35,6 +36,13 @@
   --ink-faint: #726b60;
   --rule: #e0d9cb;
   --accent: #8a6a33;
+  /* The gold, faint: behind the one thing that's lit (the book you're in). */
+  --accent-wash: rgba(138, 106, 51, 0.12);
+
+  /* Motion, shared with Berea: --settle for things arriving, --spring for a
+     key or switch coming back with a little give. */
+  --settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001 85.9%, 1);
 
   /* Type scale. --type-scale is set by the size control; everything that
      should grow with it is expressed as a multiple of --type-base. */
@@ -69,6 +77,7 @@
   --ink-faint: #857d6f;
   --rule: #322c24;
   --accent: #d9b877;
+  --accent-wash: rgba(217, 184, 119, 0.14);
 }
 
 /* --------------------------------------------------------------------------- */
@@ -191,12 +200,14 @@ select {
 
 /* Hymns open with a word or two in capitals ("THROUGH endless years"). Real
    small caps read as typography; full caps read as shouting. */
+/* The rest of a hymn's opening word after its first capital — "O" then "UR"
+   — set as small capitals, the way the printed book does it. Drawn by hand:
+   the font has no small capitals, and the browser's stand-ins (every letter
+   shrunk, thin) made the word look like a mistake. */
 @utility opening-caps {
-  /* all-small-caps, not small-caps: the opening word is already in capitals
-     in the data ("THROUGH"), and small-caps only shrinks lower-case letters,
-     so it changed nothing and the word kept shouting. */
-  font-variant-caps: all-small-caps;
-  letter-spacing: 0.04em;
+  font-size: 0.8em;
+  font-weight: 560;
+  letter-spacing: 0.06em;
 }
 
 /* The swipe that turns pages is a drag gesture, and the drag library sets
@@ -214,12 +225,16 @@ select {
   }
 }
 
+/* Labels over groups ("Refrain", "Recent", "Tunes") in the serif's small
+   capitals, spaced, the way a printed hymnal heads its sections. Crimson Pro
+   as Google serves it has no small capitals of its own, and the browser's
+   imitation shrinks full capitals into something thin and grey; these are
+   capitals set small on purpose, a step heavier to keep their colour. */
 @utility text-label {
-  font-family: var(--font-sans);
-  /* Was 10px. The audience reads these in dim rooms; 11px is the floor. */
-  font-size: 0.7rem;
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
@@ -425,4 +440,73 @@ select {
 .search-field::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
+}
+
+/* A key under the thumb: it gives at once and springs back when let go. */
+.press {
+  transition:
+    transform 480ms var(--spring),
+    background-color 180ms ease,
+    color 140ms ease;
+}
+.press:active:not(:disabled) {
+  transform: scale(0.92);
+  transition-duration: 70ms, 180ms, 140ms;
+}
+
+/* While another digit could follow, a short gold rule waits where it goes. */
+.digit-wait {
+  display: inline-block;
+  width: 0.42em;
+  height: 3px;
+  margin-left: 0.06em;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+
+/* ---------------------------------------------------------------------------
+   Floating chrome. The hymn fills the screen and scrolls beneath a frosted top
+   bar and a floating capsule at the foot; both tuck away while reading down a
+   long hymn. These say how much room each takes, for the text to clear.
+   --------------------------------------------------------------------------- */
+#app-shell {
+  --chrome-top: calc(env(safe-area-inset-top) + 3.5rem);
+  --chrome-bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
+}
+
+.chrome {
+  transition:
+    transform 380ms var(--settle),
+    opacity 240ms ease;
+  will-change: transform;
+}
+.chrome-top-away {
+  transform: translateY(-100%);
+}
+.chrome-bottom-away {
+  transform: translateY(calc(100% + 0.75rem));
+  opacity: 0;
+}
+
+/* With the bar tucked away, a soft fade under the phone's status bar keeps
+   the clock legible over the words passing beneath it. */
+.status-veil {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(env(safe-area-inset-top) + 0.5rem);
+  background: linear-gradient(var(--surface) 60%, transparent);
+  pointer-events: none;
+  z-index: 15;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrome {
+    transition: opacity 150ms ease;
+  }
+  .chrome-top-away,
+  .chrome-bottom-away {
+    transform: none;
+    opacity: 0;
+  }
 }

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight, Music } from "lucide-react";
-import { type Hymn, type Hymnal, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
+import { type Hymn, type Hymnal, isNumbered, lineIndent, lineText, sectionPath } from "@/lib/hymnals";
 
 interface HymnViewProps {
   hymnal: Hymnal;
@@ -15,6 +15,8 @@ interface HymnViewProps {
   onPrev: () => void;
   onOpenTunes: () => void;
   onOpenSection: (path: string[]) => void;
+  /** Where the reader has scrolled to, for the floating bars to tuck away. */
+  onScroll?: (top: number, end: number) => void;
 }
 
 const INDENT_CLASS = ["", "stanza-indent-1", "stanza-indent-2", "stanza-indent-3"];
@@ -46,6 +48,18 @@ function splitOpening(line: string): [string, string] {
   return [opening, line.slice(opening.length)];
 }
 
+/** "OUR" as the book sets it: a full capital, then the rest as small capitals. */
+function Opening({ word }: { word: string }) {
+  const [, lead = "", first = word, rest = ""] = word.match(/^([^A-Za-z]*)([A-Za-z])([^]*)$/) ?? [];
+  return (
+    <>
+      {lead}
+      {first}
+      {rest && <span className="opening-caps">{rest}</span>}
+    </>
+  );
+}
+
 export default function HymnView({
   hymnal,
   hymn,
@@ -55,6 +69,7 @@ export default function HymnView({
   onPrev,
   onOpenTunes,
   onOpenSection,
+  onScroll,
 }: HymnViewProps) {
   const scroller = useRef<HTMLDivElement>(null);
   const block = useRef<HTMLDivElement>(null);
@@ -186,6 +201,10 @@ export default function HymnView({
        no section path and no metre there was nothing inside to tab to either. */
     <div
       ref={scroller}
+      onScroll={(e) => {
+        const el = e.currentTarget;
+        onScroll?.(el.scrollTop, el.scrollHeight - el.clientHeight);
+      }}
       tabIndex={0}
       role="region"
       aria-label="Hymn text"
@@ -238,7 +257,13 @@ export default function HymnView({
              screen, not only across its eight lines of text. hymn-swipe gives
              back the pinch-zoom and text selection the drag gesture takes
              away (see globals.css). */
-          className="hymn-swipe mx-auto min-h-full w-full max-w-[var(--measure)] px-7 pb-10 pt-4 lg:pt-10"
+          className="hymn-swipe mx-auto min-h-full w-full max-w-[var(--measure)] px-7"
+          // The bars float over the text, so it starts below the top one and
+          // can scroll clear of the capsule at the foot.
+          style={{
+            paddingTop: "calc(var(--chrome-top) + 1.25rem)",
+            paddingBottom: "calc(var(--chrome-bottom) + 2.5rem)",
+          }}
         >
           <header className="mb-10 text-center">
             {/* Opens Contents at this section. It used to look like a caption,
@@ -248,17 +273,40 @@ export default function HymnView({
                 type="button"
                 onClick={() => onOpenSection(path)}
                 aria-label={`Open Contents at ${path.join(", ")}`}
-                className="mb-1 inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-sans font-semibold uppercase tracking-[0.14em] text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-accent"
-                style={{ fontSize: "calc(0.68rem * var(--type-scale))" }}
+                className="inline-flex min-h-11 items-center gap-1 rounded-full px-3 font-serif font-semibold uppercase tracking-[0.14em] text-paper-muted transition-colors hover:bg-paper-sunken hover:text-paper-accent"
+                style={{ fontSize: "calc(0.74rem * var(--type-scale))" }}
               >
                 {path.join(" · ")}
                 <ChevronRight className="h-3.5 w-3.5 shrink-0" />
               </button>
             )}
 
-            <h1 className="font-serif text-[calc(var(--type-base)*1.6)] leading-tight text-paper-ink">
-              {hymn.title || <span className="italic text-paper-muted">Hymn {hymn.number}</span>}
-            </h1>
+            {/* The page's one large moment: the number people call out, in gold,
+                with the book's own heading for it beneath. A song in More Songs
+                has no number anyone uses, so its name takes the place. */}
+            {isNumbered(hymnal) ? (
+              <>
+                <h1
+                  className="mt-1 font-serif font-medium leading-none tabular-nums text-paper-accent"
+                  style={{ fontSize: "calc(var(--type-base) * 3.4)" }}
+                >
+                  <span className="sr-only">Hymn </span>
+                  {hymn.number}
+                </h1>
+                {hymn.title && (
+                  <p
+                    className="mx-auto mt-3 max-w-[22em] text-balance font-serif italic leading-snug text-paper-muted"
+                    style={{ fontSize: "calc(var(--type-base) * 1.02)" }}
+                  >
+                    {hymn.title}
+                  </p>
+                )}
+              </>
+            ) : (
+              <h1 className="text-balance font-serif text-[calc(var(--type-base)*1.6)] leading-tight text-paper-ink">
+                {hymn.title}
+              </h1>
+            )}
 
             {(hymn.meter || hymn.author) && (
               <p
@@ -336,7 +384,7 @@ export default function HymnView({
                         // The underline runs down the verse a line at a time.
                         style={marked === s ? { transitionDelay: `${l * 45}ms` } : undefined}
                       >
-                        {opening && <span className="opening-caps">{opening}</span>}
+                        {opening && <Opening word={opening} />}
                         {rest}
                       </p>
                     );

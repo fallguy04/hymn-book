@@ -151,19 +151,17 @@ export default function SyncPanel() {
             type="button"
             onClick={create}
             disabled={busy !== null || nothingToSend}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-paper-ink font-sans text-[0.95rem] font-semibold text-paper transition-opacity disabled:opacity-35"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-paper-accent font-sans text-[0.95rem] font-semibold text-paper transition-opacity disabled:opacity-35"
           >
             {busy === "give" && <Loader2 className="h-4 w-4 animate-spin" />}
             Get a code
           </button>
         )}
-        <p className="font-sans text-[0.85rem] leading-relaxed text-paper-muted">
-          {nothingToSend
-            ? "Nothing to carry yet. Star a hymn first."
-            : `Carries your ${starred} starred ${starred === 1 ? "hymn" : "hymns"} and ${tunes.length} ${
-                tunes.length === 1 ? "tune" : "tunes"
-              }.`}
-        </p>
+        {nothingToSend && (
+          <p className="font-sans text-[0.85rem] leading-relaxed text-paper-muted">
+            Nothing to carry yet. Star a hymn first.
+          </p>
+        )}
         {giveError && (
           <p role="alert" className="rounded-xl bg-paper-accent/15 px-3 py-2.5 font-sans text-[0.85rem] text-paper-ink">
             {giveError}
@@ -185,7 +183,6 @@ export default function SyncPanel() {
             setRestored(null);
           }}
           onKeyDown={(e) => e.key === "Enter" && redeem()}
-          placeholder="6 letters and numbers"
           inputMode="text"
           autoCapitalize="characters"
           autoComplete="off"
@@ -212,16 +209,7 @@ export default function SyncPanel() {
             {restored}
           </p>
         )}
-        <p className="font-sans text-[0.85rem] leading-relaxed text-paper-muted">
-          Adds to what&rsquo;s already here; nothing on this device is replaced, and your text size
-          and colours stay as they are.
-        </p>
       </section>
-
-      <p className="font-sans text-[0.8rem] leading-relaxed text-paper-faint">
-        A code holds only hymn numbers and tune names. No name, no email, nothing that says who you
-        are. It deletes itself after a day.
-      </p>
     </div>
   );
 }

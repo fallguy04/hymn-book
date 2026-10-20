@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Hash, HelpCircle, Lock, Search as SearchIcon, X } from "lucide-react";
+import { Clock, Hash, HelpCircle, Lock, Search as SearchIcon, X } from "lucide-react";
 import {
   type Hymnal,
   type SearchResult,
@@ -16,6 +16,7 @@ import Overlay from "./ui/Overlay";
 import Segmented from "./ui/Segmented";
 import { useBooks } from "@/lib/useBooks";
 import SuggestSong from "./SuggestSong";
+import { useHymnalStore } from "@/store/useHymnalStore";
 
 interface TextSearchProps {
   /** The book on screen, so its results can be told from another book's. */
@@ -101,7 +102,16 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
   const suggestTo = expandableHymnal();
   const canSuggest = Boolean(term) && !numeric && total === 0 && elsewhere === 0 && Boolean(suggestTo);
 
-  const open = (r: SearchResult) => onSelect(r.hymn.number, r.hymnal.id);
+  const searches = useHymnalStore((s) => s.searches);
+  const rememberSearch = useHymnalStore((s) => s.rememberSearch);
+  const forgetSearch = useHymnalStore((s) => s.forgetSearch);
+  const clearSearches = useHymnalStore((s) => s.clearSearches);
+
+  // A search is worth remembering once it led to a hymn.
+  const open = (r: SearchResult) => {
+    if (!numeric) rememberSearch(query);
+    onSelect(r.hymn.number, r.hymnal.id);
+  };
 
   const onEnter = () => {
     const top = results[0];
@@ -133,7 +143,7 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && onEnter()}
-          placeholder="Words, title, or author"
+          placeholder="Search"
           enterKeyHint="search"
           autoComplete="off"
           autoCorrect="off"
@@ -184,17 +194,48 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
       )}
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-1.5">
-        {!term && (
-          <p className="px-6 py-10 text-center font-serif italic leading-relaxed text-paper-faint">
-            Type a few words you remember, from anywhere in the hymn.
-          </p>
+        {/* Before anything is typed: the searches that led somewhere lately. */}
+        {!term && searches.length > 0 && (
+          <section className="pt-2">
+            <div className="flex items-center justify-between px-3 pb-1">
+              <p className="text-label">Recent</p>
+              <button
+                type="button"
+                onClick={clearSearches}
+                className="min-h-11 rounded-full px-3 font-sans text-[0.85rem] font-semibold text-paper-accent transition-colors hover:bg-paper-sunken"
+              >
+                Clear
+              </button>
+            </div>
+            <ul>
+              {searches.map((q) => (
+                <li key={q} className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuery(q);
+                      input.current?.focus();
+                    }}
+                    className="flex min-h-12 min-w-0 flex-1 items-center gap-3 rounded-2xl px-3 text-left transition-colors hover:bg-paper-sunken"
+                  >
+                    <Clock className="h-4 w-4 shrink-0 text-paper-faint" />
+                    <span className="truncate font-serif text-[1.05rem] text-paper-ink">{q}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => forgetSearch(q)}
+                    aria-label={`Forget ${q}`}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-paper-faint transition-colors hover:bg-paper-sunken"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
-        {allFuzzy && (
-          <p className="px-3 pb-1 pt-2 font-sans text-[0.8rem] text-paper-muted">
-            Nothing matches exactly. These are close.
-          </p>
-        )}
+        {allFuzzy && <p className="text-label px-3 pb-1 pt-3">Close matches</p>}
 
         {term && total === 0 && (
           <div className="px-3 pt-10">
@@ -263,12 +304,6 @@ export default function TextSearch({ current, onSelect, onNumberPad, onClose }: 
             );
           })}
         </ul>
-
-        {total > results.length && (
-          <p className="px-3 py-3 text-center font-sans text-[0.8rem] text-paper-faint">
-            Showing {results.length} of {total}. Add a word to narrow it down.
-          </p>
-        )}
 
         {/* Songs we know but can't print. Not buttons: there is no page to
             open, and a row that looks tappable and does nothing is worse than

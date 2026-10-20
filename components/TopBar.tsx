@@ -12,6 +12,8 @@ interface TopBarProps {
   onChooseBook: () => void;
   onToggleFavorite: () => void;
   onOpenShare: () => void;
+  /** Tucked away while reading down a long hymn. */
+  away?: boolean;
 }
 
 /**
@@ -27,18 +29,27 @@ export default function TopBar({
   onChooseBook,
   onToggleFavorite,
   onOpenShare,
+  away = false,
 }: TopBarProps) {
   const numbered = isNumbered(hymnal);
   return (
     // The safe-area inset is added *outside* the 56px row. Inside it, a notched
     // phone's inset was taken out of the row instead, squeezing the controls.
+    // Floats over the hymn, which scrolls beneath it. The frost fades out at
+    // its foot instead of ending in a rule, so the words pass under a soft
+    // edge rather than a line.
     <header
-      className="shrink-0 border-b border-paper-rule/60 bg-paper/85 backdrop-blur-md"
+      inert={away || undefined}
+      className={`chrome absolute inset-x-0 top-0 z-20 ${away ? "chrome-top-away" : ""}`}
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -bottom-5 top-0 bg-paper/75 backdrop-blur-xl backdrop-saturate-150 [mask-image:linear-gradient(to_bottom,black_70%,transparent)]"
+      />
       {/* A three-column grid rather than justify-between, so the title stays on
           the page's centre line however many buttons sit either side. */}
-      <div className="mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-1.5">
+      <div className="relative mx-auto grid h-14 w-full max-w-[var(--measure)] grid-cols-[1fr_auto_1fr] items-center px-1.5">
         <button
           type="button"
           onClick={onOpenMenu}

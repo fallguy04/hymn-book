@@ -90,7 +90,7 @@ export default async function ReviewSong({ params, searchParams }: Props) {
               type="submit"
               name="choice"
               value="approved"
-              className="flex min-h-12 flex-1 items-center justify-center rounded-2xl bg-paper-ink px-6 font-sans text-[0.95rem] font-semibold text-paper transition-transform active:scale-[0.98]"
+              className="flex min-h-12 flex-1 items-center justify-center rounded-2xl bg-paper-accent px-6 font-sans text-[0.95rem] font-semibold text-paper transition-transform active:scale-[0.98]"
             >
               {song.status === "rejected" ? "Approve after all" : "Approve for everyone"}
             </button>
