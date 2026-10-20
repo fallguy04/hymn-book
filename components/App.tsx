@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import HymnView from "@/components/HymnView";
 import NumberPad from "@/components/NumberPad";
 import TextSearch from "@/components/TextSearch";
@@ -120,21 +120,6 @@ export default function App({ initial }: AppProps) {
   const at = pinned?.number ?? positions[hymnal.id];
   const hymn = (at !== undefined && getHymn(hymnal, at)) || firstHymn(hymnal);
 
-  /**
-   * The bars float over the hymn and tuck away while you read down a long
-   * one: down hides them, up brings them back, and so does reaching the top,
-   * reaching the end (the next hymn is the obvious move) or turning the page.
-   * Not on a desktop, which has room to spare.
-   */
-  const [chromeAway, setChromeAway] = useState(false);
-  const lastScroll = useRef(0);
-  const scrolled = (top: number, end: number) => {
-    const delta = top - lastScroll.current;
-    lastScroll.current = top;
-    if (isDesktop || top < 48 || top > end - 8) setChromeAway(false);
-    else if (delta > 6) setChromeAway(true);
-    else if (delta < -6) setChromeAway(false);
-  };
   /** Which way the last page turn went, so the new page slides in from that side. */
   const [direction, setDirection] = useState(0);
   const [sidebarAt, setSidebarAt] = useState<{ path: string[]; nonce: number }>();
@@ -149,7 +134,6 @@ export default function App({ initial }: AppProps) {
   const resolved: Layer | null =
     layer === "auto" ? (isDesktop === false && !arrival ? { id: "keypad" } : null) : layer;
   const shown = resolved?.id === "menu" && isDesktop ? null : resolved;
-  const away = chromeAway && shown === null;
 
   const index = hymnal.hymns.findIndex((h) => h.number === hymn.number);
   const prev = index > 0 ? hymnal.hymns[index - 1] : null;
@@ -299,7 +283,6 @@ export default function App({ initial }: AppProps) {
         <div className="relative min-w-0 flex-1">
           <div aria-hidden className="status-veil" />
           <TopBar
-            away={away}
             hymnal={hymnal}
             hymn={hymn}
             isFavorite={forBook(favorites, hymnal.id).includes(hymn.number)}
@@ -311,7 +294,6 @@ export default function App({ initial }: AppProps) {
 
           <main className="absolute inset-0">
             <HymnView
-              onScroll={scrolled}
               hymnal={hymnal}
               hymn={hymn}
               direction={direction}
@@ -328,8 +310,8 @@ export default function App({ initial }: AppProps) {
             <InstallCard eligible={hydrated && shown === null && (launches >= 2 || arrival !== null)} />
           </main>
 
-          {/* The capsule stays put: tucking it away and bringing it back as you
-              read was more movement than it was worth. */}
+          {/* Both bars stay put while reading: tucking them away and bringing
+              them back was more movement than it was worth. */}
           <BottomBar
             hymnal={hymnal}
             prev={prev}
