@@ -12,6 +12,7 @@
         1,
         20,
         21,
+        47,
         2,
         3,
         22,
@@ -21,27 +22,35 @@
         4,
         5,
         6,
+        48,
         26,
+        49,
         7,
         27,
         8,
         28,
         9,
         10,
+        50,
         11,
         29,
         30,
         31,
         12,
+        44,
+        51,
         13,
         14,
         32,
         33,
+        45,
         34,
         35,
         43,
         15,
+        52,
         36,
+        46,
         37,
         16,
         38,
@@ -176,6 +185,28 @@
           "And, though rebellious and perverse meanwhile,",
           "Thou hast not left me, oft as I left Thee,",
           "On to the close, O Lord, abide with me."
+        ]
+      ]
+    },
+    {
+      "number": 47,
+      "title": "Alive, Alive",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Alive, alive, alive forevermore,",
+          "\tMy Jesus is alive,",
+          "\tAlive forevermore;",
+          "Alive, alive, alive forevermore,",
+          "\tMy Jesus is alive."
+        ],
+        [
+          "Sing hallelujah, sing hallelujah,",
+          "\tMy Jesus is alive forevermore;",
+          "Sing hallelujah, sing hallelujah,",
+          "\tMy Jesus is alive."
         ]
       ]
     },
@@ -619,6 +650,42 @@
       ]
     },
     {
+      "number": 48,
+      "title": "Fill Up My Cup",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Amazing grace, how sweet the sound,",
+          "\tThat saved a wretch like me;",
+          "I once was lost, but now I'm found,",
+          "\tWas blind, but now I see."
+        ],
+        [
+          "Fill up my cup, fill my cup, let it overflow,",
+          "Fill up my cup, fill my cup, let it overflow,",
+          "Fill up my cup, fill my cup, let it overflow,",
+          "\tLet it overflow with love."
+        ],
+        [
+          "Jesus loves me, this I know,",
+          "\tFor the Bible tells me so;",
+          "Little ones to Him belong,",
+          "\tThey are weak, but He is strong."
+        ],
+        [
+          "Blest be the tie that binds",
+          "\tOur hearts in Christian love;",
+          "The fellowship of kindred minds",
+          "\tIs like to that above."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
       "number": 26,
       "title": "For the Beauty of the Earth",
       "meter": "7s. with refrain",
@@ -658,6 +725,34 @@
           "Lifteth holy hands above,",
           "Off'ring up on every shore",
           "Her pure sacrifice of love."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
+      "number": 49,
+      "title": "Friends Forever",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Now it's time for us to say goodbye for just a while,",
+          "\tSo until we meet again, may God's love on you smile.",
+          "We'll be friends forever, and while we are apart,",
+          "\tI will pray for you and always keep you in my heart."
+        ],
+        [
+          "And we'll be friends forever, Jesus and you and me;",
+          "\tHe ties our hearts together, and friends we'll always be."
+        ],
+        [
+          "When you see the sun, you'll know I see the same one too;",
+          "\tWhen you see the stars, they'll say hello from me to you.",
+          "Thank You, God, for special friends we've grown to love so much;",
+          "\tMany miles will come between, but we will keep in touch."
         ]
       ],
       "refrains": [
@@ -863,6 +958,58 @@
       ]
     },
     {
+      "number": 50,
+      "title": "I Want Us to Be Together in Heaven",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "The love of God prepares a place,",
+          "No evil there, 'tis filled with grace;",
+          "\tNo need up there for worry or a falling tear.",
+          "All trials over in that land,",
+          "With trusting faith we'll understand;",
+          "\tI want us to be together in Heaven."
+        ],
+        [
+          "I want us to be together in Heaven,",
+          "I want to walk down the streets of pure gold.",
+          "I want to run through the fields of green clover,",
+          "See the mansions, smell the flowers, hear the singing, it's all ours.",
+          "See the river gently flowing, feel the gentle breezes blowing,",
+          "I want us to be together in Heaven."
+        ],
+        [
+          "The gates of Heaven stand ajar,",
+          "Inviting all, both near and far;",
+          "\tFor one day God's great hand will close Heaven's door.",
+          "When we see Jesus from the skies,",
+          "Where will we open up our eyes?",
+          "\tForever lost, or all together in Heaven?"
+        ],
+        [
+          "You may have a fancy car,",
+          "Big new house that shines by far;",
+          "\tYou may live to be a hundred years old;",
+          "But if you have not been saved,",
+          "It will end with the grave;",
+          "\tBut I want us to be together in Heaven."
+        ],
+        [
+          "You may be a millionaire,",
+          "Wearing clothes beyond compare;",
+          "\tYou may have the best that money can buy;",
+          "But if the blood was not applied,",
+          "Then in hell you'll lift your eyes;",
+          "\tBut I want us to be together in Heaven."
+        ]
+      ],
+      "refrains": [
+        1
+      ]
+    },
+    {
       "number": 11,
       "title": "I Will Sing of the Mercies of the Lord Forever",
       "meter": "Irregular",
@@ -1047,6 +1194,80 @@
       ]
     },
     {
+      "number": 44,
+      "title": "Just As I Am",
+      "meter": "L.M.",
+      "author": "Charlotte Elliott",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Just as I am, without one plea",
+          "\tBut that Thy blood was shed for me,",
+          "And that Thou bidd'st me come to Thee,",
+          "\tO Lamb of God, I come, I come."
+        ],
+        [
+          "Just as I am, and waiting not",
+          "\tTo rid my soul of one dark blot,",
+          "To Thee, whose blood can cleanse each spot,",
+          "\tO Lamb of God, I come, I come."
+        ],
+        [
+          "Just as I am, though tossed about",
+          "\tWith many a conflict, many a doubt,",
+          "Fightings within, and fears without,",
+          "\tO Lamb of God, I come, I come."
+        ],
+        [
+          "Just as I am, poor, wretched, blind;",
+          "\tSight, riches, healing of the mind,",
+          "Yea, all I need, in Thee to find,",
+          "\tO Lamb of God, I come, I come."
+        ],
+        [
+          "Just as I am, Thou wilt receive,",
+          "\tWilt welcome, pardon, cleanse, relieve;",
+          "Because Thy promise I believe,",
+          "\tO Lamb of God, I come, I come."
+        ],
+        [
+          "Just as I am, Thy love unknown",
+          "\tHas broken every barrier down;",
+          "Now to be Thine, yea, Thine alone,",
+          "\tO Lamb of God, I come, I come."
+        ]
+      ]
+    },
+    {
+      "number": 51,
+      "title": "Let the Voice of Thunder Raise",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Let the voice of thunder raise,",
+          "\tHallowed be to the God of my praise.",
+          "Heaven and earth shall stand amazed,",
+          "\tLifting their voice to the God of my praise.",
+          "Glory shall sing to the God of my praise."
+        ],
+        [
+          "O Lord, my rock, keep silent not;",
+          "\tTo me on Thee I call.",
+          "Let peace be known, to me I pray,",
+          "\tToday display my glory.",
+          "O Lord of sight, of power and might,",
+          "\tDelight Thyself in me.",
+          "With nothing left, than righteous,",
+          "\tFor all to see You live in me."
+        ]
+      ],
+      "refrains": [
+        0
+      ]
+    },
+    {
       "number": 13,
       "title": "Low in the Grave He Lay",
       "meter": "Irregular with refrain",
@@ -1205,6 +1426,48 @@
           "O bear me safe above,",
           "\tA ransomed soul!"
         ]
+      ]
+    },
+    {
+      "number": 45,
+      "title": "Nothing but the Blood",
+      "meter": "7.8.7.8. with refrain",
+      "author": "Robert Lowry",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "What can wash away my sin?",
+          "\tNothing but the blood of Jesus;",
+          "What can make me whole again?",
+          "\tNothing but the blood of Jesus."
+        ],
+        [
+          "O precious is the flow",
+          "\tThat makes me white as snow;",
+          "No other fount I know,",
+          "\tNothing but the blood of Jesus."
+        ],
+        [
+          "For my pardon this I see,",
+          "\tNothing but the blood of Jesus;",
+          "For my cleansing this my plea,",
+          "\tNothing but the blood of Jesus."
+        ],
+        [
+          "Nothing can for sin atone,",
+          "\tNothing but the blood of Jesus;",
+          "Naught of good that I have done,",
+          "\tNothing but the blood of Jesus."
+        ],
+        [
+          "This is all my hope and peace,",
+          "\tNothing but the blood of Jesus;",
+          "This is all my righteousness,",
+          "\tNothing but the blood of Jesus."
+        ]
+      ],
+      "refrains": [
+        1
       ]
     },
     {
@@ -1392,6 +1655,27 @@
       ]
     },
     {
+      "number": 52,
+      "title": "Poured Out Like Wine",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "Would you be poured out like wine upon the altar for Me?",
+          "Would you be broken like bread to feed the hungry?",
+          "Would you be so one with Me that you would do just as I will?",
+          "Would you be light, and life, and love, My word fulfilled?"
+        ],
+        [
+          "Yes, I'll be poured out like wine upon the altar for You;",
+          "Yes, I'll be broken like bread to feed the hungry!",
+          "Yes, I'll be so one with You that I would do just as You will;",
+          "Yes, I'll be light, and life, and love, Your word fulfilled."
+        ]
+      ]
+    },
+    {
       "number": 36,
       "title": "Praise to the Lord, the Almighty",
       "meter": "14.14.4.7.8",
@@ -1432,6 +1716,39 @@
           "\tBiddeth them cease,",
           "Turneth their fury to peace,",
           "Whirlwinds and waters assuaging."
+        ]
+      ]
+    },
+    {
+      "number": 46,
+      "title": "Rise Up, O Men of God",
+      "meter": "S.M.",
+      "author": "William P. Merrill",
+      "authorSource": "songs/",
+      "stanzas": [
+        [
+          "Rise up, O men of God!",
+          "\tHave done with lesser things;",
+          "Give heart and soul and mind and strength",
+          "\tTo serve the King of kings."
+        ],
+        [
+          "Rise up, O men of God!",
+          "\tHis kingdom tarries long;",
+          "Bring in the day of brotherhood",
+          "\tAnd end the night of wrong."
+        ],
+        [
+          "Rise up, O men of God!",
+          "\tThe Church for you doth wait,",
+          "Her strength unequal to her task;",
+          "\tRise up, and make her great!"
+        ],
+        [
+          "Lift high the cross of Christ!",
+          "\tTread where His feet have trod;",
+          "As brothers of the Son of Man,",
+          "\tRise up, O men of God!"
         ]
       ]
     },

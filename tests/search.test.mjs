@@ -320,7 +320,9 @@ describe("search: finding hymns by what people remember", () => {
 
   test("a song that is not in the books is not conjured from common words", () => {
     // Nothing here is a phrase worth trusting once one word is ignored.
-    assert.deepEqual(find("just as i am").hits, []);
+    // (This was "just as i am" until that hymn was added to More Songs.
+    // "It Is No Secret" is Stuart Hamblen, 1950, so it won't be added.)
+    assert.deepEqual(find("it is no secret").hits, []);
     assert.deepEqual(find("love divine all loves excelling").hits, []);
   });
 });

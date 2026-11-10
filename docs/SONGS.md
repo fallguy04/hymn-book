@@ -244,14 +244,14 @@ the ones the congregation actually sings.
 | 'Tis So Sweet to Trust in Jesus | Louisa M. R. Stead | 1882 |
 
 Also present from the camp books: **The Lord Is My Light** (Root, 1894), now
-carrying the congregation's own text rather than the opening alone.
+carrying the congregation's own text rather than the opening alone, and **Take
+My Life and Let It Be** (Havergal, 1874).
 
-*(An earlier version of this file listed "Take My Life and Let It Be" as already
-present. It never was — no song file, no entry in either book, nothing in the
-git history. It was confused with the other Havergal text, "Who Is on the Lord's
-Side?". If the congregation sings it, it still needs adding.)*
+**Rise Up, O Men of God** (William P. Merrill, 1911), the 2022 camp theme song
+printed on the cover, was added in November 2026. The camp book prints stanza 1
+only; all four are in, checked against Premier Hymns (1926).
 
-### 🔴 In copyright — cannot add without permission (26)
+### 🔴 In copyright — cannot add without permission (35)
 
 As the Deer · Because He Lives · Bind Us Together · Faithful Love · Father, I
 Adore You · He Has Made Me Glad · He Paid a Debt · Here I Am to Worship · I Love
@@ -261,21 +261,55 @@ Children Praying · Our God, He Is Alive · Sanctuary · Seek Ye First · Shine,
 Jesus, Shine · Step by Step · There Is a Redeemer · Thy Word · Unto Thee, O Lord
 · We Have This Moment · We Shall Assemble · We Will Glorify
 
+Identified November 2026, all in copyright:
+
+| Song | Writer | Year | Evidence |
+|---|---|---|---|
+| Beautiful Lamb of God | Gary Miller | 1996 | album credit, © Anthony K. Music |
+| Feelin' Fine ("I'm Feeling Fine") | Mosie Lister | — | hymnary.org: © |
+| God's Wonderful People | Lanny Wolfe | 1974 | hymnary.org: © 1974, 1985 Lanny Wolfe Music |
+| I Will Serve You | Bill & Gloria Gaither | 1969 | hymnary.org: © 1969 William J. Gaither, Inc. |
+| Jesus Signed My Pardon | C. S. Grogan (b. 1913) | — | licensing record, Lynn Music Co. |
+| The Lord Liveth | Michael O'Shields | 1981 | refrain of "I Will Call upon the Lord"; hymnary.org: © 1981 |
+| The Touch of His Hand | Mosie Lister | 1956 | hymnary.org: © 1956 Lillenas, renewed 1984 |
+| We Declare That the Kingdom of God Is Here | Graham Kendrick | 1986 | hymnary.org: © 1986 Make Way Music |
+| You Are the Words and the Music | Doug Moody | 1984 | hymnary.org: © 1984 C. A. Music |
+
 All post-1930. *Just a Little Talk with Jesus* is the closest to expiring —
 Cleavant Derricks, 1937, so roughly 2033.
 
 *(The 2022 book prints "Step by Step" twice, at 36 and 37.)*
 
-### ❓ Unidentified — 15 camp songs
+### 🟠 Writer unknown — added anyway (6)
 
-Alive, Alive · Beautiful Lamb of God · Feelin' Fine · Fill Up My Cup · Friends
-Forever · God's Wonderful People · I Want Us to Be Together in Heaven · I Will
-Serve You · Jesus Signed My Pardon · Let the Voice of Thunder Raise · Poured Out
-Like Wine · The Lord Liveth · The Touch of His Hand · We Declare That the
-Kingdom of God Is Here · You Are the Words and the Music
+Alive, Alive · Fill Up My Cup · Friends Forever · I Want Us to Be Together in
+Heaven · Let the Voice of Thunder Raise · Poured Out Like Wine
 
-Most read as modern camp choruses, which means copyrighted — but "reads modern"
-isn't evidence.
+**These are not confirmed public domain.** On 10 November 2026 Michael decided
+to include camp songs whose writer can't be traced, knowing that a song with no
+known writer is still copyrighted if it was written after 1930. Since 1978,
+copyright attaches automatically, with or without a notice or a named writer. The
+reasoning: these are camp choruses no publisher has been found to claim, and the
+app removes any song at once when an owner asks. Each file's `Source:` line says
+so, so the decision travels with the song.
+
+What was found before deciding:
+
+- **Alive, Alive**: no writer anywhere. Its only printing on hymnary.org is a
+  2006 children's book with a 2000 arrangement copyright.
+- **Fill Up My Cup**: the verses are Amazing Grace, Jesus Loves Me and Blest Be
+  the Tie, all public domain. The chorus has no writer, and nothing shows it
+  printed before 1988. hymnary.org's "Public Domain" label on it most likely
+  covers the borrowed verses, not the chorus.
+- **Poured Out Like Wine**: hymnary.org calls it "American folk hymn" and
+  carries "© 1997 by Song Supplements, Inc." for one printing. Earliest printing
+  found is 1977, credited "Anon."
+- **Friends Forever**, **I Want Us to Be Together in Heaven**, **Let the Voice
+  of Thunder Raise**: no match at all.
+
+**If an owner turns up for any of these:** delete the song file, add the song to
+`data/pending-songs.json` with the writer and `"status": "copyright"`, and
+rebuild.
 
 **Neither songbook prints a single copyright line.** No ©, no CCLI numbers, no
 writer credits anywhere in either file — so the books themselves can't settle
@@ -292,6 +326,18 @@ and was being skipped. The text is available; only the attribution is missing.)*
 Hallelujah for the Blood · God Bless You Go With God · I Will Abide in Thy
 Dwelling Place
 
+Narrowed in November 2026. These need the congregation's words to settle:
+
+- **Hallelujah for the Blood** — four songs share the title. Three are public
+  domain and could go in once we know which one is sung: Lelia N. Morris (1899,
+  the best known), A. F. Myers (1893), and Howard Paschal (1927, "I was lost in
+  sin but Jesus took me in"). The fourth, M. T. MacPherson (1934), is in
+  copyright.
+- **God Bless You, Go With God** — the only candidate found is Warren Lester
+  Roberts, © 1959, renewed 1987 by Lillenas.
+- **I Will Abide in Thy Dwelling Place** — the only candidate found is John J.
+  Overholt, © 1972 by The Christian Hymnary Publishers.
+
 *Instruments of Your Peace* is now settled: the camp book's text ("Walls of
 pride and prejudice shall cease") is a modern setting, not the ancient Francis
 prayer. **In copyright.**
@@ -307,7 +353,7 @@ wrong writer in an earlier version of this document.
 ## 2d. Index-only entries
 
 `data/pending-songs.json` lists the 56 songs the congregation sings that the app
-cannot print the words to — 38 known and in copyright, 18 nobody has identified.
+cannot print the words to — 47 known and in copyright, 3 nobody has identified.
 They appear in search under **"Known, but not printable yet"**, showing the
 title, the writer, where the song is known from, and why there are no words.
 
@@ -333,6 +379,13 @@ the song file and delete the entry.
 ---
 
 ## 3. How to add a song
+
+**hymnary.org is an index, not a public-domain library.** It lists copyrighted
+songs alongside old ones, and it even shows the full words of some copyrighted
+songs (with the publisher's permission): *The Touch of His Hand* is printed in
+full there and marked "© 1956 by Lillenas". Before adding a song, read the
+**Copyright** line on its hymnary.org text page. Add it only if that line says
+"Public Domain" *and* the text was first published in 1930 or earlier.
 
 One plain-text file per song in `songs/`, then:
 

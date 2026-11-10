@@ -70,8 +70,18 @@ tidied up on import.
 ## Before you add something
 
 Only add songs that are **in the public domain**, or that you have a licence to
-reproduce. As a rough guide, a text first published before 1930 is public
-domain in the US; anything later usually isn't, no matter how familiar it is.
+reproduce. (One deliberate exception: six camp songs whose writer couldn't be
+traced were added in November 2026 on Michael's decision, knowing they may
+still be in copyright. Their `Source:` lines say so, and `docs/SONGS.md`
+section 2b has the details.) As a rough guide, a text first published in 1930 or earlier is
+public domain in the US (as of 2026); anything later usually isn't, no matter
+how familiar it is.
+
+**Being on hymnary.org doesn't make a song public domain.** hymnary.org indexes
+copyrighted songs too, and shows the full words of some of them with the
+publisher's permission. *The Touch of His Hand* is printed there in full under
+"© 1956 by Lillenas". Check the **Copyright** line on the song's hymnary.org
+page, and the date it was first published, before adding it.
 
 **A CCLI licence does not help here.** CCLI confirmed in writing (25 August
 2026) that neither the Church Copyright License nor the Streaming License
