@@ -1034,14 +1034,52 @@
     {
       "number": 53,
       "title": "I'll Count My Blessings",
-      "meter": "Irregular",
-      "author": null,
-      "authorSource": null,
+      "meter": "C.M.D. with refrain",
+      "author": "Carrie Ellis Breck",
+      "authorSource": "songs/",
       "stanzas": [
         [
-          "I lift my heart today",
-          "\tIn praise to Him who loves me so."
+          "I lift my heart today in praise",
+          "\tTo Him who loves me so,",
+          "Whose mercy crowneth all my days,",
+          "\tAnd makes my cup o'erflow.",
+          "O have I loved Him as I should",
+          "\tFor all His blessings free?",
+          "Praise God who giveth naught but good,",
+          "\tFor He is good to me!"
+        ],
+        [
+          "I'll count my blessings—",
+          "\tCount them o'er and o'er—",
+          "I'll tell my Father's goodness—",
+          "\tI will love Him more,",
+          "I'll count my blessings, bountiful and free—",
+          "\tYet I can never count them all—",
+          "So good is God to me!"
+        ],
+        [
+          "I thank Him for unclouded skies—",
+          "\tFor love beyond my ken—",
+          "That when my path in shadow lies,",
+          "\tThe sunshine comes again.",
+          "I thank Him for the hopes fulfilled—",
+          "\tFor every answered plea,",
+          "That though life was not all I willed,",
+          "\tMy God is good to me!"
+        ],
+        [
+          "I go to meet another year,",
+          "\tWith faith no doubt can dim,",
+          "God reigneth, and I will not fear,",
+          "\tBut trust my way with Him.",
+          "Then if that way be bright or dark,",
+          "\tLet peace unshaken be!",
+          "And let me, like the soaring lark,",
+          "\tSing God is good to me!"
         ]
+      ],
+      "refrains": [
+        1
       ]
     },
     {
