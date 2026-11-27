@@ -33,6 +33,7 @@
         10,
         50,
         11,
+        53,
         29,
         30,
         31,
@@ -1027,6 +1028,19 @@
           "\tThy faithfulness, Thy faithfulness.",
           "With my mouth will I make known",
           "\tThy faithfulness to all generations."
+        ]
+      ]
+    },
+    {
+      "number": 53,
+      "title": "I'll Count My Blessings",
+      "meter": "Irregular",
+      "author": null,
+      "authorSource": null,
+      "stanzas": [
+        [
+          "I lift my heart today",
+          "\tIn praise to Him who loves me so."
         ]
       ]
     },
